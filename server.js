@@ -3,14 +3,29 @@ const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
 const axios = require('axios')
+
+
+var http = require('http').Server(app);
+// const io = require('socket.io')();
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/heights', (req, res) => {
+// console.log("IP Addresses: ", process.env.IPLIST[0])
+// console.log("PORT LIST: ", process.env.PORTLIST)
+
+
+// io.on('connection', (client) => {
+//     console.log('a user connected');
+//   });
+
+
+app.post('/heights', (req, res) => {
+    console.log(req.body)
     axios({
         method: 'post',
-        url: 'http://lvh.me:8088/v2',
+        url: `http://lvh.me:8088/v2`,
         data: {
             "jsonrpc": "2.0",
             "id": 0,
@@ -18,13 +33,15 @@ app.get('/heights', (req, res) => {
           }
     }).then((response) => {
         res.send(response.data)
+    }).catch((response) => {
+        console.log(response)
     })
 });
 
 app.get('/properties', (req, res) => {
     axios({
         method: 'post',
-        url: 'http://lvh.me:8088/v2',
+        url: `http://lvh.me:8088/v2`,
         data: {
             "jsonrpc": "2.0",
             "id": 0,
@@ -32,13 +49,16 @@ app.get('/properties', (req, res) => {
           }
     }).then((response) => {
         res.send(response.data)
+    }).catch((response) => {
+        console.log(response)
     })
 });
 
 app.get('/network-info', (req, res) => {
+
     axios({
         method: 'post',
-        url: 'http://lvh.me:8088/debug',
+        url: `http://lvh.me:8088/debug`,
         data: {  
             "jsonrpc":"2.0",
             "id":0,
@@ -46,13 +66,15 @@ app.get('/network-info', (req, res) => {
          }
     }).then((response) => {
         res.send(response.data)
+    }).catch((response) => {
+        console.log(response)
     })
 });
 
 app.get('/config', (req, res) => {
     axios({
         method: 'post',
-        url: 'http://lvh.me:8088/debug',
+        url: `http://lvh.me:8088/debug`,
         data: {  
             "jsonrpc":"2.0",
             "id":0,
@@ -60,6 +82,8 @@ app.get('/config', (req, res) => {
          }
     }).then((response) => {
         res.send(response.data)
+    }).catch((response) => {
+        console.log(response)
     })
 });
 

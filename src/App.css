@@ -11,7 +11,10 @@
 }
 
 .App-header {
-  margin: 5em;
+  margin-top: 2em;
+  margin-right: 5em;
+  margin-bottom: 2em;
+  margin-left: 5em;
 }
 /* resets */
 
@@ -43,13 +46,16 @@ table thead {
   border: none;
   text-transform: uppercase;
 }
+.bar:hover {
+  background-color: #28495f !important;
+}
 table thead th {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
 }
 table tbody tr:hover{
-  background-color: red;
+  background-color: #444444 !important;
 }
 table tbody {
   background-color: #2f2f2f;
@@ -75,24 +81,30 @@ table tfoot td {
   margin-top: 5vh;
   margin-left: 5em;
   margin-right: 5em;
+  background-color: #28495f;
+  width: 200px;
+  border-radius: 10px;
+}
+.switch.tiny {
+  margin: 0;
+}
+.switch-paddle {
+  background: red;
+  float: right;
   
 }
-
-/* .nav a {
-  background-color: #28495f !important;
-  border-radius: 10px;
-  border: none;
-  text-transform: uppercase;
-
+input:checked~.switch-paddle {
+  background: #06cf06
 }
-.nav li ul li {
-  overflow:hidden;
-  max-height:0;
-  -webkit-transition:max-height 1000ms ease;
-  -moz-transition:max-height 10000ms ease;
-  -o-transition:max-height 600ms ease;
-  transition:max-height 1000ms ease;
+
+.button {
+  font-size: .8rem;
+  margin-bottom: 0px;
+  margin-top: 5px;  
+  float: right;
+  padding: 0.50rem .50rem;
 }
-.nav ul > li:hover ul li {
-  max-height:300px;
-} */
+
+.dropdown-menu {
+  width: 160% !important;
+}
