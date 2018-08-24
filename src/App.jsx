@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
 import Menu from './components/menu.jsx';
 import Table from './components/full-table';
+import io from 'socket.io-client';
 // const io = require('socket.io')();
 require('dotenv').config()
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,66 +21,47 @@ class App extends Component {
       colVals: [],
       displayed: ["directoryblockheight", "leaderheight", "entryblockheight", "entryheight", "factomdversion", "factomdapiversion", "NetworkNumber", "NetworkName", "NetworkID"],
       NOTdisplayed: [],
-      showMenu: false
+      showMenu: false,
+      factomd_s: []
     }
+    // console.log('props',props)
+
     this.handleClick = this.handleClick.bind(this)
   }
   componentDidMount() {
-
-    // const port = 8000;
-    // io.listen(port);
-    // console.log('listening on port ', port);
-
     let that = this;
-    $.ajax({
-      type: "GET",
-      contentType: "application/json",
-      url: '/config',
-      success: (data) => {
-        this.setState({
-          configApiReturn: data.result
-        })
-      }
-    });
 
-    //setInterval(function() {
-      
-      $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: '/heights',
-        dataType: 'json',
-        data: JSON.stringify({"ip": process.env.IPLIST, "port": process.env.PORTLIST}),
-        success: (data) => { 
-          that.setState({
-            heightsApiReturn: data.result
-          });
-        }
+    this.socket = io('localhost:5001');
+
+    // 'ListOfURLs'
+    // this.socket.on('ListOfURLs', function(data) {
+    //   console.log("'ListOfURLs': ",data)
+    //   that.setState({
+    //     factomd_s: data
+    //   });
+    // })
+
+    this.socket.on('heightsAPI', function(data) {
+      that.setState({
+        heightsApiReturn: data.result
       });
-    //}, 5000)
-
-    $.ajax({
-      type: "GET", 
-      contentType: "application/json",
-      url: '/properties',
-      success: (data) => {
-        this.setState({
-          propsApiReturn: data.result
-        })
-      }
-    });
-
-    $.ajax({
-      type: "GET", 
-      contentType: "application/json",
-      url: '/network-info',
-      success: (data) => {
-        this.setState({
-          netInfoApiReturn: data.result
-        })
-      }
-    });
-
+    })
+    this.socket.on('propertiesAPI', function(data) {
+      that.setState({
+        propsApiReturn: data.result
+      })
+    })
+    this.socket.on('networkinfoAPI', function(data) {
+      that.setState({
+        netInfoApiReturn: data.result
+      })
+    })
+    this.socket.on('configAPI', function(data) {
+      that.setState({
+        configApiReturn: data.result
+      })
+    })
+    
     setTimeout(function() {
       for (let i = 0; i <= that.state.NOTdisplayed.length-1; i++) {
         $(`.${that.state.NOTdisplayed[i]}`).hide();
@@ -164,12 +147,12 @@ class App extends Component {
                 </div>
               </li>
             </ul>
-            <Table headList={this.state.addMenu} rowList={this.state.colVals} NOTdisplayed={this.state.NOTdisplayed}/>
+            <Table headList={this.state.addMenu} rowList={this.state.colVals} NOTdisplayed={this.state.NOTdisplayed} factomds={this.state.factomd_s}/>
           </div>
         </div>
       </div>
     );
   }
 }
-
+// ReactDOM.render(<App />, document.getElementById('app'));
 export default App;

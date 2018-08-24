@@ -8,6 +8,9 @@ class Menu extends Component {
         props: props
       }
     }
+    componentDidMount() {
+        // console.log(this.state.props);
+    }
 
     render() {
         return (
