@@ -27,6 +27,10 @@ class App extends React.Component {
     // console.log('props',props)
 
     this.handleClick = this.handleClick.bind(this)
+
+    setInterval(() => {
+      this.render()
+    },1000)
   }
   componentDidMount() {
     let that = this;
@@ -63,10 +67,10 @@ class App extends React.Component {
     })
     
     setTimeout(function() {
-      for (let i = 0; i <= that.state.NOTdisplayed.length-1; i++) {
+      for (let i = 0; i <= that.state.NOTdisplayed.length; i++) {
         $(`.${that.state.NOTdisplayed[i]}`).hide();
       }
-    }, 500)
+    },5000)
   }
 
   getConfigApiInfo(obj) {
@@ -126,11 +130,20 @@ class App extends React.Component {
 
 
   render() {
-    this.getConfigApiInfo(this.state.heightsApiReturn)
-    this.getConfigApiInfo(this.state.propsApiReturn)
-    this.getConfigApiInfo(this.state.netInfoApiReturn)
-    this.getConfigApiInfo(this.state.configApiReturn) 
-
+    setTimeout(() => {
+      this.getConfigApiInfo(this.state.heightsApiReturn)
+    },1)
+    setTimeout(() => {
+      this.getConfigApiInfo(this.state.propsApiReturn)
+    },2)
+    setTimeout(() => {
+      this.getConfigApiInfo(this.state.netInfoApiReturn)
+    }, 2)
+    setTimeout(() => {
+      this.getConfigApiInfo(this.state.configApiReturn) 
+    }, 2)
+    
+    
     return (
       <div className="App">
         <header className="App-header">
@@ -147,12 +160,14 @@ class App extends React.Component {
                 </div>
               </li>
             </ul>
+            {/* {console.log('arr in app: ', this.state.colVals)} */}
             <Table headList={this.state.addMenu} rowList={this.state.colVals} NOTdisplayed={this.state.NOTdisplayed} factomds={this.state.factomd_s}/>
           </div>
         </div>
       </div>
     );
   }
+  
 }
 // ReactDOM.render(<App />, document.getElementById('app'));
 export default App;

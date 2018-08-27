@@ -7,9 +7,9 @@ class TableNames extends Component {
       this.state = {
         props: props
       }
-    }
-    componentDidMount() {
-        // console.log(this.state.props);
+      setInterval(() => {
+          this.render()
+      }, 1000)
     }
 
     render() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
-import TableNames from './table-names';
-import BodyRow from './bodyrow-holder';
+import TableNamesHolder from './tablenames-holder';
+import BodyRowHolder from './bodyrow-holder';
 
 class Table extends Component {
     constructor(props) {
@@ -11,21 +11,16 @@ class Table extends Component {
       }
     }
 
-    componentDidMount() {
-      // console.log(this.state.props)
-  }
-
     render() {
+      
         return (
             <table className="hover scroll">
               <thead>
-                <tr className="bar">
-                  <TableNames headList={this.state.props.headList}/>
-                </tr>
+                <TableNamesHolder headList={this.state.props.headList}/>
               </thead>
               
               <tbody>
-                <BodyRow headList={this.state.props.headList} />
+                <BodyRowHolder headList={this.state.props.headList} />
               </tbody>
             </table>
         )

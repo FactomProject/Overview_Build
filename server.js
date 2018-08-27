@@ -15,39 +15,19 @@ server = app.listen(5001, function(){
     console.log('server is running on port 5001')
 });
 
-console.log("DIS: ",process.env.IPLIST)
 let disbish = process.env.IPLIST.split(`','`)
 
 io = socket(server);
 () => {io.emit('ListOfURLs', disbish)}
 
-
-// for (let i = 0; i<=disbish.length-1; i++) {
-    console.log(disbish[0])
     io.on('connection', (socket) => {
     
         io.emit('ListOfURLs', disbish)
-        socket.on('heightsAPI', (data) => {
-            // console.log("YOOOO",data)
-            HeightsApi(data);
-            PropertiesApi(data);
+       socket.on('firstcall', (data) => {
+            loopIPs()
         })
-        // setInterval( function() {
-        //     HeightsApi(disbish[0])
-            
-        // }, 5000)
-        // HeightsApi(url)
-        // PropertiesApi(url)
-        // NetworkInfoApi(url)
-        // ConfigApi(urk)
-        // sendlist(disbish)
+       
     });
-
-// }
-
-// sendlist = (disbish) => {
-//     io.emit('ListOfURLs', disbish)
-// }
 
 global.holderObj = {}
 HeightsApi = (url) => {
@@ -68,11 +48,11 @@ HeightsApi = (url) => {
         console.log(response)
     })
     io.emit('heightsAPIObject', holderObj)
+    io.emit('heightsAPIObject2', holderObj)
 }
 
 global.propObj = {}
 PropertiesApi = (url) => {
-    console.log('called propsAPI')
     axios({
         method: 'post',
         url: `http://${url}/v2`,
@@ -82,17 +62,16 @@ PropertiesApi = (url) => {
             "method": "properties"
           }
     }).then((response) => {
-        console.log('in then props: ', response.data.result)
         propObj[url] = {}
         propObj[url]['properties'] = response.data.result
-        console.log('propObj: ', propObj)
-        // io.emit('propertiesAPI', response.data)
+        io.emit('propertiesAPI', response.data)
     }).catch((response) => {
         console.log(response)
     })
     io.emit('propsAPIObject', propObj)
 }
 
+global.networkObj = {}
 NetworkInfoApi = (url) => {
     axios({
         method: 'post',
@@ -103,12 +82,16 @@ NetworkInfoApi = (url) => {
             "method":"network-info"
          }
     }).then((response) => {
+        networkObj[url] = {}
+        networkObj[url]['networkinfo'] = response.data.result
         io.emit('networkinfoAPI', response.data)
     }).catch((response) => {
         console.log(response)
     })
+    io.emit('netinfoAPIObject', networkObj)
 }
 
+global.configObj = {}
 ConfigApi = (url) => {
     axios({
         method: 'post',
@@ -119,32 +102,41 @@ ConfigApi = (url) => {
             "method":"configuration"
          }
     }).then((response) => {
+        configObj[url] = {}
+        configObj[url]['config'] = response.data.result
         io.emit('configAPI', response.data)
     }).catch((response) => {
         console.log(response)
     })
+    io.emit('configAPIObject', configObj)
+}
+
+loopIPs = () => {
+    for (let i = 0; i <= disbish.length-1; i++) {
+        HeightsApi(disbish[i])
+        PropertiesApi(disbish[i])
+        NetworkInfoApi(disbish[i])
+        ConfigApi(disbish[i])
+    }
+    setInterval(() => {
+        for (let i = 0; i <= disbish.length-1; i++) {
+            HeightsApi(disbish[i])
+            PropertiesApi(disbish[i])
+            NetworkInfoApi(disbish[i])
+            ConfigApi(disbish[i])
+        }
+    }, 10000)
 }
 
 
-for (let i = 0; i <= disbish.length-1; i++) {
-    // newObj[disbish[i]] = {};
-    // newObj[disbish[i]]['heightsAPI'] = 
-    // HeightsApi(disbish[i])
-    PropertiesApi(disbish[i])
-    // console.log('global bish: ',holderObj)s
-    // console.log('func: ',HeightsApi(disbish[i]))
-    // newObj[disbish[i]][heightsAPI] = HeightsApi(url)
-}
-// console.log(newObj)
-// app.post('/heights', (req, res) => {
-//     console.log(req.body)
+// app.get('/properties', (req, res) => {
 //     axios({
 //         method: 'post',
 //         url: `http://lvh.me:8088/v2`,
 //         data: {
 //             "jsonrpc": "2.0",
 //             "id": 0,
-//             "method": "heights"
+//             "method": "properties"
 //           }
 //     }).then((response) => {
 //         res.send(response.data)
@@ -153,51 +145,35 @@ for (let i = 0; i <= disbish.length-1; i++) {
 //     })
 // });
 
-app.get('/properties', (req, res) => {
-    axios({
-        method: 'post',
-        url: `http://lvh.me:8088/v2`,
-        data: {
-            "jsonrpc": "2.0",
-            "id": 0,
-            "method": "properties"
-          }
-    }).then((response) => {
-        res.send(response.data)
-    }).catch((response) => {
-        console.log(response)
-    })
-});
+// app.get('/network-info', (req, res) => {
 
-app.get('/network-info', (req, res) => {
+//     axios({
+//         method: 'post',
+//         url: `http://lvh.me:8088/debug`,
+//         data: {  
+//             "jsonrpc":"2.0",
+//             "id":0,
+//             "method":"network-info"
+//          }
+//     }).then((response) => {
+//         res.send(response.data)
+//     }).catch((response) => {
+//         console.log(response)
+//     })
+// });
 
-    axios({
-        method: 'post',
-        url: `http://lvh.me:8088/debug`,
-        data: {  
-            "jsonrpc":"2.0",
-            "id":0,
-            "method":"network-info"
-         }
-    }).then((response) => {
-        res.send(response.data)
-    }).catch((response) => {
-        console.log(response)
-    })
-});
-
-app.get('/config', (req, res) => {
-    axios({
-        method: 'post',
-        url: `http://lvh.me:8088/debug`,
-        data: {  
-            "jsonrpc":"2.0",
-            "id":0,
-            "method":"configuration"
-         }
-    }).then((response) => {
-        res.send(response.data)
-    }).catch((response) => {
-        console.log(response)
-    })
-});
+// app.get('/config', (req, res) => {
+//     axios({
+//         method: 'post',
+//         url: `http://lvh.me:8088/debug`,
+//         data: {  
+//             "jsonrpc":"2.0",
+//             "id":0,
+//             "method":"configuration"
+//          }
+//     }).then((response) => {
+//         res.send(response.data)
+//     }).catch((response) => {
+//         console.log(response)
+//     })
+// });

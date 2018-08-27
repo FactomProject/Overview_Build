@@ -16,201 +16,115 @@ class Table extends Component {
         configApiReturn: {},
         colVals: []
       }
-      this.socket = io('localhost:5001');
-        // this.socket.emit
+      setInterval(() => {
+        this.render()
+      }, 1000)
+        this.socket = io('localhost:5001');
   
         let that = this;
-        let factomd_s = ''
         let newObj = {}
-      this.socket.on('ListOfURLs', function(data) {
-        // console.log("'ListOfURLs': ",data)
-        for (let i = 0; i <= data.length-1; i++) {
-            newObj[data[i]] = {};
-        }
-        factomd_s = data
-        // that.setState({
-        //     factomd_s: data,
-        //     rowUrlData: newObj
-        // });
-    })
+        this.socket.on('ListOfURLs', function(data) {
+            for (let i = 0; i <= data.length-1; i++) {
+                newObj[data[i]] = {};
+            }
+        })
 
-    this.socket.on('heightsAPIObject', function(data) {
-        for (let key in data) {
-            newObj[key] = data[key]
-        }
-        console.log('socket listener in bodyrow: ',data)
-        console.log('newobject variable: ',newObj)
-        // that.setState({
-        //   heightsApiReturn: data.result
-        // });
-    })
+        this.socket.on('heightsAPIObject', function(data) {
+            console.log('heights: ',data)
+            for (let key in data) {
+                newObj[key]['heights'] = {}
+                newObj[key]['heights'] = data[key]['heights']
+            }
+        })
 
-    this.socket.on('propsAPIObject', function(data) {
-        console.log('propsdata: ', data)
-        for (let key in data) {
-            newObj[key] = data[key]
-        }
-        console.log('socket listener in bodyrow: ',data)
-        console.log('newobject variable: ',newObj)
-    })
+        this.socket.on('propsAPIObject', function(data) {
+            for (let key in data) {
+                newObj[key]['properties'] = {}
+                newObj[key]['properties'] = data[key]['properties']
+            }
+        })
+
+        this.socket.on('netinfoAPIObject', function(data) {
+            for (let key in data) {
+                newObj[key]['networkinfo'] = {}
+                newObj[key]['networkinfo'] = data[key]['networkinfo']
+            }
+        })
+
+        this.socket.on('configAPIObject', function(data) {
+            for (let key in data) {
+                newObj[key]['config'] = {}
+                newObj[key]['config'] = data[key]['config']
+            }
+        })
+
+        setInterval(function() {
+            that.getConfigApiInfo(newObj)
+        },5000)
 
     }
     componentDidMount() {
-        // console.log(this.state.props)
-
-        // this.socket = io('localhost:5001');
-        // // this.socket.emit
-  
-        // let that = this;
-        // let factomd_s = ''
-        // let newObj = {}
-        // this.socket.on('ListOfURLs', function(data) {
-        //     // console.log("'ListOfURLs': ",data)
-        //     for (let i = 0; i <= data.length-1; i++) {
-        //         newObj[data[i]] = {};
-        //     }
-        //     factomd_s = data
-        //     that.setState({
-        //         factomd_s: data,
-        //         rowUrlData: newObj
-        //     });
-        // })
-        // console.log(factomd_s, newObj)
-
-        // this.socket.on('heightsAPI', function(data) {
-        //     console.log('socket listener in bodyrow: ',data.result)
-        //     that.setState({
-        //       heightsApiReturn: data.result
-        //     });
-        // })
-
         this.getAPIdata()
-
-        // this.getConfigApiInfo(this.state.heightsApiReturn)
-        
-
-        
-
-        // this.socket.on('heightsAPI', function(data) {
-        //     console.log("heightsAPI: ",data.result)
-        //     that.render()
-        //     that.setState({
-        //     heightsApiReturn: data.result
-        //     });
-        // })
-        // this.socket.on('propertiesAPI', function(data) {
-        //     that.setState({
-        //         propsApiReturn: data.result
-        //     })
-        // })
-        // this.socket.on('networkinfoAPI', function(data) {
-        //     that.setState({
-        //         netInfoApiReturn: data.result
-        //     })
-        // })
-        // this.socket.on('configAPI', function(data) {
-        //     that.setState({
-        //         configApiReturn: data.result
-        //     })
-        // })
     }
 
     getConfigApiInfo(obj) {
-        console.log(obj)
-        let arr = [];
-        if (obj !== {}) {
-          for (var key in obj) {
-            if (typeof obj[key] === "object" && !Array.isArray(key)) {
-              for (var goingDeeper in obj[key]) {
-                arr.push(obj[key][goingDeeper])
-              }
-            } else {
-                arr.push(obj[key])
+        console.log('in getConfigAPIInfo', obj)
+        let hugearr = [];
+        let count = 9;
+        for (var key in obj) {
+            let smallarr = [];
+            count = 9;
+            if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+                hugearr.push(smallarr)
+                for (var goingDeeper in obj[key]) {
+                    for (var finallygettingvalues in obj[key][goingDeeper]) {
+                        if (typeof obj[key][goingDeeper][finallygettingvalues] === "object" && !Array.isArray(obj[key])) {
+                            for (let thisconfigreturnisHUGE in obj[key][goingDeeper][finallygettingvalues]) {
+                                if(count !== 68) {
+                                    smallarr.push(obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE])
+                                } 
+                                count++;
+                            }
+                        } else {
+                            smallarr.push(obj[key][goingDeeper][finallygettingvalues])
+                        }
+                    }
+                }
             }
-          }
+        } console.log('yeah ', hugearr)
           this.setState({
-              rowList: arr
+              rowList: hugearr
           })
         }
-      }
+      
+    
 
     getAPIdata() {
-        // console.log('OLD',this.state.rowUrlData)
-        let olderHolder = this.state.rowUrlData;
-        let newObj = {}
-        let that = this;
         this.socket = io('localhost:5001');
-
-       // for (let key in olderHolder) {
-            // console.log('key in obj',key)
-            this.socket.emit('heightsAPI', 'lvh.me:8088')
-            // this.socket.emit('propsAPI', 'lvh.me:8088')
-            
-            // this.socket.on('heightsAPI', function(data) {
-            //     console.log("heightsAPI: ",data.result)
-            //     that.render()
-            //     that.setState({
-            //     heightsApiReturn: data.result
-            //     });
-            // })
-        //}
-
-
-        // this.socket.on('heightsAPI', function(data) {
-        //     console.log("heightsAPI: ",data.result)
-        //     that.render()
-        //     that.setState({
-        //     heightsApiReturn: data.result
-        //     });
-        // })
-        // this.socket.on('propertiesAPI', function(data) {
-        //     that.setState({
-        //         propsApiReturn: data.result
-        //     })
-        // })
-        // this.socket.on('networkinfoAPI', function(data) {
-        //     that.setState({
-        //         netInfoApiReturn: data.result
-        //     })
-        // })
-        // this.socket.on('configAPI', function(data) {
-        //     that.setState({
-        //         configApiReturn: data.result
-        //     })
-        // })
-
-
-        // if (!Object.prototype.hasOwnProperty(olderHolder, url)) {
-        //     newObj[url] = {};
-        //     newObj[url][whichapi] = data  
-        // }
-        // console.log('NEW OBJ: ', newObj)
-
-        // this.setState({ rowUrlData: })
-        // // const newFile = this.state.factomd_s.map((item) => {
-        //     console.log(item);
-        //     file.url = val4;
-        //     return file;
-        // // });
-        // this.setState({rowUrlData: newFile });
+        this.socket.emit('firstcall') 
     }
     
     render() {
-        
-        // for (let i = 0; i <= this.state.factomd_s.length-1; i++) {
-        //     this.rowUrlDataFunc('heightsdata', this.state.heightsApiReturn, this.state.factomd_s[i])
-        //     this.rowUrlDataFunc('propsdata', this.state.propsApiReturn, this.state.factomd_s[i])
-        // }
-
-        return (
-            this.state.factomd_s.map((item, i) => {
-                return (
-                    <tr className="1">
-                        <TableRow headList={this.state.props.headList} heightsApiReturn={this.state.heightsApiReturn}/>
-                    </tr>
-                )
-            })
-        )
+        // console.log('come onnnnnnnnnnnnnnnn ', this.state.rowList)
+        // console.log(this.state.rowList)
+        if (this.state.rowList === undefined ) {
+            return null;
+        } else if (this.state.rowList[0].length === 0) {
+            return null;
+        } else {
+            // console.log(this.state.rowList)
+            return (
+                this.state.rowList.map((item, i) => (
+                    // console.log('in map: ', item)
+                    
+                        <tr key={i} className="1">
+                        {/* {console.log(item)} */}
+                            <TableRow key={i} headList={this.state.props.headList} rowList={item}/>
+                        </tr>
+                    
+                ))
+            )
+        }
     }
 }
 
