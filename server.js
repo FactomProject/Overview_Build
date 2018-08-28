@@ -125,55 +125,5 @@ loopIPs = () => {
             NetworkInfoApi(disbish[i])
             ConfigApi(disbish[i])
         }
-    }, 10000)
+    }, 20000)
 }
-
-
-// app.get('/properties', (req, res) => {
-//     axios({
-//         method: 'post',
-//         url: `http://lvh.me:8088/v2`,
-//         data: {
-//             "jsonrpc": "2.0",
-//             "id": 0,
-//             "method": "properties"
-//           }
-//     }).then((response) => {
-//         res.send(response.data)
-//     }).catch((response) => {
-//         console.log(response)
-//     })
-// });
-
-// app.get('/network-info', (req, res) => {
-
-//     axios({
-//         method: 'post',
-//         url: `http://lvh.me:8088/debug`,
-//         data: {  
-//             "jsonrpc":"2.0",
-//             "id":0,
-//             "method":"network-info"
-//          }
-//     }).then((response) => {
-//         res.send(response.data)
-//     }).catch((response) => {
-//         console.log(response)
-//     })
-// });
-
-// app.get('/config', (req, res) => {
-//     axios({
-//         method: 'post',
-//         url: `http://lvh.me:8088/debug`,
-//         data: {  
-//             "jsonrpc":"2.0",
-//             "id":0,
-//             "method":"configuration"
-//          }
-//     }).then((response) => {
-//         res.send(response.data)
-//     }).catch((response) => {
-//         console.log(response)
-//     })
-// });

@@ -81,8 +81,10 @@ table tfoot td {
   margin-top: 5vh;
   margin-left: 5em;
   margin-right: 5em;
+  color: white;
+  text-align: center;
   background-color: #28495f;
-  width: 200px;
+  display: inline-flex;
   border-radius: 10px;
 }
 .switch.tiny {
@@ -93,8 +95,8 @@ table tfoot td {
   float: right;
   
 }
-input:checked~.switch-paddle {
-  background: #06cf06
+input.switch-input[type=checkbox]:checked + label {
+  background: #06cf06 ;
 }
 
 .button {
@@ -106,5 +108,8 @@ input:checked~.switch-paddle {
 }
 
 .dropdown-menu {
-  width: 160% !important;
+  width: 300% !important;
+}
+.config.dropdown-menu {
+  width: 350% !important;
 }
