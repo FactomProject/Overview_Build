@@ -78,7 +78,7 @@ table tfoot td {
 }
 /* table tr td:first-child, table tr th:first-child { padding-left: 1.5rem; width: 100%; } */
 .nav {
-  margin-top: 5vh;
+  /* margin-top: 5vh; */
   margin-left: 5em;
   margin-right: 5em;
   color: white;
@@ -93,10 +93,14 @@ table tfoot td {
 .switch-paddle {
   background: red;
   float: right;
-  
 }
+
 input.switch-input[type=checkbox]:checked + label {
   background: #06cf06 ;
+}
+.btn-group.dropright.downdeep {
+  float: right;
+  top: -10px;
 }
 
 .button {
@@ -107,9 +111,15 @@ input.switch-input[type=checkbox]:checked + label {
   padding: 0.50rem .50rem;
 }
 
-.dropdown-menu {
-  width: 300% !important;
+.dropdown-menu{
+  width: 200% !important;
+}
+.dropdown-menu.apikeys {
+  width: 350% !important;
 }
 .config.dropdown-menu {
-  width: 350% !important;
+  width: 550% !important;
+}
+.dropdown-item.flex {
+  display: inline-flex !important;
 }
