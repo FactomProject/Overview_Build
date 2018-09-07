@@ -12,8 +12,8 @@ class Table extends Component {
       this.state = {
         headList: [],
         displayed: this.props.displayed,
-        displayedAPIs: ['heights', 'properties', 'networkinfo'],
-        NOTdisplayedAPIs: ['config'],
+        displayedAPIs: ['heights', 'properties', 'network-info'],
+        NOTdisplayedAPIs: ['configuration'],
         NOTdisplayed: [],
         rowList: [],
         showMenu: false,
@@ -26,43 +26,22 @@ class Table extends Component {
       this.socket = io('localhost:5001');
   
       let that = this;
-      let newObj = {}
+      let newer_Obj = {};
       this.socket.on('ListOfURLs', function(data) {
           for (let i = 0; i <= data.length-1; i++) {
-              newObj[data[i]] = {};
+              newer_Obj[data[i]] = {};
           }
       })
 
-      this.socket.on('heightsAPIObject', function(data) {
-          for (let key in data) {
-              newObj[key]['heights'] = {}
-              newObj[key]['heights'] = data[key]['heights']
-          }
-      })
-
-      this.socket.on('propsAPIObject', function(data) {
-          for (let key in data) {
-              newObj[key]['properties'] = {}
-              newObj[key]['properties'] = data[key]['properties']
-          }
-      })
-
-      this.socket.on('netinfoAPIObject', function(data) {
-          for (let key in data) {
-              newObj[key]['networkinfo'] = {}
-              newObj[key]['networkinfo'] = data[key]['networkinfo']
-          }
-      })
-
-      this.socket.on('configAPIObject', function(data) {
-          for (let key in data) {
-              newObj[key]['config'] = {}
-              newObj[key]['config'] = data[key]['config']
-          }
+      this.socket.on('APIObject', function(data) {
+        for (let key in data.data) {
+          newer_Obj[key][data.api] = {}
+          newer_Obj[key][data.api] = data.data[key][data.api]
+        }
       })
 
       setInterval(function() {
-          that.getConfigApiInfo(newObj)
+          that.getConfigApiInfo(newer_Obj)
       },300)
   }
 
