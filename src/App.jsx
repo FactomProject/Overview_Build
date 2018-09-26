@@ -1,22 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Table from './components/full-table';
-import io from 'socket.io-client';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Table from "./components/full-table";
+import io from "socket.io-client";
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       colVals: [],
-      displayed: ["directoryblockheight", "leaderheight", "entryblockheight", "entryheight", "factomdversion", "factomdapiversion", "NetworkNumber", "NetworkName", "NetworkID"],
-    }
+      displayed: [
+        "directoryblockheight--heights",
+        "leaderheight--heights",
+        "entryblockheight--heights",
+        "entryheight--heights",
+        "factomdversion--properties",
+        "factomdapiversion--properties",
+        "NetworkNumbernetwork-info",
+        "NetworkNamenetwork-info",
+        "NetworkIDnetwork-info"
+      ]
+    };
   }
 
   componentDidMount() {
-    this.socket = io('localhost:5001');
-    this.socket.emit('firstcall') 
+    this.socket = io("localhost:5001");
+    this.socket.emit("firstcall");
   }
-  
 
   render() {
     return (
@@ -26,11 +35,13 @@ class App extends React.Component {
           <h1 className="App-title">Information Display</h1>
         </header>
         <div className="row">
-          <Table  rowList={this.state.colVals} displayed={this.state.displayed} />
+          <Table
+            rowList={this.state.colVals}
+            displayed={this.state.displayed}
+          />
         </div>
       </div>
     );
   }
-  
 }
 export default App;
