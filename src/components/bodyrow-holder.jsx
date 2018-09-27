@@ -8,7 +8,8 @@ class Table extends Component {
       this.state = {
         rowList: [],
         headList: [],
-        NOTdisplayed: []
+        NOTdisplayed: [],
+        APIList: []
       }
     }
 
@@ -16,7 +17,8 @@ class Table extends Component {
         this.setState({
             rowList: nextProps.rowList,
             headList: nextProps.headList,
-            NOTdisplayed: nextProps.NOTdisplayed
+            NOTdisplayed: nextProps.NOTdisplayed,
+            APIList: nextProps.APIList
         })
     }
     
@@ -27,7 +29,7 @@ class Table extends Component {
             return (
                 this.state.rowList.map((item, i) => (
                     <tr key={i} className="1">
-                        <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item}/>
+                        <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList}/>
                     </tr>
                 ))
             )

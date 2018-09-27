@@ -12,26 +12,35 @@ class Table extends Component {
     this.state = {
       headList: [],
       displayed: this.props.displayed,
-      displayedAPIs: ["heights", "properties", "network-info"],
-      NOTdisplayedAPIs: ["configuration", "current-minute"],
+      displayedAPIs: ["heights", "network-info","current-minute"],
+      NOTdisplayedAPIs: ["configuration",  "properties"],
       NOTdisplayed: [],
       rowList: [],
       showMenu: false,
       showMenu2: {},
       fullObj: {},
       menus: [],
-      APIToggle: {}
+      APIToggle: {},
+      APIList: []
     };
 
     this.socket = io("localhost:5001");
 
     let that = this;
     let newer_Obj = {};
+    let APIList = {};
     this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
       }
     });
+
+    this.socket.on("ListOfAPIs", function(data) {
+      APIList['APIList'] = data;
+      that.setState({
+        APIList: data
+      })
+    })
 
     this.socket.on("APIObject", function(data) {
       for (let key in data.data) {
@@ -41,7 +50,15 @@ class Table extends Component {
     });
 
     setInterval(function() {
-      that.getConfigApiInfo(newer_Obj);
+      let ObjToUse = {}
+      for(let url in newer_Obj) {
+        // console.log('url', url)
+        ObjToUse[url] = {}
+        for (let i = 0; i<=APIList.APIList.length-1; i++) {
+          ObjToUse[url][APIList.APIList[i].split('/')[0]] = newer_Obj[url][APIList.APIList[i].split('/')[0]]
+        }
+      }
+      that.getConfigApiInfo(ObjToUse);
     }, 500);
   }
 
@@ -76,15 +93,13 @@ class Table extends Component {
               ]) {
                 if (count !== 68) {
                   smallarr.push(
-                    obj[key][goingDeeper][finallygettingvalues][
-                      thisconfigreturnisHUGE
-                    ]
+                    `${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`
                   );
                   newObj[goingDeeper].push(
                     `${thisconfigreturnisHUGE}--${goingDeeper}`
                   );
                 }
-                if (!hugeHeadList.includes(thisconfigreturnisHUGE)) {
+                if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
                   hugeHeadList.push(
                     `${thisconfigreturnisHUGE}--${goingDeeper}`
                   );
@@ -95,8 +110,8 @@ class Table extends Component {
               newObj[goingDeeper].push(
                 `${finallygettingvalues}--${goingDeeper}`
               );
-              smallarr.push(obj[key][goingDeeper][finallygettingvalues]);
-              if (!hugeHeadList.includes(finallygettingvalues)) {
+              smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
+              if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
                 hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
               }
             }
@@ -104,7 +119,6 @@ class Table extends Component {
         }
       }
     }
-    console.log(newObj);
     this.setState({
       rowList: hugearr,
       headList: hugeHeadList,
@@ -219,6 +233,7 @@ class Table extends Component {
   }
 
   render() {
+    if(this.state.APIList[0] !== "") {
     return (
       <div className="column">
         <div
@@ -372,6 +387,7 @@ class Table extends Component {
             <TableNamesHolder
               headList={this.state.headList}
               NOTdisplayed={this.state.NOTdisplayed}
+              APIList={this.state.APIList}
             />
           </thead>
 
@@ -381,11 +397,13 @@ class Table extends Component {
               headList={this.state.headList}
               NOTdisplayed={this.state.NOTdisplayed}
               handleClick={this.props.handleClick}
+              APIList={this.state.APIList}
             />
           </tbody>
         </table>
       </div>
     );
+  }
   }
 }
 

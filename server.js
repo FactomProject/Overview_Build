@@ -16,7 +16,7 @@ server = app.listen(5001, function() {
 });
 
 let disbish = process.env.IPLIST.split(`','`);
-let apisList = process.env.APILIST.split(`","`);
+let apisList = process.env.APILIST.split(`','`);
 let v2List = ["heights", "properties"];
 
 io = socket(server);
@@ -26,11 +26,13 @@ io = socket(server);
 
 io.on("connection", socket => {
   io.emit("ListOfURLs", disbish);
+  io.emit("ListOfAPIs", apisList);
   socket.on("firstcall", data => {
     loopIPs();
   });
 });
 
+global.FullObj = {}
 apis = (url, endpoint, method) => {
   axios({
     method: "post",

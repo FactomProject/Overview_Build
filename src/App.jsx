@@ -13,11 +13,11 @@ class App extends React.Component {
         "leaderheight--heights",
         "entryblockheight--heights",
         "entryheight--heights",
-        "factomdversion--properties",
-        "factomdapiversion--properties",
-        "NetworkNumbernetwork-info",
-        "NetworkNamenetwork-info",
-        "NetworkIDnetwork-info"
+        "NetworkNumber--network-info",
+        "NetworkName--network-info",
+        "NetworkID--network-info",
+        "leaderheight--current-minute", "directoryblockheight--current-minute", "minute--current-minute", "currentblockstarttime--current-minute", "currentminutestarttime--current-minute", "currenttime--current-minute", 
+        "directoryblockinseconds--current-minute", "stalldetected--current-minute"
       ]
     };
   }

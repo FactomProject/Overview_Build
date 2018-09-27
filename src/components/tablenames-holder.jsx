@@ -7,14 +7,16 @@ class Table extends Component {
       super(props);
       this.state = {
         headList: [],
-        NOTdisplayed: []
+        NOTdisplayed: [],
+        APIList: []
       }
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             headList: nextProps.headList,
-            NOTdisplayed: nextProps.NOTdisplayed
+            NOTdisplayed: nextProps.NOTdisplayed,
+            APIList: nextProps.APIList
         })
     }
     
@@ -24,7 +26,7 @@ class Table extends Component {
         } else {
             return (
                 <tr className="bar" >
-                    <TableNames headList={this.state.headList} NOTdisplayed={this.props.NOTdisplayed}/> 
+                    <TableNames headList={this.state.headList} NOTdisplayed={this.props.NOTdisplayed} APIList={this.props.APIList}/> 
                 </tr>
             )
         }
