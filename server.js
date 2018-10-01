@@ -34,6 +34,7 @@ io.on("connection", socket => {
 
 global.FullObj = {}
 apis = (url, endpoint, method) => {
+    console.log(url, endpoint, method)
   axios({
     method: "post",
     url: `http://${url}/${endpoint}`,
@@ -42,17 +43,19 @@ apis = (url, endpoint, method) => {
       id: 0,
       method: `${method}`
     }
-  })
-    .then(response => {
+  }).then(response => {
       let Obj = {};
       Obj[url] = {};
       Obj[url][method] = response.data.result;
       io.emit("APIObject", { data: Obj, api: method });
     })
     .catch(response => {
-        let Obj = {};
-        Obj[url] = {};
-        Obj[url][method] = response.response;
+      console.log(response)
+      let Obj = {};
+      Obj[url] = {};
+      Obj[url][method] = {};
+      io.emit("APIObject", { data: Obj, api: method });
+
     });
 };
 
