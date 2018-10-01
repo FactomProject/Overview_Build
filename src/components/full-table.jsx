@@ -212,17 +212,13 @@ class Table extends Component {
   }
 
   handleAllClick(item) {
-    console.log("CLICK ", item);
     let arrayHolder = [];
-    console.log(this.state.apiObjectforMenu[item]);
     for (let key in this.state.apiObjectforMenu[item]) {
       arrayHolder.push(`${key}--${item}`);
     }
-    console.log(this.state.displayedAPIs.includes(item));
+
     if (this.state.displayedAPIs.includes(item)) {
-      console.log(arrayHolder);
       arrayHolder.map((data, i) => {
-        console.log(document.getElementById(item + data));
         let inputs = document.getElementById(item + data);
 
         inputs.checked = false;

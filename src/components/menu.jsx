@@ -5,7 +5,6 @@ import $ from "jquery";
 class Menu extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props)
     this.state = {
       NOTdisplayed: [],
       displayed: this.props.displayed,
@@ -77,51 +76,51 @@ class Menu extends Component {
       return null;
     } else {
       return this.props.NOTdisplayedAPIs.includes(this.props.item)
-        ? this.props.headList.map((item, i) => (
-            item.split('--')[1] === this.props.item ? (
-                
-            <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
-              {item.split("--")[0]}
-              <a className="switch tiny" key={`Menu_item_${i}`}>
-                <input
-                  className="switch-input"
-                  onClick={() => this.handleClick(item)}
-                  key={`Menu_item_${i}`}
-                  id={this.props.item + item}
-                  type="checkbox"
-                  name={`Switch for ${item}`}
-                />
-                <label
-                  className="switch-paddle ish"
-                  htmlFor={this.props.item + item}
-                />
-              </a>
-            </div>
-            ) : (null)
-          ))
-        : this.props.headList.map((item, i) => (
-
-            item.split('--')[1] === this.props.item ? (
-            <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
-              {item.split("--")[0]}
-              <a className="switch tiny" key={`Menu_item_${i}`}>
-                <input
-                  className="switch-input"
-                  onClick={() => this.handleClick(item)}
-                  key={`Menu_item_${i}`}
-                  id={this.props.item + item}
-                  type="checkbox"
-                  name={`Switch for ${item}`}
-                  defaultChecked
-                />
-                <label
-                  className="switch-paddle ish"
-                  htmlFor={this.props.item + item}
-                />
-              </a>
-            </div>
-            ) : (null)
-          ));
+        ? this.props.headList.map(
+            (item, i) =>
+              item.split("--")[1] === this.props.item ? (
+                <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
+                  {item.split("--")[0]}
+                  <a className="switch tiny" key={`Menu_item_${i}`}>
+                    <input
+                      className="switch-input"
+                      onClick={() => this.handleClick(item)}
+                      key={`Menu_item_${i}`}
+                      id={this.props.item + item}
+                      type="checkbox"
+                      name={`Switch for ${item}`}
+                    />
+                    <label
+                      className="switch-paddle ish"
+                      htmlFor={this.props.item + item}
+                    />
+                  </a>
+                </div>
+              ) : null
+          )
+        : this.props.headList.map(
+            (item, i) =>
+              item.split("--")[1] === this.props.item ? (
+                <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
+                  {item.split("--")[0]}
+                  <a className="switch tiny" key={`Menu_item_${i}`}>
+                    <input
+                      className="switch-input"
+                      onClick={() => this.handleClick(item)}
+                      key={`Menu_item_${i}`}
+                      id={this.props.item + item}
+                      type="checkbox"
+                      name={`Switch for ${item}`}
+                      defaultChecked
+                    />
+                    <label
+                      className="switch-paddle ish"
+                      htmlFor={this.props.item + item}
+                    />
+                  </a>
+                </div>
+              ) : null
+          );
     }
   }
 }
