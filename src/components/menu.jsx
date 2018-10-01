@@ -5,6 +5,7 @@ import $ from "jquery";
 class Menu extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props)
     this.state = {
       NOTdisplayed: [],
       displayed: this.props.displayed,
@@ -12,7 +13,8 @@ class Menu extends Component {
       showMenu: false,
       showMenu2: {},
       fullObj: {},
-      menus: []
+      menus: [],
+      propbablyshouldUseThis: {}
     };
   }
 
@@ -21,9 +23,10 @@ class Menu extends Component {
       NOTdisplayed: nextProps.NOTdisplayed,
       headList: nextProps.headList,
       showMenu: nextProps.showMenu,
-      fullObj: nextProps.fullObj
+      fullObj: nextProps.fullObj,
+      propbablyshouldUseThis: nextProps.propbablyshouldUseThis
     });
-    this.getMenus();
+    // this.getMenus();
   }
 
   toggleDisplay(display) {
@@ -74,7 +77,9 @@ class Menu extends Component {
       return null;
     } else {
       return this.props.NOTdisplayedAPIs.includes(this.props.item)
-        ? this.props.fullObj.map((item, i) => (
+        ? this.props.headList.map((item, i) => (
+            item.split('--')[1] === this.props.item ? (
+                
             <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
               {item.split("--")[0]}
               <a className="switch tiny" key={`Menu_item_${i}`}>
@@ -92,8 +97,11 @@ class Menu extends Component {
                 />
               </a>
             </div>
+            ) : (null)
           ))
-        : this.props.fullObj.map((item, i) => (
+        : this.props.headList.map((item, i) => (
+
+            item.split('--')[1] === this.props.item ? (
             <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
               {item.split("--")[0]}
               <a className="switch tiny" key={`Menu_item_${i}`}>
@@ -112,6 +120,7 @@ class Menu extends Component {
                 />
               </a>
             </div>
+            ) : (null)
           ));
     }
   }

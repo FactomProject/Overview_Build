@@ -21,7 +21,8 @@ class Table extends Component {
       fullObj: {},
       menus: [],
       APIToggle: {},
-      APIList: []
+      APIList: [],
+      apiObjectforMenu: {}
     };
 
     this.socket = io("localhost:5001");
@@ -29,6 +30,7 @@ class Table extends Component {
     let that = this;
     let newer_Obj = {};
     let APIList = {};
+    let apiObjectforMenu = {};
     this.socket.on("ListOfURLs", function (data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
@@ -44,6 +46,7 @@ class Table extends Component {
 
     this.socket.on("APIObject", function (data) {
       for (let key in data.data) {
+        that.state.apiObjectforMenu[data.api] = data.data[key][data.api]
         newer_Obj[key][data.api] = {};
         newer_Obj[key][data.api] = data.data[key][data.api];
       }
@@ -194,9 +197,16 @@ class Table extends Component {
   }
 
   handleAllClick(item) {
+    console.log("CLICK ",item)
+    let arrayHolder = [];
+    console.log(this.state.apiObjectforMenu[item])
+    for (let key in this.state.apiObjectforMenu[item]) {
+      arrayHolder.push(`${key}--${item}`)
+    }
     if (this.state.displayedAPIs.includes(item)) {
-      this.state.fullObj[item].map((data, i) => {
-        let inputs = document.getElementById(item + data);
+      console.log(arrayHolder)
+      arrayHolder.map((data, i) => {
+        let inputs = document.getElementById(data);
         inputs.checked = false;
         if (this.state.displayed.includes(data)) {
           let indexofdata = this.state.displayed.indexOf(data);
@@ -310,6 +320,7 @@ class Table extends Component {
                                 <label className="switch-paddle" htmlFor={item} />
                               </a>
                             </div>
+                            {/* {console.log(item)} */}
                             <Menu
                               headList={this.state.headList}
                               item={item}
@@ -319,6 +330,7 @@ class Table extends Component {
                               showMenu={this.state.showMenu}
                               fullObj={this.state.fullObj[item]}
                               NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                              propbablyshouldUseThis={this.state.apiObjectforMenu}
                             />
                           </div>
                         </div>
@@ -374,6 +386,7 @@ class Table extends Component {
                                 showMenu={this.state.showMenu}
                                 fullObj={this.state.fullObj[item]}
                                 NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                                propbablyshouldUseThis={this.state.apiObjectforMenu}
                               />
                             </div>
                           </div>
