@@ -50,7 +50,9 @@ apis = (url, endpoint, method) => {
       io.emit("APIObject", { data: Obj, api: method });
     })
     .catch(response => {
-      console.log(response);
+        let Obj = {};
+        Obj[url] = {};
+        Obj[url][method] = response.response;
     });
 };
 

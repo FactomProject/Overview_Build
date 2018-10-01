@@ -21,7 +21,7 @@ class Table extends Component {
     }
     
     render() {
-        if (this.state.headList === undefined) {
+        if (this.state.headList === undefined || this.state.headList.length < 2) {
             return null;
         } else {
             return (

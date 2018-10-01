@@ -9,6 +9,7 @@ class App extends React.Component {
     this.state = {
       colVals: [],
       displayed: [
+        "IP",
         "directoryblockheight--heights",
         "leaderheight--heights",
         "entryblockheight--heights",

@@ -37,6 +37,10 @@ class TableRow extends Component {
     render() {
         return this.state.APIList.map((api, i) => {
                 return this.state.rowList.map((item,j) => (
+                    item.split('--')[1] === "URL" && i === 0? (
+                        <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center'}}>{item.split('--')[0]}</th>
+                    ) : (
+
                     item.split('--')[1] === api.split('/')[0] ? (
                         <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center'}}>{item.split('--')[0]}</th>
                     ) : (null)
@@ -49,7 +53,7 @@ class TableRow extends Component {
                         // } else {
                         //     return <th key={i.toString()} className={this.state.headList[i]} style={{textAlign: 'center'}}>{item}</th>
                         // }
-                    
+                    )
                 ))
             })
         }

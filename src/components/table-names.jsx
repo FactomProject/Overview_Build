@@ -22,14 +22,20 @@ class TableNames extends Component {
 
 
   render() {
-    return this.state.APIList.map((item) => {
+    return this.state.APIList.map((item, i) => {
       return this.state.headList.map((className, j) => (
+        className === "IP" && i === 0 ? (
+          <th key={j.toString()} className={className} style={{ textAlign: "center" }}>
+            <div style={{fontSize: "18px", fontWeight: 700}}>{className}</div>
+          </th>
+        ) : (
         className.split('--')[1] === item.split('/')[0] ? (
           <th key={j.toString()} className={className} style={{ textAlign: "center" }}>
             <div style={{fontSize: "18px", fontWeight: 700}}>{className.split("--")[0]}</div>
             <div style={{fontSize: "12px", color: "#696969"}}>{className.split("--")[1]}</div>
           </th>
         ) : (null)
+      )
       ))
     })
     // return this.state.headList.map((item, i) => (
