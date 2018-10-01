@@ -31,34 +31,35 @@ class Table extends Component {
     let newer_Obj = {};
     let APIList = {};
     let apiObjectforMenu = {};
-    this.socket.on("ListOfURLs", function (data) {
+    this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
       }
     });
 
-    this.socket.on("ListOfAPIs", function (data) {
-      APIList['APIList'] = data;
+    this.socket.on("ListOfAPIs", function(data) {
+      APIList["APIList"] = data;
       that.setState({
         APIList: data
-      })
-    })
+      });
+    });
 
-    this.socket.on("APIObject", function (data) {
+    this.socket.on("APIObject", function(data) {
       for (let key in data.data) {
-        that.state.apiObjectforMenu[data.api] = data.data[key][data.api]
+        that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
         newer_Obj[key][data.api] = data.data[key][data.api];
       }
     });
 
-    setInterval(function () {
-      let ObjToUse = {}
+    setInterval(function() {
+      let ObjToUse = {};
       for (let url in newer_Obj) {
         // console.log('url', url)
-        ObjToUse[url] = {}
+        ObjToUse[url] = {};
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
-          ObjToUse[url][APIList.APIList[i].split('/')[0]] = newer_Obj[url][APIList.APIList[i].split('/')[0]]
+          ObjToUse[url][APIList.APIList[i].split("/")[0]] =
+            newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
       that.getConfigApiInfo(ObjToUse);
@@ -97,13 +98,21 @@ class Table extends Component {
               ]) {
                 if (count !== 68) {
                   smallarr.push(
-                    `${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`
+                    `${
+                      obj[key][goingDeeper][finallygettingvalues][
+                        thisconfigreturnisHUGE
+                      ]
+                    }--${goingDeeper}`
                   );
                   newObj[goingDeeper].push(
                     `${thisconfigreturnisHUGE}--${goingDeeper}`
                   );
                 }
-                if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
+                if (
+                  !hugeHeadList.includes(
+                    `${thisconfigreturnisHUGE}--${goingDeeper}`
+                  )
+                ) {
                   hugeHeadList.push(
                     `${thisconfigreturnisHUGE}--${goingDeeper}`
                   );
@@ -114,8 +123,14 @@ class Table extends Component {
               newObj[goingDeeper].push(
                 `${finallygettingvalues}--${goingDeeper}`
               );
-              smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
-              if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
+              smallarr.push(
+                `${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`
+              );
+              if (
+                !hugeHeadList.includes(
+                  `${finallygettingvalues}--${goingDeeper}`
+                )
+              ) {
                 hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
               }
             }
@@ -197,16 +212,19 @@ class Table extends Component {
   }
 
   handleAllClick(item) {
-    console.log("CLICK ",item)
+    console.log("CLICK ", item);
     let arrayHolder = [];
-    console.log(this.state.apiObjectforMenu[item])
+    console.log(this.state.apiObjectforMenu[item]);
     for (let key in this.state.apiObjectforMenu[item]) {
-      arrayHolder.push(`${key}--${item}`)
+      arrayHolder.push(`${key}--${item}`);
     }
+    console.log(this.state.displayedAPIs.includes(item));
     if (this.state.displayedAPIs.includes(item)) {
-      console.log(arrayHolder)
+      console.log(arrayHolder);
       arrayHolder.map((data, i) => {
-        let inputs = document.getElementById(data);
+        console.log(document.getElementById(item + data));
+        let inputs = document.getElementById(item + data);
+
         inputs.checked = false;
         if (this.state.displayed.includes(data)) {
           let indexofdata = this.state.displayed.indexOf(data);
@@ -223,7 +241,7 @@ class Table extends Component {
       this.state.displayedAPIs.splice(indexofdataAPI, 1);
       this.state.NOTdisplayedAPIs.push(item);
     } else {
-      this.state.fullObj[item].map((data, i) => {
+      arrayHolder.map((data, i) => {
         let inputs = document.getElementById(item + data);
         inputs.checked = true;
         if (this.state.NOTdisplayed.includes(data)) {
@@ -266,7 +284,7 @@ class Table extends Component {
                   aria-expanded="true"
                 >
                   APIs
-              </a>
+                </a>
                 <div
                   className={`dropdown-menu`}
                   style={{
@@ -308,7 +326,7 @@ class Table extends Component {
                             <div className="dropdown-item">
                               <a className="switch tiny" key={`Menu_item_${i}`}>
                                 Full API
-                              <input
+                                <input
                                   className="switch-input"
                                   onClick={() => this.handleAllClick(item)}
                                   key={`Menu_item_${i}`}
@@ -317,7 +335,10 @@ class Table extends Component {
                                   name={`Switch for ${item}`}
                                   defaultChecked
                                 />
-                                <label className="switch-paddle" htmlFor={item} />
+                                <label
+                                  className="switch-paddle"
+                                  htmlFor={item}
+                                />
                               </a>
                             </div>
                             {/* {console.log(item)} */}
@@ -330,68 +351,75 @@ class Table extends Component {
                               showMenu={this.state.showMenu}
                               fullObj={this.state.fullObj[item]}
                               NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
-                              propbablyshouldUseThis={this.state.apiObjectforMenu}
+                              propbablyshouldUseThis={
+                                this.state.apiObjectforMenu
+                              }
                             />
                           </div>
                         </div>
                       </div>
                     ) : (
+                      <div
+                        className="dropdown-item"
+                        href="#"
+                        key={`Menu_item_${i}`}
+                      >
+                        {item}
                         <div
-                          className="dropdown-item"
-                          href="#"
-                          key={`Menu_item_${i}`}
+                          className="btn-group dropright downdeep"
+                          onMouseEnter={() => this.toggleDisplay2(true, item)}
+                          onMouseLeave={() => this.toggleDisplay2(false, item)}
                         >
-                          {item}
+                          <a
+                            role="button"
+                            className="nav-link btn dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="true"
+                          />
                           <div
-                            className="btn-group dropright downdeep"
-                            onMouseEnter={() => this.toggleDisplay2(true, item)}
-                            onMouseLeave={() => this.toggleDisplay2(false, item)}
+                            className={`dropdown-menu apikeys ${item}`}
+                            style={{
+                              display: this.state.showMenu2[item]
+                                ? "block"
+                                : "none",
+                              position: "absolute"
+                            }}
                           >
-                            <a
-                              role="button"
-                              className="nav-link btn dropdown-toggle"
-                              data-toggle="dropdown"
-                              aria-haspopup="true"
-                              aria-expanded="true"
-                            />
-                            <div
-                              className={`dropdown-menu apikeys ${item}`}
-                              style={{
-                                display: this.state.showMenu2[item]
-                                  ? "block"
-                                  : "none",
-                                position: "absolute"
-                              }}
-                            >
-                              <div className="dropdown-item">
-                                <a className="switch tiny" key={`Menu_item_${i}`}>
-                                  Full API
-                              <input
-                                    className="switch-input"
-                                    onClick={() => this.handleAllClick(item)}
-                                    key={`Menu_item_${i}`}
-                                    id={item}
-                                    type="checkbox"
-                                    name={`Switch for ${item}`}
-                                  />
-                                  <label className="switch-paddle" htmlFor={item} />
-                                </a>
-                              </div>
-                              <Menu
-                                headList={this.state.headList}
-                                item={item}
-                                NOTdisplayed={this.state.NOTdisplayed}
-                                displayed={this.state.displayed}
-                                toggleDisplay={this.toggleDisplay.bind(this)}
-                                showMenu={this.state.showMenu}
-                                fullObj={this.state.fullObj[item]}
-                                NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
-                                propbablyshouldUseThis={this.state.apiObjectforMenu}
-                              />
+                            <div className="dropdown-item">
+                              <a className="switch tiny" key={`Menu_item_${i}`}>
+                                Full API
+                                <input
+                                  className="switch-input"
+                                  onClick={() => this.handleAllClick(item)}
+                                  key={`Menu_item_${i}`}
+                                  id={item}
+                                  type="checkbox"
+                                  name={`Switch for ${item}`}
+                                />
+                                <label
+                                  className="switch-paddle"
+                                  htmlFor={item}
+                                />
+                              </a>
                             </div>
+                            <Menu
+                              headList={this.state.headList}
+                              item={item}
+                              NOTdisplayed={this.state.NOTdisplayed}
+                              displayed={this.state.displayed}
+                              toggleDisplay={this.toggleDisplay.bind(this)}
+                              showMenu={this.state.showMenu}
+                              fullObj={this.state.fullObj[item]}
+                              NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                              propbablyshouldUseThis={
+                                this.state.apiObjectforMenu
+                              }
+                            />
                           </div>
                         </div>
-                      );
+                      </div>
+                    );
                   })}
                 </div>
               </div>
