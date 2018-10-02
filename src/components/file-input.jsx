@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "../App.css";
 import $ from "jquery";
+import io from "socket.io-client";
 
 class FileInput extends Component {
   constructor(props) {
@@ -31,7 +32,20 @@ class FileInput extends Component {
     fileReader.onload = function(fileLoadedEvent) {
       var textFromFileLoaded = fileLoadedEvent.target.result;
       let split = textFromFileLoaded.split("\n");
-      console.log(split);
+      // let IPLIST = split[0].match(new RegExp(`IPLIST = [` + "(.*)" + `] = IPLIST`))
+      // let APILIST = textFromFileLoaded.match(new RegExp(`APILIST = [` + "(.*)" + `]`))
+      // let price = ish[i].match(new RegExp(`Total: ` + "(.*)" + `}"`))[1];
+
+      var regex = /\[(.*?)\]/;
+      let IPLIST = regex.exec(split[0])[1].replace(/'/g, '').split(',');
+      let APILIST = regex.exec(split[2])[1].replace(/'/g, '').split(',')
+
+      console.log(textFromFileLoaded);
+      console.log("IPLIST ", IPLIST)
+      console.log("APILIST ", APILIST)
+
+      // this.socket = io("localhost:5001");
+      this.socket.emit("firstcall", {"ListOfURLs": IPLIST, "ListOfAPIs": APILIST});
     };
 
     fileReader.readAsText(fileToLoad, "UTF-8");

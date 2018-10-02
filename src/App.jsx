@@ -30,11 +30,6 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.socket = io("localhost:5001");
-    this.socket.emit("firstcall");
-  }
-
   render() {
     return (
       <div className="App">
@@ -48,7 +43,6 @@ class App extends React.Component {
             displayed={this.state.displayed}
           />
         </div>
-        <FileInput />
       </div>
     );
   }
