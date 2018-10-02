@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Table from "./components/full-table";
 import io from "socket.io-client";
+import FileInput from "./components/file-input";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -17,8 +18,14 @@ class App extends React.Component {
         "NetworkNumber--network-info",
         "NetworkName--network-info",
         "NetworkID--network-info",
-        "leaderheight--current-minute", "directoryblockheight--current-minute", "minute--current-minute", "currentblockstarttime--current-minute", "currentminutestarttime--current-minute", "currenttime--current-minute", 
-        "directoryblockinseconds--current-minute", "stalldetected--current-minute"
+        "leaderheight--current-minute",
+        "directoryblockheight--current-minute",
+        "minute--current-minute",
+        "currentblockstarttime--current-minute",
+        "currentminutestarttime--current-minute",
+        "currenttime--current-minute",
+        "directoryblockinseconds--current-minute",
+        "stalldetected--current-minute"
       ]
     };
   }
@@ -41,6 +48,7 @@ class App extends React.Component {
             displayed={this.state.displayed}
           />
         </div>
+        <FileInput />
       </div>
     );
   }
