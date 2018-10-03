@@ -25,15 +25,19 @@ class Table extends Component {
       apiObjectforMenu: {}
     };
 
-    
-    
-    this.socket = io("localhost:5001");    
+    this.socket = io("localhost:5001");
     this.loadFileAsText = this.loadFileAsText.bind(this.socket);
+    this.buttonClick = this.buttonClick.bind(this.socket);
 
     let that = this;
     let newer_Obj = {};
     let APIList = {};
     let apiObjectforMenu = {};
+
+    this.socket.on("back", data => {
+      console.log(data);
+    });
+
     this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
@@ -42,12 +46,10 @@ class Table extends Component {
 
     this.socket.on("ListOfAPIs", function(data) {
       APIList["APIList"] = data;
-      that.setState({
-        APIList: data
-      });
     });
 
-    this.socket.on("APIObject", function(data) {console.log("APIOBJECT ", data)
+    this.socket.on("APIObject", function(data) {
+      console.log("APIOBJECT ", data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -67,7 +69,7 @@ class Table extends Component {
         }
       }
       that.getConfigApiInfo(ObjToUse);
-    }, 500);
+    }, 100);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -75,12 +77,12 @@ class Table extends Component {
       displayed: nextProps.displayed
     });
   }
-  componentDidMount() {
-    this.getAPIdata();
-  }
+  // componentDidMount() {
+  //   // this.getAPIdata();
+  // }
 
   getConfigApiInfo(obj) {
-    console.log(obj)
+    // console.log(obj);
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -150,7 +152,6 @@ class Table extends Component {
       fullObj: newObj
     });
     this.getMenus();
-    this.render()
   }
 
   toggleDisplay(display) {
@@ -277,23 +278,47 @@ class Table extends Component {
       // let price = ish[i].match(new RegExp(`Total: ` + "(.*)" + `}"`))[1];
 
       var regex = /\[(.*?)\]/;
-      let IPLIST = regex.exec(split[0])[1].replace(/'/g, '').split(',');
-      let APILIST = regex.exec(split[2])[1].replace(/'/g, '').split(',')
+      let IPLIST = regex
+        .exec(split[0])[1]
+        .replace(/'/g, "")
+        .split(",");
+      let APILIST = regex
+        .exec(split[2])[1]
+        .replace(/'/g, "")
+        .split(",");
 
       console.log(textFromFileLoaded);
-      console.log("IPLIST ", IPLIST)
-      console.log("APILIST ", APILIST)
+      console.log("IPLIST ", IPLIST);
+      console.log("APILIST ", APILIST);
 
       // this.socket = io("localhost:5001");
       // this.socket
-      that.socket.emit("firstcall", {"ListOfURLs": IPLIST, "ListOfAPIs": APILIST});
+      that.setState({ APIList: APILIST });
+      that.socket.emit("firstcall", {
+        ListOfURLs: IPLIST,
+        ListOfAPIs: APILIST
+      });
 
       setInterval(() => {
-        that.socket.emit("firstcall", {"ListOfURLs": IPLIST, "ListOfAPIs": APILIST});
-      }, 20000)
+        // that.socket.emit("allothercalls", {
+
+        // });
+        that.socket.emit("firstcall", {
+          ListOfURLs: IPLIST,
+          ListOfAPIs: APILIST
+        });
+      }, 20000);
     };
 
     fileReader.readAsText(fileToLoad, "UTF-8");
+  };
+
+  buttonClick = () => {
+    this.socket.emit("clickyclick", "hi");
+
+    setInterval(() => {
+      this.socket.emit("clickyclick", "hi");
+    }, 5000);
   };
 
   render() {
@@ -478,7 +503,7 @@ class Table extends Component {
               />
             </tbody>
           </table>
-          <span style={{marginLeft: "5em", marginRight: "5em"}}>
+          <span style={{ marginLeft: "5em", marginRight: "5em" }}>
             <input
               id="fileToLoad"
               type="file"
@@ -486,6 +511,7 @@ class Table extends Component {
               onChange={this.loadFileAsText}
             />
           </span>
+          <button onClick={this.buttonClick}>CLICKY CLICK</button>
         </div>
       );
     }
