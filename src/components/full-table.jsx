@@ -26,17 +26,13 @@ class Table extends Component {
     };
 
     this.socket = io("localhost:5001");
+    this.componentDidMount = this.componentDidMount.bind(this.socket);
     this.loadFileAsText = this.loadFileAsText.bind(this.socket);
-    this.buttonClick = this.buttonClick.bind(this.socket);
 
     let that = this;
     let newer_Obj = {};
     let APIList = {};
     let apiObjectforMenu = {};
-
-    this.socket.on("back", data => {
-      console.log(data);
-    });
 
     this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
@@ -45,11 +41,13 @@ class Table extends Component {
     });
 
     this.socket.on("ListOfAPIs", function(data) {
+      that.setState({ APIList: data });
+
       APIList["APIList"] = data;
     });
 
     this.socket.on("APIObject", function(data) {
-      console.log("APIOBJECT ", data);
+      // console.log("APIOBJECT ", data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -61,14 +59,18 @@ class Table extends Component {
       let ObjToUse = {};
 
       for (let url in newer_Obj) {
-        // console.log('url', url)
         ObjToUse[url] = {};
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
           ObjToUse[url][APIList.APIList[i].split("/")[0]] =
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
-      that.getConfigApiInfo(ObjToUse);
+      if (Object.keys(ObjToUse).length === 0) {
+        console.log("EMPTY ", ObjToUse)
+        null
+      } else {
+        that.getConfigApiInfo(ObjToUse);
+      }
     }, 100);
   }
 
@@ -77,12 +79,14 @@ class Table extends Component {
       displayed: nextProps.displayed
     });
   }
-  // componentDidMount() {
-  //   // this.getAPIdata();
-  // }
+  componentDidMount() {
+    this.emit("firstcall");
+    setInterval(() => {
+      this.emit("firstcall");
+    }, 10000)
+  }
 
   getConfigApiInfo(obj) {
-    // console.log(obj);
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -145,12 +149,15 @@ class Table extends Component {
         }
       }
     }
-    hugeHeadList.unshift("IP");
-    this.setState({
-      rowList: hugearr,
-      headList: hugeHeadList,
-      fullObj: newObj
-    });
+    if (hugeHeadList.length > 0) {
+      hugeHeadList.unshift("IP");
+  
+      this.setState({
+        rowList: hugearr,
+        headList: hugeHeadList,
+        fullObj: newObj
+      });
+    }
     this.getMenus();
   }
 
@@ -173,11 +180,6 @@ class Table extends Component {
         $(`.${that.state.headList[i]}`).hide();
       }
     }
-  }
-
-  getAPIdata() {
-    // this.socket = io("localhost:5001");
-    // this.socket.emit("firstcall");
   }
 
   getMenus() {
@@ -291,6 +293,12 @@ class Table extends Component {
       console.log("IPLIST ", IPLIST);
       console.log("APILIST ", APILIST);
 
+      for (let i = 0; i < IPLIST.length; i++) {
+        if (IPLIST[i].indexOf(':') === -1) {
+          IPLIST[i] = `${IPLIST[i]}:8088`;
+        }
+      }
+
       // this.socket = io("localhost:5001");
       // this.socket
       that.setState({ APIList: APILIST });
@@ -307,18 +315,10 @@ class Table extends Component {
           ListOfURLs: IPLIST,
           ListOfAPIs: APILIST
         });
-      }, 20000);
+      }, 10000);
     };
 
     fileReader.readAsText(fileToLoad, "UTF-8");
-  };
-
-  buttonClick = () => {
-    this.socket.emit("clickyclick", "hi");
-
-    setInterval(() => {
-      this.socket.emit("clickyclick", "hi");
-    }, 5000);
   };
 
   render() {
@@ -503,15 +503,14 @@ class Table extends Component {
               />
             </tbody>
           </table>
-          <span style={{ marginLeft: "5em", marginRight: "5em" }}>
+          {/* <span style={{ marginLeft: "5em", marginRight: "5em" }}>
             <input
               id="fileToLoad"
               type="file"
               name="myFile"
               onChange={this.loadFileAsText}
             />
-          </span>
-          <button onClick={this.buttonClick}>CLICKY CLICK</button>
+          </span> */}
         </div>
       );
     }

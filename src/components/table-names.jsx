@@ -14,7 +14,6 @@ class TableNames extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.count === 0) {
-      console.log("COUNT ", this.state.count);
       this.state.count++;
 
       this.setState({
@@ -55,11 +54,6 @@ class TableNames extends Component {
           ) : null
       );
     });
-    // return this.state.headList.map((item, i) => (
-    //   <th key={i.toString()} className={item} style={{ textAlign: "center" }}>
-    //     {item.split("--")[0]}
-    //   </th>
-    // ));
   }
 }
 

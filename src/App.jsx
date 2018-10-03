@@ -2,8 +2,6 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Table from "./components/full-table";
-import io from "socket.io-client";
-import FileInput from "./components/file-input";
 class App extends React.Component {
   constructor(props) {
     super(props);

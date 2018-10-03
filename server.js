@@ -14,57 +14,51 @@ server = app.listen(5001, function() {
   console.log("server is running on port 5001");
 });
 
-let disbish = [];
-let apisList = [];
-let users = [];
+// let ipList = [];
+// let apisList = [];
+
+var regex = /\[(.*?)\]/;
+    //   let IPLIST = regex.exec(split[0])[1].replace(/'/g, "").split(",");
+
+let ipList = regex.exec(process.env.IPLIST)[1].replace(/'/g, '').split(",");
+for (let i = 0; i < ipList.length; i++) {
+    if (ipList[i].indexOf(':') === -1) {
+        ipList[i] = `${ipList[i]}:8088`;
+    }
+  }
+let apisList = regex.exec(process.env.APILIST)[1].replace(/'/g, '').split(",");
+
 let connections = [];
 
 io = socket(server);
 // () => {
-//   io.emit("ListOfURLs", disbish);
+//   io.emit("ListOfURLs", ipList);
 //   socket.brodcast.to()
 // };
 
 io.on("connection", socket => {
-  console.log(socket.id);
   connections.push(socket);
-  console.log("Connected: %s sockets connected", connections.length);
+//   console.log("Connected: %s sockets connected", connections.length);
 
-  socket.on("clickyclick", data => {
-    console.log(data, socket.id);
-    // io.emit(
-    //   "back",
-    //   `User Number: ${connections.indexOf(socket) + 1} id: ${socket.id}`
-    // );
-    io.to(socket.id).emit(
-      "back",
-      `User Number: ${connections.indexOf(socket) + 1} id: ${socket.id}`
-    );
-    console.log(connections.length);
-  });
-  //  io.emit("ListOfURLs", disbish);
-  // io.emit("ListOfAPIs", apisList);
-  socket.on("firstcall", data => {
-    console.log(data);
-    disbish = data.ListOfURLs;
-    apisList = data.ListOfAPIs;
-    io.to(socket.id).emit("ListOfURLs", data.ListOfURLs);
-    io.to(socket.id).emit("ListOfAPIs", data.ListOfAPIs);
-    // io.sockets.in(socket.id).emit("ListOfURLs", data.ListOfURLs);
-    // io.sockets.in(socket.id).emit("ListOfAPIs", data.ListOfAPIs);
-    // socket.join(socket.id);
+  socket.on("firstcall", () => {
+    // ipList = data.ListOfURLs;
+    // apisList = data.ListOfAPIs;
+    // io.to(socket.id).emit("ListOfURLs", data.ListOfURLs);
+    // io.to(socket.id).emit("ListOfAPIs", data.ListOfAPIs);
+    // loopIPs(socket.id);
+
+    io.to(socket.id).emit("ListOfURLs", ipList);
+    io.to(socket.id).emit("ListOfAPIs", apisList);
     loopIPs(socket.id);
-    // console.log(data)
   });
 
   socket.on("allothercalls", () => {
     loopIPs(socket.id);
   });
-  // console.log(io.sockets);
 
   socket.on("disconnect", data => {
     connections.splice(connections.indexOf(socket), 1);
-    console.log("Disconnected: %s sockets connected", connections.length);
+    // console.log("Disconnected: %s sockets connected", connections.length);
   });
 
   apis = (url, endpoint, method, socketid) => {
@@ -81,35 +75,23 @@ io.on("connection", socket => {
         let Obj = {};
         Obj[url] = {};
         Obj[url][method] = response.data.result;
-        //   io.emit("APIObject", { data: Obj, api: method });
-        // io.sockets.in(socket.id).emit("APIObject", { data: Obj, api: method });
+
         io.to(socketid).emit("APIObject", { data: Obj, api: method });
       })
       .catch(response => {
-        //   console.log(response)
         let Obj = {};
         Obj[url] = {};
         Obj[url][method] = {};
-        //   io.emit("APIObject", { data: Obj, api: method });
         io.to(socketid).emit("APIObject", { data: Obj, api: method });
-        // io.sockets.in(socket.id).emit("APIObject", { data: Obj, api: method });
       });
   };
 
   loopIPs = socketid => {
     for (let j = 0; j <= apisList.length - 1; j++) {
-      for (let i = 0; i <= disbish.length - 1; i++) {
+      for (let i = 0; i <= ipList.length - 1; i++) {
         let splitUp = apisList[j].split("/");
-        apis(disbish[i], splitUp[1], splitUp[0], socketid);
+        apis(ipList[i], splitUp[1], splitUp[0], socketid);
       }
     }
-    //   setInterval(() => {
-    //     for (let j = 0; j <= apisList.length - 1; j++) {
-    //       for (let i = 0; i <= disbish.length - 1; i++) {
-    //         let splitUp = apisList[j].split("/");
-    //         apis(disbish[i], splitUp[1], splitUp[0]);
-    //       }
-    //     }
-    //   }, 20000);
   };
 });
