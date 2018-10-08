@@ -14,12 +14,17 @@ class TableRow extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            headList: nextProps.headList,
-            rowList: nextProps.rowList,
-            NOTdisplayed: nextProps.NOTdisplayed,
-            APIList: nextProps.APIList
-        })
+        // if (nextProps.rowList.length <= 1){
+        //     return
+        // } else {
+            this.setState({
+                headList: nextProps.headList,
+                rowList: nextProps.rowList,
+                NOTdisplayed: nextProps.NOTdisplayed,
+                APIList: nextProps.APIList
+            })
+        // }
+
     }
 
     render() {

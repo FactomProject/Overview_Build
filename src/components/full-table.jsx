@@ -65,11 +65,12 @@ class Table extends Component {
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
+      console.log(ObjToUse)
       if (Object.keys(ObjToUse).length === 0) {
         console.log("EMPTY ", ObjToUse)
         null
       } else {
-        that.getConfigApiInfo(ObjToUse);
+        that.getConfigApiInfo(ObjToUse, APIList);
       }
     }, 100);
   }
@@ -86,7 +87,7 @@ class Table extends Component {
     }, 10000)
   }
 
-  getConfigApiInfo(obj) {
+  getConfigApiInfo(obj, APIList) {
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -149,7 +150,20 @@ class Table extends Component {
         }
       }
     }
-    if (hugeHeadList.length > 0) {
+    // console.log("newObj ",newObj)
+    // console.log(APIList)
+    function objcheckFunc() {
+      count = 0;
+      for (let key in newObj) {
+        // console.log(key)
+        if (newObj[key].length > 0) {
+          count++;
+        }
+      }
+      return count;
+    }
+    
+    if (hugeHeadList.length > 0 && APIList.APIList.length === objcheckFunc()) {
       hugeHeadList.unshift("IP");
   
       this.setState({
@@ -157,8 +171,8 @@ class Table extends Component {
         headList: hugeHeadList,
         fullObj: newObj
       });
+      this.getMenus();
     }
-    this.getMenus();
   }
 
   toggleDisplay(display) {
