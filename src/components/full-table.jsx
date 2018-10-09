@@ -22,15 +22,19 @@ class Table extends Component {
       menus: [],
       APIToggle: {},
       APIList: [],
-      apiObjectforMenu: {}
+      apiObjectforMenu: {},
+      first: true
     };
 
     this.socket = io("localhost:5001");
+    this.componentDidMount = this.componentDidMount.bind(this.socket);
+    this.loadFileAsText = this.loadFileAsText.bind(this.socket);
 
     let that = this;
     let newer_Obj = {};
     let APIList = {};
     let apiObjectforMenu = {};
+
     this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
@@ -38,13 +42,13 @@ class Table extends Component {
     });
 
     this.socket.on("ListOfAPIs", function(data) {
+      that.setState({ APIList: data });
+
       APIList["APIList"] = data;
-      that.setState({
-        APIList: data
-      });
     });
 
     this.socket.on("APIObject", function(data) {
+      // console.log("APIOBJECT ", data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -54,16 +58,44 @@ class Table extends Component {
 
     setInterval(function() {
       let ObjToUse = {};
+
       for (let url in newer_Obj) {
-        // console.log('url', url)
         ObjToUse[url] = {};
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
           ObjToUse[url][APIList.APIList[i].split("/")[0]] =
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
-      that.getConfigApiInfo(ObjToUse);
-    }, 500);
+      // console.log(that.state.first)
+      if (that.state.first) {
+        that.setState({
+          first: false
+        })
+        setTimeout(() => {
+          that.getConfigApiInfo(ObjToUse, APIList);
+        }, 5000)
+      } else {
+
+        console.log(ObjToUse)
+        if (Object.keys(ObjToUse).length === 0 ) {
+          null
+        } else {
+          that.getConfigApiInfo(ObjToUse, APIList);
+        }
+  
+        function objHasUndefined() {
+          let count = false;
+          for (let key in ObjToUse) {
+            for (let key2 in ObjToUse[key]) {
+              if (ObjToUse[key][key2] === undefined) {
+                count = true;
+              }
+            }
+          }
+          return count;
+        }
+      }
+    }, 100);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,10 +104,14 @@ class Table extends Component {
     });
   }
   componentDidMount() {
-    this.getAPIdata();
+    this.emit("firstcall");
+    setInterval(() => {
+      this.emit("firstcall");
+    }, 10000)
   }
 
-  getConfigApiInfo(obj) {
+  getConfigApiInfo(obj, APIList) {
+    console.log(obj)
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -138,13 +174,29 @@ class Table extends Component {
         }
       }
     }
-    hugeHeadList.unshift("IP");
-    this.setState({
-      rowList: hugearr,
-      headList: hugeHeadList,
-      fullObj: newObj
-    });
-    this.getMenus();
+    // console.log("newObj ",newObj)
+    // console.log(APIList)
+    function objcheckFunc() {
+      count = 0;
+      for (let key in newObj) {
+        // console.log(key)
+        if (newObj[key].length > 0) {
+          count++;
+        }
+      }
+      return count;
+    }
+    
+    if (hugeHeadList.length > 0 && APIList.APIList.length === objcheckFunc()) {
+      hugeHeadList.unshift("IP");
+  
+      this.setState({
+        rowList: hugearr,
+        headList: hugeHeadList,
+        fullObj: newObj
+      });
+      this.getMenus();
+    }
   }
 
   toggleDisplay(display) {
@@ -166,11 +218,6 @@ class Table extends Component {
         $(`.${that.state.headList[i]}`).hide();
       }
     }
-  }
-
-  getAPIdata() {
-    this.socket = io("localhost:5001");
-    this.socket.emit("firstcall");
   }
 
   getMenus() {
@@ -257,6 +304,60 @@ class Table extends Component {
       this.state.displayedAPIs.push(item);
     }
   }
+
+  loadFileAsText = () => {
+    var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+    var fileReader = new FileReader();
+    let that = this;
+    fileReader.onload = function(fileLoadedEvent) {
+      var textFromFileLoaded = fileLoadedEvent.target.result;
+      let split = textFromFileLoaded.split("\n");
+      // let IPLIST = split[0].match(new RegExp(`IPLIST = [` + "(.*)" + `] = IPLIST`))
+      // let APILIST = textFromFileLoaded.match(new RegExp(`APILIST = [` + "(.*)" + `]`))
+      // let price = ish[i].match(new RegExp(`Total: ` + "(.*)" + `}"`))[1];
+
+      var regex = /\[(.*?)\]/;
+      let IPLIST = regex
+        .exec(split[0])[1]
+        .replace(/'/g, "")
+        .split(",");
+      let APILIST = regex
+        .exec(split[2])[1]
+        .replace(/'/g, "")
+        .split(",");
+
+      console.log(textFromFileLoaded);
+      console.log("IPLIST ", IPLIST);
+      console.log("APILIST ", APILIST);
+
+      for (let i = 0; i < IPLIST.length; i++) {
+        if (IPLIST[i].indexOf(':') === -1) {
+          IPLIST[i] = `${IPLIST[i]}:8088`;
+        }
+      }
+
+      // this.socket = io("localhost:5001");
+      // this.socket
+      that.setState({ APIList: APILIST });
+      that.socket.emit("firstcall", {
+        ListOfURLs: IPLIST,
+        ListOfAPIs: APILIST
+      });
+
+      setInterval(() => {
+        // that.socket.emit("allothercalls", {
+
+        // });
+        that.socket.emit("firstcall", {
+          ListOfURLs: IPLIST,
+          ListOfAPIs: APILIST
+        });
+      }, 10000);
+    };
+
+    fileReader.readAsText(fileToLoad, "UTF-8");
+  };
 
   render() {
     if (this.state.APIList[0] !== "") {
@@ -440,6 +541,14 @@ class Table extends Component {
               />
             </tbody>
           </table>
+          {/* <span style={{ marginLeft: "5em", marginRight: "5em" }}>
+            <input
+              id="fileToLoad"
+              type="file"
+              name="myFile"
+              onChange={this.loadFileAsText}
+            />
+          </span> */}
         </div>
       );
     }

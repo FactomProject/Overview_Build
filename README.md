@@ -1,11 +1,26 @@
-Run in order:
+The Easy way
+================
 
-1. npm install
+After you clone down the repo, cd into `factom-node-monitoring-tool`
 
-2. node server.js
+Once in the repo run 
+``` bash
+$ bash ./run.sh
+```
 
-3. in another terminal tab:
-   npm run start
+Than should do it!
 
-To add IP addresses go into the _.env_ file and CAREFULLY read the instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-The one default IP is `localhost:8088` which is factomds' api port
+
+The Lame way
+================
+1. `git clone git@github.com:FactomProject/factom-node-monitoring-tool.git`
+2. `cd factom-node-monitoring-tool`
+3. `git checkout Clay`
+4. `sudo apt-get install npm`
+4.2. `npm install`
+5. `node server.js`
+   _IN A SECOND TERMINAL TAB_
+6. `npm run start`
+   ^^^ should open a tab up for you.
+
+in the `.env` file There are instructions on how to the arrays format.

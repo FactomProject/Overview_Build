@@ -2,8 +2,6 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Table from "./components/full-table";
-import io from "socket.io-client";
-import FileInput from "./components/file-input";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -30,11 +28,6 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.socket = io("localhost:5001");
-    this.socket.emit("firstcall");
-  }
-
   render() {
     return (
       <div className="App">
@@ -48,7 +41,6 @@ class App extends React.Component {
             displayed={this.state.displayed}
           />
         </div>
-        <FileInput />
       </div>
     );
   }
