@@ -22,7 +22,8 @@ class Table extends Component {
       menus: [],
       APIToggle: {},
       APIList: [],
-      apiObjectforMenu: {}
+      apiObjectforMenu: {},
+      first: true
     };
 
     this.socket = io("localhost:5001");
@@ -65,22 +66,34 @@ class Table extends Component {
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
-      if (Object.keys(ObjToUse).length === 0 || objHasUndefined()) {
-        null
+      // console.log(that.state.first)
+      if (that.state.first) {
+        that.setState({
+          first: false
+        })
+        setTimeout(() => {
+          that.getConfigApiInfo(ObjToUse, APIList);
+        }, 5000)
       } else {
-        that.getConfigApiInfo(ObjToUse, APIList);
-      }
 
-      function objHasUndefined() {
-        let count = false;
-        for (let key in ObjToUse) {
-          for (let key2 in ObjToUse[key]) {
-            if (ObjToUse[key][key2] === undefined) {
-              count = true;
+        console.log(ObjToUse)
+        if (Object.keys(ObjToUse).length === 0 ) {
+          null
+        } else {
+          that.getConfigApiInfo(ObjToUse, APIList);
+        }
+  
+        function objHasUndefined() {
+          let count = false;
+          for (let key in ObjToUse) {
+            for (let key2 in ObjToUse[key]) {
+              if (ObjToUse[key][key2] === undefined) {
+                count = true;
+              }
             }
           }
+          return count;
         }
-        return count;
       }
     }, 100);
   }
@@ -98,6 +111,7 @@ class Table extends Component {
   }
 
   getConfigApiInfo(obj, APIList) {
+    console.log(obj)
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;

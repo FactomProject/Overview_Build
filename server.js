@@ -104,6 +104,7 @@ io.on("connection", socket => {
         body: { jsonrpc: '2.0', id: 0, method: `${method}` },
         json: true
         }, function(err, res) {
+          
             // console.log(err || res);
             if (err) {
                 let Obj = {};
