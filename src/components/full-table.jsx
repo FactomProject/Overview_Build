@@ -65,12 +65,22 @@ class Table extends Component {
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
-      console.log(ObjToUse)
-      if (Object.keys(ObjToUse).length === 0) {
-        console.log("EMPTY ", ObjToUse)
+      if (Object.keys(ObjToUse).length === 0 || objHasUndefined()) {
         null
       } else {
         that.getConfigApiInfo(ObjToUse, APIList);
+      }
+
+      function objHasUndefined() {
+        let count = false;
+        for (let key in ObjToUse) {
+          for (let key2 in ObjToUse[key]) {
+            if (ObjToUse[key][key2] === undefined) {
+              count = true;
+            }
+          }
+        }
+        return count;
       }
     }, 100);
   }
