@@ -1,7 +1,8 @@
 #!/bin/bash
 
-
-cd ~/go/src/github.com/FactomProject/factom-node-monitoring-tool
+git checkout Clay
+sudo apt-get install npm
+npm install
 ssh -D 8125 -C -N -f manager
 node server.js &
 npm run start &
