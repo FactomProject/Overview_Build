@@ -21,7 +21,8 @@
     "socket.io-redis": "^5.2.0",
     "socks": "^2.2.1",
     "socks-proxy-agent": "^4.0.1",
-    "socks5-http-client": "^1.0.4"
+    "socks5-http-client": "^1.0.4",
+    "underscore": "^1.9.1"
   },
   "scripts": {
     "start": "HOST=lvh.me react-scripts start",
