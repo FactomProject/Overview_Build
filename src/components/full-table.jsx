@@ -188,6 +188,8 @@ class Table extends Component {
           }
         }
       }
+      // console.log(hugearr, hugeHeadList)
+      // console.log(APIList.APIList.length, objcheckFunc())
     }
     function objcheckFunc() {
       count = 0;
@@ -199,7 +201,7 @@ class Table extends Component {
       return count;
     }
     
-    if (hugeHeadList.length > 0 && APIList.APIList.length === objcheckFunc()) {
+    if (hugeHeadList.length > 0 ) {
       hugeHeadList.unshift("IP");
   
       this.setState({
@@ -357,7 +359,7 @@ class Table extends Component {
           ListOfURLs: IPLIST,
           ListOfAPIs: APILIST
         });
-      }, 10000);
+      }, 25000);
     };
 
     fileReader.readAsText(fileToLoad, "UTF-8");

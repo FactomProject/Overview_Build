@@ -16,14 +16,19 @@ class TableRow extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
         this.setState({
             changed: false
         })
         // console.log(nextProps.rowList, this.state.rowList)
-        if (!_.isEqual(nextProps.rowList, this.state.rowList) && nextProps.rowList.length > 1) {
-            if (nextProps.rowList[0] === "35.201.150.168:8088--URL") {
-                console.log("OLD ", this.state.rowList)
-                console.log("NEW ", nextProps.rowList)
+        if (!_.isEqual(nextProps.rowList, this.state.rowList) && nextProps.rowList.length >= 1) {
+            // if (nextProps.rowList[0] === "35.201.150.168:8088--URL") {
+            //     console.log("OLD ", this.state.rowList)
+            //     console.log("NEW ", nextProps.rowList)
+            // }
+            if (this.state.rowList[6] != undefined) {
+                console.log(this.state.rowList[6].split('--')[0])
+                console.log(new Date(this.state.rowList[6].split('--')[0] / 1000 / 1000))
             }
         
             this.setState({
@@ -42,7 +47,6 @@ class TableRow extends Component {
                     item.split('--')[1] === "URL" && i === 0? (
                         <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center'}}>{item.split('--')[0].split(':')[0]}</th>
                     ) : (
-console.log(this.state.changed),
                     item.split('--')[1] === api.split('/')[0] ? (
                         <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center', animation: this.state.changed ? 'highlight 1s' : null}}>{item.split('--')[0]}</th>
                     ) : (null)
