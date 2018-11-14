@@ -2,6 +2,9 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Table from "./components/full-table";
+import NavBar from "./components/nav-bar";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +31,13 @@ class App extends React.Component {
     };
   }
 
-  render() {
+  isSignedIn = googleIsh => {
+    this.setState({
+      Google: googleIsh
+    });
+  };
+
+  Main = () => {
     return (
       <div className="App">
         <header className="App-header">
@@ -41,6 +50,20 @@ class App extends React.Component {
             displayed={this.state.displayed}
           />
         </div>
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <div>
+        <Router>
+          <div>
+            <NavBar isSignedIn={this.isSignedIn.bind(this)} />
+            <hr />
+            <Route exact={true} path="/" component={this.Main} />
+          </div>
+        </Router>
       </div>
     );
   }

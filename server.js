@@ -3,12 +3,11 @@ const path = require("path");
 const express = require("express");
 const socket = require("socket.io");
 const axios = require("axios");
-const SocksClient = require('socks').SocksClient;
+const SocksClient = require("socks").SocksClient;
 // const SocksProxyAgent = require('socks-proxy-agent');
 // const url = require('url');
-const Http = require('http');
-var shttp = require('socks5-http-client');
-
+const Http = require("http");
+var shttp = require("socks5-http-client");
 
 require("dotenv").config();
 
@@ -23,21 +22,27 @@ server = app.listen(5001, function() {
 
 var http = require("http");
 
-var request = require('request');
-var Agent = require('socks5-http-client/lib/Agent');
+var request = require("request");
+var Agent = require("socks5-http-client/lib/Agent");
 
 // let ipList = [];
 // let apisList = [];
 
 var regex = /\[(.*?)\]/;
 
-let ipList = regex.exec(process.env.IPLIST)[1].replace(/'/g, '').split(",");
+let ipList = regex
+  .exec(process.env.IPLIST)[1]
+  .replace(/'/g, "")
+  .split(",");
 for (let i = 0; i < ipList.length; i++) {
-    if (ipList[i].indexOf(':') === -1) {
-        ipList[i] = `${ipList[i]}:8088`;
-    }
+  if (ipList[i].indexOf(":") === -1) {
+    ipList[i] = `${ipList[i]}:8088`;
   }
-let apisList = regex.exec(process.env.APILIST)[1].replace(/'/g, '').split(",");
+}
+let apisList = regex
+  .exec(process.env.APILIST)[1]
+  .replace(/'/g, "")
+  .split(",");
 
 let connections = [];
 
@@ -61,34 +66,64 @@ io.on("connection", socket => {
   });
 
   apis = (url, endpoint, method, socketid) => {
-    request.post({
-        url: `http://${url}/${endpoint}`,
-        agentClass: Agent,
-        agentOptions: {
-            // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
-            socksPort: 8125 // Defaults to 1080.
-        },
-        headers: {
-            'Content-Type': 'application/json' 
-        },
-        body: { jsonrpc: '2.0', id: 0, method: `${method}` },
-        json: true
-        }, function(err, res) {
-            if (err) {
-                let Obj = {};
-                Obj[url] = {};
-                Obj[url][method] = {};
-                io.to(socketid).emit("APIObject", { data: Obj, api: method });
-                console.log("Error ", err)
-            } else {
-                let Obj = {};
-                Obj[url] = {};
-                Obj[url][method] = res.body.result;
+    // request.post(
+    //   {
+    //     url: `http://${url}/${endpoint}`,
+    //     agentClass: Agent,
+    //     agentOptions: {
+    //         // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
+    //         socksPort: 8125 // Defaults to 1080.
+    //     },
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: { jsonrpc: "2.0", id: 0, method: `${method}` },
+    //     json: true
+    //   },
+    //   function(err, res) {
+    //     if (err) {
+    //       let Obj = {};
+    //       Obj[url] = {};
+    //       Obj[url][method] = {};
+    //       io.to(socketid).emit("APIObject", { data: Obj, api: method });
+    //       console.log("Error ", err);
+    //     } else {
+    //       let Obj = {};
+    //       Obj[url] = {};
+    //       Obj[url][method] = res.body.result;
 
-                io.to(socketid).emit("APIObject", { data: Obj, api: method });
-            }
-        }
-    )
+    //       io.to(socketid).emit("APIObject", { data: Obj, api: method });
+    //     }
+    //   }
+    // );
+
+    axios({
+      method: "post",
+      url: `http://${url}/${endpoint}`,
+      data: {
+        jsonrpc: "2.0",
+        id: 0,
+        method: `${method}`
+      }
+    })
+      .then(response => {
+        console.log(response.data);
+        let Obj = {};
+        Obj[url] = {};
+        Obj[url][method] = response.data.result;
+        //   io.emit("APIObject", { data: Obj, api: method });
+        io.to(socketid).emit("APIObject", { data: Obj, api: method });
+        //   io.to(socket.id).emit("APIObject", { data: Obj, api: method });
+      })
+      .catch(response => {
+        //   console.log(response)
+        let Obj = {};
+        Obj[url] = {};
+        Obj[url][method] = {};
+        //   io.emit("APIObject", { data: Obj, api: method });
+        // io.to(socket.id).emit("APIObject", { data: Obj, api: method });
+        io.to(socketid).emit("APIObject", { data: Obj, api: method });
+      });
   };
 
   loopIPs = socketid => {
