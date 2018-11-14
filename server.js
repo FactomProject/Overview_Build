@@ -61,19 +61,19 @@ io.on("connection", socket => {
   });
 
   apis = (url, endpoint, method, socketid) => {
-    // request.post({
-      axios({
+    request.post({
+      // axios({
         url: `http://${url}/${endpoint}`,
-        // agentClass: Agent,
-        // agentOptions: {
-        //     // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
-        //     socksPort: 8125 // Defaults to 1080.
-        // },
-        // headers: {
-        //     'Content-Type': 'application/json' 
-        // },
-        // body: { jsonrpc: '2.0', id: 0, method: `${method}` },
-        // json: true
+        agentClass: Agent,
+        agentOptions: {
+            // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
+            socksPort: 8125 // Defaults to 1080.
+        },
+        headers: {
+            'Content-Type': 'application/json' 
+        },
+        body: { jsonrpc: '2.0', id: 0, method: `${method}` },
+        json: true
         }, function(err, res) {
             if (err) {
                 let Obj = {};
@@ -89,7 +89,8 @@ io.on("connection", socket => {
                 io.to(socketid).emit("APIObject", { data: Obj, api: method });
             }
         }
-    )
+      )
+    // })
   };
 
   loopIPs = socketid => {
