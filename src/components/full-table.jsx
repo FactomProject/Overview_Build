@@ -5,6 +5,7 @@ import BodyRowHolder from "./bodyrow-holder";
 import Menu from "./menu";
 import io from "socket.io-client";
 import $ from "jquery";
+import _ from "underscore";
 
 class Table extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ class Table extends Component {
       APIToggle: {},
       APIList: [],
       apiObjectforMenu: {},
-      first: true
+      first: true,
+      OLDData: {}
     };
 
     this.socket = io("localhost:5001");
@@ -33,7 +35,6 @@ class Table extends Component {
     let that = this;
     let newer_Obj = {};
     let APIList = {};
-    let apiObjectforMenu = {};
 
     this.socket.on("ListOfURLs", function(data) {
       for (let i = 0; i <= data.length - 1; i++) {
@@ -48,41 +49,57 @@ class Table extends Component {
     });
 
     this.socket.on("APIObject", function(data) {
-      // console.log("APIOBJECT ", data);
+      console.log(data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
         newer_Obj[key][data.api] = data.data[key][data.api];
       }
+      // console.log(newer_Obj)
     });
 
     setInterval(function() {
+      // console.log("OLDData ",that.state.OLDData);
+      // console.log("NEW ", newer_Obj)
       let ObjToUse = {};
-
+      // let isEqual = _.isEqual(that.state.OLDData, newer_Obj);
+      // if (!isEqual) {
+      //   console.log("OLD ",that.state.OLDData)
+      //   console.log("NEW ", newer_Obj)
+      // }
+      console.log(newer_Obj);
       for (let url in newer_Obj) {
         ObjToUse[url] = {};
+        if (Object.keys(that.state.OLDData).length != 0) {
+          // console.log(`NEW, ${url} `,newer_Obj[url]['current-minute'])
+          // console.log(`OLD, ${url} `,that.state.OLDData[url]['current-minute'])
+        }
+        // console.log(Object.keys(that.state.OLDData))
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
           ObjToUse[url][APIList.APIList[i].split("/")[0]] =
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
-      // console.log(that.state.first)
       if (that.state.first) {
         that.setState({
           first: false
-        })
+        });
         setTimeout(() => {
+          that.setState({
+            OLDData: newer_Obj
+          });
           that.getConfigApiInfo(ObjToUse, APIList);
-        }, 5000)
+        }, 1000);
       } else {
-
-        console.log(ObjToUse)
-        if (Object.keys(ObjToUse).length === 0 ) {
-          null
+        if (Object.keys(ObjToUse).length === 0) {
+          null;
         } else {
+          that.setState({
+            OLDData: newer_Obj
+          });
           that.getConfigApiInfo(ObjToUse, APIList);
         }
-  
+
         function objHasUndefined() {
           let count = false;
           for (let key in ObjToUse) {
@@ -95,7 +112,7 @@ class Table extends Component {
           return count;
         }
       }
-    }, 100);
+    }, 200);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -107,11 +124,10 @@ class Table extends Component {
     this.emit("firstcall");
     setInterval(() => {
       this.emit("firstcall");
-    }, 10000)
+    }, 10000);
   }
 
   getConfigApiInfo(obj, APIList) {
-    console.log(obj)
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -173,13 +189,13 @@ class Table extends Component {
           }
         }
       }
+      // console.log(hugearr, hugeHeadList)
+      // console.log(APIList.APIList.length, objcheckFunc())
     }
-    // console.log("newObj ",newObj)
-    // console.log(APIList)
+    console.log(hugearr);
     function objcheckFunc() {
       count = 0;
       for (let key in newObj) {
-        // console.log(key)
         if (newObj[key].length > 0) {
           count++;
         }
@@ -187,9 +203,9 @@ class Table extends Component {
       return count;
     }
     
-    if (hugeHeadList.length > 0 && APIList.APIList.length === objcheckFunc()) {
+    if (hugeHeadList.length > 0 ) {
       hugeHeadList.unshift("IP");
-  
+
       this.setState({
         rowList: hugearr,
         headList: hugeHeadList,
@@ -313,9 +329,6 @@ class Table extends Component {
     fileReader.onload = function(fileLoadedEvent) {
       var textFromFileLoaded = fileLoadedEvent.target.result;
       let split = textFromFileLoaded.split("\n");
-      // let IPLIST = split[0].match(new RegExp(`IPLIST = [` + "(.*)" + `] = IPLIST`))
-      // let APILIST = textFromFileLoaded.match(new RegExp(`APILIST = [` + "(.*)" + `]`))
-      // let price = ish[i].match(new RegExp(`Total: ` + "(.*)" + `}"`))[1];
 
       var regex = /\[(.*?)\]/;
       let IPLIST = regex
@@ -332,13 +345,11 @@ class Table extends Component {
       console.log("APILIST ", APILIST);
 
       for (let i = 0; i < IPLIST.length; i++) {
-        if (IPLIST[i].indexOf(':') === -1) {
+        if (IPLIST[i].indexOf(":") === -1) {
           IPLIST[i] = `${IPLIST[i]}:8088`;
         }
       }
 
-      // this.socket = io("localhost:5001");
-      // this.socket
       that.setState({ APIList: APILIST });
       that.socket.emit("firstcall", {
         ListOfURLs: IPLIST,
@@ -346,14 +357,11 @@ class Table extends Component {
       });
 
       setInterval(() => {
-        // that.socket.emit("allothercalls", {
-
-        // });
         that.socket.emit("firstcall", {
           ListOfURLs: IPLIST,
           ListOfAPIs: APILIST
         });
-      }, 10000);
+      }, 25000);
     };
 
     fileReader.readAsText(fileToLoad, "UTF-8");
@@ -438,7 +446,6 @@ class Table extends Component {
                                 />
                               </a>
                             </div>
-                            {/* {console.log(item)} */}
                             <Menu
                               headList={this.state.headList}
                               item={item}
@@ -541,14 +548,6 @@ class Table extends Component {
               />
             </tbody>
           </table>
-          {/* <span style={{ marginLeft: "5em", marginRight: "5em" }}>
-            <input
-              id="fileToLoad"
-              type="file"
-              name="myFile"
-              onChange={this.loadFileAsText}
-            />
-          </span> */}
         </div>
       );
     }

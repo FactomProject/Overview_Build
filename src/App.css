@@ -140,3 +140,12 @@ input.switch-input[type="checkbox"]:checked + label {
 .dropdown-item.flex {
   display: inline-flex !important;
 }
+
+@keyframes highlight {
+  0% {
+    background: red
+  }
+  100% {
+    background: none;
+  }
+}
