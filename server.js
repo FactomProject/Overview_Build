@@ -99,6 +99,7 @@ io.on("connection", socket => {
   //   // })
   // };
 
+  apis = (url, endpoint, method, socketid) => {
    axios({
     method: "post",
     url: `http://${url}/${endpoint}`,
