@@ -60,38 +60,65 @@ io.on("connection", socket => {
     connections.splice(connections.indexOf(socket), 1);
   });
 
-  apis = (url, endpoint, method, socketid) => {
-    request.post({
-      // axios({
-        url: `http://${url}/${endpoint}`,
-        agentClass: Agent,
-        agentOptions: {
-            // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
-            socksPort: 8125 // Defaults to 1080.
-        },
-        headers: {
-            'Content-Type': 'application/json' 
-        },
-        body: { jsonrpc: '2.0', id: 0, method: `${method}` },
-        json: true
-        }, function(err, res) {
-            if (err) {
-                let Obj = {};
-                Obj[url] = {};
-                Obj[url][method] = {};
-                io.to(socketid).emit("APIObject", { data: Obj, api: method });
-                console.log("Error ", err)
-            } else {
-                let Obj = {};
-                Obj[url] = {};
-                Obj[url][method] = res.body.result;
+  // apis = (url, endpoint, method, socketid) => {
+  //   console.log("url ", url, "endpoint ", endpoint, "method ", method)
+  //   request.post({
+  //     //  axios({
+  //       url: `http://${url}/${endpoint}`,
+  //       // agentClass: Agent,
+  //       // agentOptions: {
+  //       //     // socksHost: 'my-tor-proxy-host', // Defaults to 'localhost'.
+  //       //     socksPort: 8125 // Defaults to 1080.
+  //       // },
+  //       // headers: {
+  //       //     'Content-Type': 'application/json' 
+  //       // },
+  //       body: { jsonrpc: '2.0', id: 0, method: `${method}` },
+  //       json: true
+  //       }, function(err, res) {
+  //           if (err) {
+  //               let Obj = {};
+  //               Obj[url] = {};
+  //               Obj[url][method] = {};
+  //               io.to(socketid).emit("APIObject", { data: Obj, api: method });
+  //               console.log("Error ", err)
+  //           } else {
+  //               let Obj = {};
+  //               Obj[url] = {};
+  //               Obj[url][method] = res.body.result;
 
-                io.to(socketid).emit("APIObject", { data: Obj, api: method });
-            }
-        }
-      )
-    // })
-  };
+  //               io.to(socketid).emit("APIObject", { data: Obj, api: method });
+  //           }
+  //       }
+  //     )
+  //   // })
+  // };
+
+  apis = (url, endpoint, method, socketid) => {
+
+   axios({
+    method: "post",
+    url: `http://${url}/${endpoint}`,
+    data: {
+      jsonrpc: "2.0",
+      id: 0,
+      method: `${method}`
+    }
+   }).then(res => {
+    let Obj = {};
+    Obj[url] = {};
+    Obj[url][method] = res.data.result;
+    // console.log(res.data)
+
+    io.to(socketid).emit("APIObject", { data: Obj, api: method });
+   }).catch(err => {
+    let Obj = {};
+    Obj[url] = {};
+    Obj[url][method] = {};
+    io.to(socketid).emit("APIObject", { data: Obj, api: method });
+    console.log("Error ", err)
+   })
+  }
 
   loopIPs = socketid => {
     for (let j = 0; j <= apisList.length - 1; j++) {
