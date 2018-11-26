@@ -3,12 +3,11 @@ const path = require("path");
 const express = require("express");
 const socket = require("socket.io");
 const axios = require("axios");
-const SocksClient = require('socks').SocksClient;
+const SocksClient = require("socks").SocksClient;
 // const SocksProxyAgent = require('socks-proxy-agent');
 // const url = require('url');
-const Http = require('http');
-var shttp = require('socks5-http-client');
-
+const Http = require("http");
+var shttp = require("socks5-http-client");
 
 require("dotenv").config();
 
@@ -23,21 +22,27 @@ server = app.listen(5001, function() {
 
 var http = require("http");
 
-var request = require('request');
-var Agent = require('socks5-http-client/lib/Agent');
+var request = require("request");
+var Agent = require("socks5-http-client/lib/Agent");
 
 // let ipList = [];
 // let apisList = [];
 
 var regex = /\[(.*?)\]/;
 
-let ipList = regex.exec(process.env.IPLIST)[1].replace(/'/g, '').split(",");
+let ipList = regex
+  .exec(process.env.IPLIST)[1]
+  .replace(/'/g, "")
+  .split(",");
 for (let i = 0; i < ipList.length; i++) {
-    if (ipList[i].indexOf(':') === -1) {
-        ipList[i] = `${ipList[i]}:8088`;
-    }
+  if (ipList[i].indexOf(":") === -1) {
+    ipList[i] = `${ipList[i]}:8088`;
   }
-let apisList = regex.exec(process.env.APILIST)[1].replace(/'/g, '').split(",");
+}
+let apisList = regex
+  .exec(process.env.APILIST)[1]
+  .replace(/'/g, "")
+  .split(",");
 
 let connections = [];
 
@@ -93,8 +98,6 @@ io.on("connection", socket => {
   //     )
   //   // })
   // };
-
-  apis = (url, endpoint, method, socketid) => {
 
    axios({
     method: "post",

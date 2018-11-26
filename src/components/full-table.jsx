@@ -49,6 +49,7 @@ class Table extends Component {
     });
 
     this.socket.on("APIObject", function(data) {
+      console.log(data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -66,7 +67,7 @@ class Table extends Component {
       //   console.log("OLD ",that.state.OLDData)
       //   console.log("NEW ", newer_Obj)
       // }
-
+      console.log(newer_Obj);
       for (let url in newer_Obj) {
         ObjToUse[url] = {};
         if (Object.keys(that.state.OLDData).length != 0) {
@@ -82,23 +83,23 @@ class Table extends Component {
       if (that.state.first) {
         that.setState({
           first: false
-        })
+        });
         setTimeout(() => {
           that.setState({
             OLDData: newer_Obj
-          })
+          });
           that.getConfigApiInfo(ObjToUse, APIList);
-        }, 1000)
+        }, 1000);
       } else {
-        if (Object.keys(ObjToUse).length === 0 ) {
-          null
+        if (Object.keys(ObjToUse).length === 0) {
+          null;
         } else {
           that.setState({
             OLDData: newer_Obj
-          })
+          });
           that.getConfigApiInfo(ObjToUse, APIList);
         }
-  
+
         function objHasUndefined() {
           let count = false;
           for (let key in ObjToUse) {
@@ -123,7 +124,7 @@ class Table extends Component {
     this.emit("firstcall");
     setInterval(() => {
       this.emit("firstcall");
-    }, 10000)
+    }, 10000);
   }
 
   getConfigApiInfo(obj, APIList) {
@@ -191,6 +192,7 @@ class Table extends Component {
       // console.log(hugearr, hugeHeadList)
       // console.log(APIList.APIList.length, objcheckFunc())
     }
+    console.log(hugearr);
     function objcheckFunc() {
       count = 0;
       for (let key in newObj) {
@@ -203,7 +205,7 @@ class Table extends Component {
     
     if (hugeHeadList.length > 0 ) {
       hugeHeadList.unshift("IP");
-  
+
       this.setState({
         rowList: hugearr,
         headList: hugeHeadList,
@@ -343,7 +345,7 @@ class Table extends Component {
       console.log("APILIST ", APILIST);
 
       for (let i = 0; i < IPLIST.length; i++) {
-        if (IPLIST[i].indexOf(':') === -1) {
+        if (IPLIST[i].indexOf(":") === -1) {
           IPLIST[i] = `${IPLIST[i]}:8088`;
         }
       }
