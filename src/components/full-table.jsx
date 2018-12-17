@@ -5,7 +5,6 @@ import BodyRowHolder from "./bodyrow-holder";
 import Menu from "./menu";
 import io from "socket.io-client";
 import $ from "jquery";
-import _ from "underscore";
 
 class Table extends Component {
   constructor(props) {
@@ -29,6 +28,13 @@ class Table extends Component {
     };
 
     this.socket = io("localhost:5001");
+    this.socketAWS = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
+    
+    this.socketAWS.emit("hello", "Hello, World");
+    this.socketAWS.on("back", data => {
+      console.log("FROM SERVER: ", data)
+    })
+
     this.componentDidMount = this.componentDidMount.bind(this.socket);
     this.loadFileAsText = this.loadFileAsText.bind(this.socket);
 
@@ -49,7 +55,6 @@ class Table extends Component {
     });
 
     this.socket.on("APIObject", function(data) {
-      console.log(data);
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -67,10 +72,9 @@ class Table extends Component {
       //   console.log("OLD ",that.state.OLDData)
       //   console.log("NEW ", newer_Obj)
       // }
-      console.log(newer_Obj);
       for (let url in newer_Obj) {
         ObjToUse[url] = {};
-        if (Object.keys(that.state.OLDData).length != 0) {
+        if (Object.keys(that.state.OLDData).length !== 0) {
           // console.log(`NEW, ${url} `,newer_Obj[url]['current-minute'])
           // console.log(`OLD, ${url} `,that.state.OLDData[url]['current-minute'])
         }
@@ -91,26 +95,24 @@ class Table extends Component {
           that.getConfigApiInfo(ObjToUse, APIList);
         }, 1000);
       } else {
-        if (Object.keys(ObjToUse).length === 0) {
-          null;
-        } else {
+        if (Object.keys(ObjToUse).length !== 0) {
           that.setState({
             OLDData: newer_Obj
           });
           that.getConfigApiInfo(ObjToUse, APIList);
         }
 
-        function objHasUndefined() {
-          let count = false;
-          for (let key in ObjToUse) {
-            for (let key2 in ObjToUse[key]) {
-              if (ObjToUse[key][key2] === undefined) {
-                count = true;
-              }
-            }
-          }
-          return count;
-        }
+        // function objHasUndefined() {
+        //   let count = false;
+        //   for (let key in ObjToUse) {
+        //     for (let key2 in ObjToUse[key]) {
+        //       if (ObjToUse[key][key2] === undefined) {
+        //         count = true;
+        //       }
+        //     }
+        //   }
+        //   return count;
+        // }
       }
     }, 200);
   }
@@ -192,16 +194,16 @@ class Table extends Component {
       // console.log(hugearr, hugeHeadList)
       // console.log(APIList.APIList.length, objcheckFunc())
     }
-    console.log(hugearr);
-    function objcheckFunc() {
-      count = 0;
-      for (let key in newObj) {
-        if (newObj[key].length > 0) {
-          count++;
-        }
-      }
-      return count;
-    }
+    
+    // function objcheckFunc() {
+    //   count = 0;
+    //   for (let key in newObj) {
+    //     if (newObj[key].length > 0) {
+    //       count++;
+    //     }
+    //   }
+    //   return count;
+    // }
     
     if (hugeHeadList.length > 0 ) {
       hugeHeadList.unshift("IP");

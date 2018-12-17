@@ -80,7 +80,7 @@ class SignIn extends Component {
       $("#sign-in-or-out-button").html("Sign out");
       $("#revoke-access-button").css("display", "inline-block");
       $("#auth-status").html(`Hello, ${user.w3.ig}`);
-      () => this.render();
+      this.render();
     } else {
       $("#sign-in-or-out-button").html("Sign In/Authorize");
       $("#revoke-access-button").css("display", "none");
@@ -163,7 +163,7 @@ class SignIn extends Component {
           className="myAlert-top alert alert-danger"
           style={{ position: "fixed", top: "4%", display: "none", zIndex: 100 }}
         >
-          <a href="#" className="close" data-dismiss="alert" aria-label="close">
+          <a className="close" data-dismiss="alert" aria-label="close">
             &times;
           </a>
           <strong>Error</strong>
@@ -173,7 +173,7 @@ class SignIn extends Component {
           className="myAlert-top alert alert-warning"
           style={{ position: "fixed", top: "4%", display: "none", zIndex: 100 }}
         >
-          <a href="#" className="close" data-dismiss="alert" aria-label="close">
+          <a className="close" data-dismiss="alert" aria-label="close">
             &times;
           </a>
           <strong>Error</strong>
