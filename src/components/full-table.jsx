@@ -27,9 +27,9 @@ class Table extends Component {
       OLDData: {}
     };
 
-    this.socket = io("localhost:5001");
+    this.socket = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
     this.socketAWS = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
-    
+
     this.socketAWS.emit("hello", "Hello, World");
     this.socketAWS.on("back", data => {
       console.log("FROM SERVER: ", data)
@@ -42,19 +42,19 @@ class Table extends Component {
     let newer_Obj = {};
     let APIList = {};
 
-    this.socket.on("ListOfURLs", function(data) {
+    this.socket.on("ListOfURLs", function (data) {
       for (let i = 0; i <= data.length - 1; i++) {
         newer_Obj[data[i]] = {};
       }
     });
 
-    this.socket.on("ListOfAPIs", function(data) {
+    this.socket.on("ListOfAPIs", function (data) {
       that.setState({ APIList: data });
 
       APIList["APIList"] = data;
     });
 
-    this.socket.on("APIObject", function(data) {
+    this.socket.on("APIObject", function (data) {
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -63,7 +63,7 @@ class Table extends Component {
       // console.log(newer_Obj)
     });
 
-    setInterval(function() {
+    setInterval(function () {
       // console.log("OLDData ",that.state.OLDData);
       // console.log("NEW ", newer_Obj)
       let ObjToUse = {};
@@ -153,9 +153,9 @@ class Table extends Component {
                 if (count !== 68) {
                   smallarr.push(
                     `${
-                      obj[key][goingDeeper][finallygettingvalues][
-                        thisconfigreturnisHUGE
-                      ]
+                    obj[key][goingDeeper][finallygettingvalues][
+                    thisconfigreturnisHUGE
+                    ]
                     }--${goingDeeper}`
                   );
                   newObj[goingDeeper].push(
@@ -194,7 +194,7 @@ class Table extends Component {
       // console.log(hugearr, hugeHeadList)
       // console.log(APIList.APIList.length, objcheckFunc())
     }
-    
+
     // function objcheckFunc() {
     //   count = 0;
     //   for (let key in newObj) {
@@ -204,8 +204,8 @@ class Table extends Component {
     //   }
     //   return count;
     // }
-    
-    if (hugeHeadList.length > 0 ) {
+
+    if (hugeHeadList.length > 0) {
       hugeHeadList.unshift("IP");
 
       this.setState({
@@ -328,7 +328,7 @@ class Table extends Component {
 
     var fileReader = new FileReader();
     let that = this;
-    fileReader.onload = function(fileLoadedEvent) {
+    fileReader.onload = function (fileLoadedEvent) {
       var textFromFileLoaded = fileLoadedEvent.target.result;
       let split = textFromFileLoaded.split("\n");
 
@@ -465,67 +465,67 @@ class Table extends Component {
                         </div>
                       </div>
                     ) : (
-                      <div
-                        className="dropdown-item"
-                        href="#"
-                        key={`Menu_item_${i}`}
-                      >
-                        {item}
                         <div
-                          className="btn-group dropright downdeep"
-                          onMouseEnter={() => this.toggleDisplay2(true, item)}
-                          onMouseLeave={() => this.toggleDisplay2(false, item)}
+                          className="dropdown-item"
+                          href="#"
+                          key={`Menu_item_${i}`}
                         >
-                          <a
-                            role="button"
-                            className="nav-link btn dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="true"
-                          />
+                          {item}
                           <div
-                            className={`dropdown-menu apikeys ${item}`}
-                            style={{
-                              display: this.state.showMenu2[item]
-                                ? "block"
-                                : "none",
-                              position: "absolute"
-                            }}
+                            className="btn-group dropright downdeep"
+                            onMouseEnter={() => this.toggleDisplay2(true, item)}
+                            onMouseLeave={() => this.toggleDisplay2(false, item)}
                           >
-                            <div className="dropdown-item">
-                              <a className="switch tiny" key={`Menu_item_${i}`}>
-                                Full API
-                                <input
-                                  className="switch-input"
-                                  onClick={() => this.handleAllClick(item)}
-                                  key={`Menu_item_${i}`}
-                                  id={item}
-                                  type="checkbox"
-                                  name={`Switch for ${item}`}
-                                />
-                                <label
-                                  className="switch-paddle"
-                                  htmlFor={item}
-                                />
-                              </a>
-                            </div>
-                            <Menu
-                              headList={this.state.headList}
-                              item={item}
-                              NOTdisplayed={this.state.NOTdisplayed}
-                              displayed={this.state.displayed}
-                              toggleDisplay={this.toggleDisplay.bind(this)}
-                              showMenu={this.state.showMenu}
-                              fullObj={this.state.fullObj[item]}
-                              NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
-                              propbablyshouldUseThis={
-                                this.state.apiObjectforMenu
-                              }
+                            <a
+                              role="button"
+                              className="nav-link btn dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-haspopup="true"
+                              aria-expanded="true"
                             />
+                            <div
+                              className={`dropdown-menu apikeys ${item}`}
+                              style={{
+                                display: this.state.showMenu2[item]
+                                  ? "block"
+                                  : "none",
+                                position: "absolute"
+                              }}
+                            >
+                              <div className="dropdown-item">
+                                <a className="switch tiny" key={`Menu_item_${i}`}>
+                                  Full API
+                                <input
+                                    className="switch-input"
+                                    onClick={() => this.handleAllClick(item)}
+                                    key={`Menu_item_${i}`}
+                                    id={item}
+                                    type="checkbox"
+                                    name={`Switch for ${item}`}
+                                  />
+                                  <label
+                                    className="switch-paddle"
+                                    htmlFor={item}
+                                  />
+                                </a>
+                              </div>
+                              <Menu
+                                headList={this.state.headList}
+                                item={item}
+                                NOTdisplayed={this.state.NOTdisplayed}
+                                displayed={this.state.displayed}
+                                toggleDisplay={this.toggleDisplay.bind(this)}
+                                showMenu={this.state.showMenu}
+                                fullObj={this.state.fullObj[item]}
+                                NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                                propbablyshouldUseThis={
+                                  this.state.apiObjectforMenu
+                                }
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
+                      );
                   })}
                 </div>
               </div>
