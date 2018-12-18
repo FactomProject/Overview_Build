@@ -130,6 +130,7 @@ class Table extends Component {
   }
 
   getConfigApiInfo(obj, APIList) {
+    console.log("obj", obj)
     let hugearr = [];
     let hugeHeadList = [];
     let count = 9;
@@ -143,48 +144,21 @@ class Table extends Component {
         for (var goingDeeper in obj[key]) {
           newObj[goingDeeper] = [];
           for (var finallygettingvalues in obj[key][goingDeeper]) {
-            if (
-              typeof obj[key][goingDeeper][finallygettingvalues] === "object" &&
-              !Array.isArray(obj[key])
-            ) {
-              for (let thisconfigreturnisHUGE in obj[key][goingDeeper][
-                finallygettingvalues
-              ]) {
+            if (typeof obj[key][goingDeeper][finallygettingvalues] === "object" && !Array.isArray(obj[key])) {
+              for (let thisconfigreturnisHUGE in obj[key][goingDeeper][finallygettingvalues]) {
                 if (count !== 68) {
-                  smallarr.push(
-                    `${
-                    obj[key][goingDeeper][finallygettingvalues][
-                    thisconfigreturnisHUGE
-                    ]
-                    }--${goingDeeper}`
-                  );
-                  newObj[goingDeeper].push(
-                    `${thisconfigreturnisHUGE}--${goingDeeper}`
-                  );
+                  smallarr.push(`${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`);
+                  newObj[goingDeeper].push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
                 }
-                if (
-                  !hugeHeadList.includes(
-                    `${thisconfigreturnisHUGE}--${goingDeeper}`
-                  )
-                ) {
-                  hugeHeadList.push(
-                    `${thisconfigreturnisHUGE}--${goingDeeper}`
-                  );
+                if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
+                  hugeHeadList.push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
                 }
                 count++;
               }
             } else {
-              newObj[goingDeeper].push(
-                `${finallygettingvalues}--${goingDeeper}`
-              );
-              smallarr.push(
-                `${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`
-              );
-              if (
-                !hugeHeadList.includes(
-                  `${finallygettingvalues}--${goingDeeper}`
-                )
-              ) {
+              newObj[goingDeeper].push(`${finallygettingvalues}--${goingDeeper}`);
+              smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
+              if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
                 hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
               }
             }
@@ -208,6 +182,9 @@ class Table extends Component {
     if (hugeHeadList.length > 0) {
       hugeHeadList.unshift("IP");
 
+      console.log("hugearr: ", hugearr);
+      console.log("hugeHeadList: ", hugeHeadList);
+      console.log("newObj: ", newObj)
       this.setState({
         rowList: hugearr,
         headList: hugeHeadList,
@@ -303,6 +280,7 @@ class Table extends Component {
       this.state.NOTdisplayedAPIs.push(item);
     } else {
       arrayHolder.map((data, i) => {
+        console.log("arrayHolder data: ", item, data)
         let inputs = document.getElementById(item + data);
         inputs.checked = true;
         if (this.state.NOTdisplayed.includes(data)) {
