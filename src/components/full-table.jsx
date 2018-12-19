@@ -130,44 +130,43 @@ class Table extends Component {
   }
 
   getConfigApiInfo(obj, APIList) {
-    console.log("obj", obj)
-    let hugearr = [];
-    let hugeHeadList = [];
-    let count = 9;
-    let newObj = {};
-    for (var key in obj) {
-      let smallarr = [];
-      smallarr.push(`${key}--URL`);
-      count = 9;
-      if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
-        hugearr.push(smallarr);
-        for (var goingDeeper in obj[key]) {
-          newObj[goingDeeper] = [];
-          for (var finallygettingvalues in obj[key][goingDeeper]) {
-            if (typeof obj[key][goingDeeper][finallygettingvalues] === "object" && !Array.isArray(obj[key])) {
-              for (let thisconfigreturnisHUGE in obj[key][goingDeeper][finallygettingvalues]) {
-                if (count !== 68) {
-                  smallarr.push(`${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`);
-                  newObj[goingDeeper].push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
-                }
-                if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
-                  hugeHeadList.push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
-                }
-                count++;
-              }
-            } else {
-              newObj[goingDeeper].push(`${finallygettingvalues}--${goingDeeper}`);
-              smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
-              if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
-                hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
-              }
-            }
-          }
-        }
-      }
-      // console.log(hugearr, hugeHeadList)
-      // console.log(APIList.APIList.length, objcheckFunc())
-    }
+    // let hugearr = [];
+    // let hugeHeadList = [];
+    // let count = 9;
+    // let newObj = {};
+    // for (var key in obj) {
+    //   let smallarr = [];
+    //   smallarr.push(`${key}--URL`);
+    //   count = 9;
+    //   if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+    //     hugearr.push(smallarr);
+    //     for (var goingDeeper in obj[key]) {
+    //       newObj[goingDeeper] = [];
+    //       for (var finallygettingvalues in obj[key][goingDeeper]) {
+    //         if (typeof obj[key][goingDeeper][finallygettingvalues] === "object" && !Array.isArray(obj[key])) {
+    //           for (let thisconfigreturnisHUGE in obj[key][goingDeeper][finallygettingvalues]) {
+    //             if (count !== 68) {
+    //               smallarr.push(`${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`);
+    //               newObj[goingDeeper].push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
+    //             }
+    //             if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
+    //               hugeHeadList.push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
+    //             }
+    //             count++;
+    //           }
+    //         } else {
+    //           newObj[goingDeeper].push(`${finallygettingvalues}--${goingDeeper}`);
+    //           smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
+    //           if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
+    //             hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // console.log(hugearr, hugeHeadList)
+    //   // console.log(APIList.APIList.length, objcheckFunc())
+    // }
 
     // function objcheckFunc() {
     //   count = 0;
@@ -179,19 +178,62 @@ class Table extends Component {
     //   return count;
     // }
 
-    if (hugeHeadList.length > 0) {
-      hugeHeadList.unshift("IP");
+    let hugeArr = [];
+    let hugeHeadList = [];
+    let newObj = {};
+    let api = "";
+    let url = "";
 
-      console.log("hugearr: ", hugearr);
-      console.log("hugeHeadList: ", hugeHeadList);
-      console.log("newObj: ", newObj)
+    for (let top in obj) {
+      url = top;
+      if (!hugeHeadList.includes(`IP`)) {
+        hugeHeadList.push(`IP`);
+      }
+      let smallArr = [];
+      smallArr.push(`${url}--URL`);
+      for (let oneDeep in obj[top]) {
+        newObj[oneDeep] = [];
+        let apiHolderArrays = this.help(obj[top][oneDeep], oneDeep);
+
+        for (let i = 0; i < apiHolderArrays.headListHolder.length; i++) {
+          if (!hugeHeadList.includes(apiHolderArrays.headListHolder[i])) {
+            hugeHeadList.push(apiHolderArrays.headListHolder[i])
+          }
+        }
+        smallArr = smallArr.concat(apiHolderArrays.hugeValueHolder);
+        newObj[oneDeep] = apiHolderArrays.headListHolder;
+      }
+      hugeArr.push(smallArr);
+    }
+
+    if (hugeHeadList.length > 0) {
+      // hugeHeadList.unshift("IP");
+
+      // console.log("hugearr: ", hugearr);
+      // console.log("hugeHeadList: ", hugeHeadList);
+      // console.log("newObj: ", newObj)
       this.setState({
-        rowList: hugearr,
+        rowList: hugeArr,
         headList: hugeHeadList,
         fullObj: newObj
       });
       this.getMenus();
     }
+  }
+
+  help = (obj, api) => {
+    let headListHolder = [];
+    let hugeValueHolder = [];
+    for (let key in obj) {
+      if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+        headListHolder.push(`${key}--${api}`);
+        hugeValueHolder.push(`${JSON.stringify(obj[key])}--${api}`)
+      } else {
+        headListHolder.push(`${key}--${api}`);
+        hugeValueHolder.push(`${obj[key]}--${api}`);
+      }
+    }
+    return {"headListHolder": headListHolder, "hugeValueHolder": hugeValueHolder};
   }
 
   toggleDisplay(display) {
