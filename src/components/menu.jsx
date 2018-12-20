@@ -8,6 +8,7 @@ class Menu extends Component {
     this.state = {
       NOTdisplayed: [],
       displayed: this.props.displayed,
+      displayedAPIs: this.props.displayedAPIs,
       headList: [],
       showMenu: false,
       showMenu2: {},
@@ -75,7 +76,7 @@ class Menu extends Component {
     ) {
       return null;
     } else {
-      return this.props.NOTdisplayedAPIs.includes(this.props.item)
+      return !this.props.displayedAPIs.includes(this.props.item)
         ? this.props.headList.map(
             (item, i) =>
               item.split("--")[1] === this.props.item ? (

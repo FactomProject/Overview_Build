@@ -477,6 +477,7 @@ class Table extends Component {
                               showMenu={this.state.showMenu}
                               fullObj={this.state.fullObj[item]}
                               NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                              displayedAPIs={this.state.displayedAPIs}
                               propbablyshouldUseThis={
                                 this.state.apiObjectforMenu
                               }
@@ -538,6 +539,7 @@ class Table extends Component {
                                 showMenu={this.state.showMenu}
                                 fullObj={this.state.fullObj[item]}
                                 NOTdisplayedAPIs={this.state.NOTdisplayedAPIs}
+                                displayedAPIs={this.state.displayedAPIs}
                                 propbablyshouldUseThis={
                                   this.state.apiObjectforMenu
                                 }
