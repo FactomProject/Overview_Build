@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "../App.css";
+import _ from "underscore";
 
 class TableNames extends Component {
   constructor(props) {
@@ -8,18 +9,16 @@ class TableNames extends Component {
       headList: [],
       NOTdisplayed: [],
       APIList: [],
-      count: 0
+      count: props.count
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.count === 0) {
-      this.state.count++;
-
+    if (!_.isEqual(nextProps.headList, this.state.headList) && nextProps.headList.length >= 1 ) {
       this.setState({
         headList: nextProps.headList,
         NOTdisplayed: nextProps.NOTdisplayed,
         APIList: nextProps.APIList
-      });
+      })
     }
   }
 

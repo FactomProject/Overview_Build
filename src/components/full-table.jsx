@@ -24,16 +24,12 @@ class Table extends Component {
       APIList: [],
       apiObjectforMenu: {},
       first: true,
-      OLDData: {}
+      OLDData: {},
+      count: 0
     };
 
     this.socket = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
     this.socketAWS = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
-
-    this.socketAWS.emit("hello", "Hello, World");
-    this.socketAWS.on("back", data => {
-      console.log("FROM SERVER: ", data)
-    })
 
     this.componentDidMount = this.componentDidMount.bind(this.socket);
 
@@ -54,6 +50,7 @@ class Table extends Component {
     });
 
     this.socket.on("APIObject", function (data) {
+      // console.log(data)
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -109,6 +106,7 @@ class Table extends Component {
   }
 
   getConfigApiInfo(obj, APIList) {
+    // console.log(obj)
     let hugeArr = [];
     let hugeHeadList = [];
     let newObj = {};
@@ -173,7 +171,7 @@ class Table extends Component {
 
   componentDidUpdate() {
     let that = this;
-    for (let i = 0; i <= that.state.headList.length; i++) {
+    for (let i = 0; i <= that.state.headList.length-1; i++) {
       if (!that.state.displayed.includes(that.state.headList[i])) {
         if (!that.state.NOTdisplayed.includes(that.state.headList[i])) {
           that.state.NOTdisplayed.push(that.state.headList[i]);
@@ -485,9 +483,10 @@ class Table extends Component {
                 headList={this.state.headList}
                 NOTdisplayed={this.state.NOTdisplayed}
                 APIList={this.state.APIList}
+                count={this.state.count}
               />
             </thead>
-
+            
             <tbody>
               <BodyRowHolder
                 rowList={this.state.rowList}

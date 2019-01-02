@@ -30,7 +30,7 @@ class TableRow extends Component {
                     changed: true
                 })
             }
-        } else if(this.state.count === 0) {
+        } else if(this.state.count === 0 || this.state.count === 1 || this.state.count === 3 || this.state.count === 4) {
             this.setState({
                 headList: nextProps.headList,
                 rowList: nextProps.rowList,

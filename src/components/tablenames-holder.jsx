@@ -30,6 +30,7 @@ class Table extends Component {
                 </tr>
             )
         }
+        
     }
 }
 
