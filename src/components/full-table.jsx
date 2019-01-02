@@ -36,7 +36,6 @@ class Table extends Component {
     })
 
     this.componentDidMount = this.componentDidMount.bind(this.socket);
-    this.loadFileAsText = this.loadFileAsText.bind(this.socket);
 
     let that = this;
     let newer_Obj = {};
@@ -64,21 +63,13 @@ class Table extends Component {
     });
 
     setInterval(function () {
-      // console.log("OLDData ",that.state.OLDData);
-      // console.log("NEW ", newer_Obj)
       let ObjToUse = {};
-      // let isEqual = _.isEqual(that.state.OLDData, newer_Obj);
-      // if (!isEqual) {
-      //   console.log("OLD ",that.state.OLDData)
-      //   console.log("NEW ", newer_Obj)
-      // }
       for (let url in newer_Obj) {
         ObjToUse[url] = {};
         if (Object.keys(that.state.OLDData).length !== 0) {
           // console.log(`NEW, ${url} `,newer_Obj[url]['current-minute'])
           // console.log(`OLD, ${url} `,that.state.OLDData[url]['current-minute'])
         }
-        // console.log(Object.keys(that.state.OLDData))
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
           ObjToUse[url][APIList.APIList[i].split("/")[0]] =
             newer_Obj[url][APIList.APIList[i].split("/")[0]];
@@ -101,18 +92,6 @@ class Table extends Component {
           });
           that.getConfigApiInfo(ObjToUse, APIList);
         }
-
-        // function objHasUndefined() {
-        //   let count = false;
-        //   for (let key in ObjToUse) {
-        //     for (let key2 in ObjToUse[key]) {
-        //       if (ObjToUse[key][key2] === undefined) {
-        //         count = true;
-        //       }
-        //     }
-        //   }
-        //   return count;
-        // }
       }
     }, 200);
   }
@@ -130,54 +109,6 @@ class Table extends Component {
   }
 
   getConfigApiInfo(obj, APIList) {
-    // let hugearr = [];
-    // let hugeHeadList = [];
-    // let count = 9;
-    // let newObj = {};
-    // for (var key in obj) {
-    //   let smallarr = [];
-    //   smallarr.push(`${key}--URL`);
-    //   count = 9;
-    //   if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
-    //     hugearr.push(smallarr);
-    //     for (var goingDeeper in obj[key]) {
-    //       newObj[goingDeeper] = [];
-    //       for (var finallygettingvalues in obj[key][goingDeeper]) {
-    //         if (typeof obj[key][goingDeeper][finallygettingvalues] === "object" && !Array.isArray(obj[key])) {
-    //           for (let thisconfigreturnisHUGE in obj[key][goingDeeper][finallygettingvalues]) {
-    //             if (count !== 68) {
-    //               smallarr.push(`${obj[key][goingDeeper][finallygettingvalues][thisconfigreturnisHUGE]}--${goingDeeper}`);
-    //               newObj[goingDeeper].push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
-    //             }
-    //             if (!hugeHeadList.includes(`${thisconfigreturnisHUGE}--${goingDeeper}`)) {
-    //               hugeHeadList.push(`${thisconfigreturnisHUGE}--${goingDeeper}`);
-    //             }
-    //             count++;
-    //           }
-    //         } else {
-    //           newObj[goingDeeper].push(`${finallygettingvalues}--${goingDeeper}`);
-    //           smallarr.push(`${obj[key][goingDeeper][finallygettingvalues]}--${goingDeeper}`);
-    //           if (!hugeHeadList.includes(`${finallygettingvalues}--${goingDeeper}`)) {
-    //             hugeHeadList.push(`${finallygettingvalues}--${goingDeeper}`);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // console.log(hugearr, hugeHeadList)
-    //   // console.log(APIList.APIList.length, objcheckFunc())
-    // }
-
-    // function objcheckFunc() {
-    //   count = 0;
-    //   for (let key in newObj) {
-    //     if (newObj[key].length > 0) {
-    //       count++;
-    //     }
-    //   }
-    //   return count;
-    // }
-
     let hugeArr = [];
     let hugeHeadList = [];
     let newObj = {};
@@ -207,11 +138,6 @@ class Table extends Component {
     }
 
     if (hugeHeadList.length > 0) {
-      // hugeHeadList.unshift("IP");
-
-      // console.log("hugearr: ", hugearr);
-      // console.log("hugeHeadList: ", hugeHeadList);
-      // console.log("newObj: ", newObj)
       this.setState({
         rowList: hugeArr,
         headList: hugeHeadList,
@@ -395,7 +321,6 @@ class Table extends Component {
         <div className="column">
           <div
             className="nav"
-            style={{ marginBottom: this.state.showMenu ? "11vh" : "5vh" }}
           >
             <div className="nav-pills">
               <div
@@ -553,7 +478,8 @@ class Table extends Component {
               </div>
             </div>
           </div>
-          <table className="hover scroll">
+          <div className="table-scroll" style={{marginLeft: "5em", width: "94vw"}}>
+          <table>
             <thead>
               <TableNamesHolder
                 headList={this.state.headList}
@@ -572,6 +498,7 @@ class Table extends Component {
               />
             </tbody>
           </table>
+          </div>
         </div>
       );
     }

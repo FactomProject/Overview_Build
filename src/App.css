@@ -19,7 +19,7 @@
 /* resets */
 
 body {
-  background-color: #202020;
+  background-color: #ffffff;
   font-size: 16px;
   margin: 0;
   padding: 0;
@@ -51,10 +51,10 @@ h1 small {
 }
 table {
   margin-top: 5vh;
-  margin-left: 5em;
-  margin-right: 5em;
+  /* margin-left: 5em; */
+  /* margin-right: 5em; */
 }
-table thead {
+/* table thead {
   background-color: #28495f;
   border: none;
   text-transform: uppercase;
@@ -76,8 +76,8 @@ table tbody {
 }
 table tbody tr:nth-child(even) {
   background-color: #363636;
-}
-table tbody tr td {
+} */
+/* table tbody tr td {
   font-size: 14px;
   text-align: center;
 }
@@ -90,7 +90,7 @@ table tfoot td {
   font-size: 14px;
   font-weight: normal;
   text-transform: uppercase;
-}
+} */
 /* table tr td:first-child, table tr th:first-child { padding-left: 1.5rem; width: 100%; } */
 .nav {
   /* margin-top: 5vh; */
@@ -148,4 +148,15 @@ input.switch-input[type="checkbox"]:checked + label {
   100% {
     background: none;
   }
+}
+
+#example_wrapper {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  /* margin: 95%; */
+}
+
+.row {
+  margin-right: 0%;
 }

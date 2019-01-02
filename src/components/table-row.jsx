@@ -10,7 +10,8 @@ class TableRow extends Component {
         rowList: [],
         NOTdisplayed: [],
         APIList: [],
-        changed: false
+        changed: false,
+        count: 0
       }
       
     }
@@ -19,8 +20,17 @@ class TableRow extends Component {
         this.setState({
             changed: false
         })
-        // console.log(nextProps.rowList, this.state.rowList)
-        if (!_.isEqual(nextProps.rowList, this.state.rowList) && nextProps.rowList.length >= 1) {
+        if (this.state.rowList.length === nextProps.rowList.length) {
+            if (!_.isEqual(nextProps.rowList, this.state.rowList) && nextProps.rowList.length >= 1) {
+                this.setState({
+                    headList: nextProps.headList,
+                    rowList: nextProps.rowList,
+                    NOTdisplayed: nextProps.NOTdisplayed,
+                    APIList: nextProps.APIList,
+                    changed: true
+                })
+            }
+        } else if(this.state.count === 0) {
             this.setState({
                 headList: nextProps.headList,
                 rowList: nextProps.rowList,
@@ -28,7 +38,17 @@ class TableRow extends Component {
                 APIList: nextProps.APIList,
                 changed: true
             })
+        } else {
+            this.setState({
+                headList: nextProps.headList,
+                NOTdisplayed: nextProps.NOTdisplayed,
+                APIList: nextProps.APIList,
+                changed: true
+            })
         }
+        this.setState({
+            count: this.state.count+1
+        })
     }
 
     render() {
