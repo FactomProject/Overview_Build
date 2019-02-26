@@ -28,8 +28,7 @@ class Table extends Component {
       count: 0
     };
 
-    this.socket = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
-    this.socketAWS = io("ec2-18-221-211-55.us-east-2.compute.amazonaws.com:5001");
+    this.socket = io("localhost:5001");
 
     this.componentDidMount = this.componentDidMount.bind(this.socket);
 
@@ -157,7 +156,7 @@ class Table extends Component {
         hugeValueHolder.push(`${obj[key]}--${api}`);
       }
     }
-    return {"headListHolder": headListHolder, "hugeValueHolder": hugeValueHolder};
+    return { "headListHolder": headListHolder, "hugeValueHolder": hugeValueHolder };
   }
 
   toggleDisplay(display) {
@@ -171,7 +170,7 @@ class Table extends Component {
 
   componentDidUpdate() {
     let that = this;
-    for (let i = 0; i <= that.state.headList.length-1; i++) {
+    for (let i = 0; i <= that.state.headList.length - 1; i++) {
       if (!that.state.displayed.includes(that.state.headList[i])) {
         if (!that.state.NOTdisplayed.includes(that.state.headList[i])) {
           that.state.NOTdisplayed.push(that.state.headList[i]);
@@ -476,27 +475,27 @@ class Table extends Component {
               </div>
             </div>
           </div>
-          <div className="table-scroll" style={{marginLeft: "5em", width: "94vw"}}>
-          <table>
-            <thead>
-              <TableNamesHolder
-                headList={this.state.headList}
-                NOTdisplayed={this.state.NOTdisplayed}
-                APIList={this.state.APIList}
-                count={this.state.count}
-              />
-            </thead>
-            
-            <tbody>
-              <BodyRowHolder
-                rowList={this.state.rowList}
-                headList={this.state.headList}
-                NOTdisplayed={this.state.NOTdisplayed}
-                handleClick={this.props.handleClick}
-                APIList={this.state.APIList}
-              />
-            </tbody>
-          </table>
+          <div className="table-scroll" style={{ marginLeft: "5em", width: "94vw" }}>
+            <table>
+              <thead>
+                <TableNamesHolder
+                  headList={this.state.headList}
+                  NOTdisplayed={this.state.NOTdisplayed}
+                  APIList={this.state.APIList}
+                  count={this.state.count}
+                />
+              </thead>
+
+              <tbody>
+                <BodyRowHolder
+                  rowList={this.state.rowList}
+                  headList={this.state.headList}
+                  NOTdisplayed={this.state.NOTdisplayed}
+                  handleClick={this.props.handleClick}
+                  APIList={this.state.APIList}
+                />
+              </tbody>
+            </table>
           </div>
         </div>
       );

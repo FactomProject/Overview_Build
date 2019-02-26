@@ -14,7 +14,7 @@ class SignIn extends Component {
   componentDidMount() {
     let that = this;
     setTimeout(() => {
-      window.gapi.load("auth2", function() {
+      window.gapi.load("auth2", function () {
         // Retrieve the singleton for the GoogleAuth library and set up the client.
         window.auth2 = window.gapi.auth2
           .init({
@@ -26,7 +26,7 @@ class SignIn extends Component {
             //scope: 'additional_scope'
           })
           .then(
-            function() {
+            function () {
               window.GoogleAuth = window.gapi.auth2.getAuthInstance();
               console.log("window.GoogleAuth", window.GoogleAuth);
 
@@ -35,7 +35,7 @@ class SignIn extends Component {
 
               that.setSigninStatus(window.GoogleAuth.isSignedIn.get());
 
-              $("#sign-in-or-out-button").click(function() {
+              $("#sign-in-or-out-button").click(function () {
                 that.handleAuthClick();
               });
             },
@@ -44,7 +44,7 @@ class SignIn extends Component {
             }
           );
       });
-    }, 50);
+    }, 70);
   }
 
   handleAuthClick = () => {
@@ -61,9 +61,9 @@ class SignIn extends Component {
           $(".myAlert-top").show();
           $(".myAlert-top").html(
             `${
-              err.error === undefined
-                ? err.reason.substring(0, err.reason.length - 30)
-                : err.error
+            err.error === undefined
+              ? err.reason.substring(0, err.reason.length - 30)
+              : err.error
             }`
           );
           setTimeout(() => {
@@ -93,9 +93,9 @@ class SignIn extends Component {
     this.props.isSignedIn(window.GoogleAuth);
   };
 
-  startApp = function() {
+  startApp = function () {
     let that = this;
-    window.gapi.load("auth2", function() {
+    window.gapi.load("auth2", function () {
       // Retrieve the singleton for the GoogleAuth library and set up the client.
       window.auth2 = window.gapi.auth2.init({
         client_id:
@@ -123,12 +123,12 @@ class SignIn extends Component {
     window.auth2.attachClickHandler(
       element,
       {},
-      function(googleUser) {
+      function (googleUser) {
         console.log(googleUser);
         document.getElementById("name").innerText =
           "Signed in: " + googleUser.getBasicProfile().getName();
       },
-      function(error) {
+      function (error) {
         alert(JSON.stringify(error, undefined, 2));
       }
     );
@@ -136,7 +136,7 @@ class SignIn extends Component {
 
   signOut = () => {
     var auth2 = window.gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function() {
+    auth2.signOut().then(function () {
       console.log("User signed out.");
     });
     this.setState({
