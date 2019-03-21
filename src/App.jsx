@@ -27,7 +27,8 @@ class App extends React.Component {
         "currenttime--current-minute",
         "directoryblockinseconds--current-minute",
         "stalldetected--current-minute"
-      ]
+      ],
+      Google: {}
     };
   }
 
@@ -40,16 +41,23 @@ class App extends React.Component {
   Main = () => {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Information Display</h1>
-        </header>
-        <div className="row">
-          <Table
-            rowList={this.state.colVals}
-            displayed={this.state.displayed}
-          />
-        </div>
+        {this.state.Google.isSignedIn ===
+          undefined ? null : this.state.Google.isSignedIn.get() ? (
+            <div>
+              <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <h1 className="App-title">Information Display</h1>
+              </header>
+              <div className="row">
+                <Table
+                  rowList={this.state.colVals}
+                  displayed={this.state.displayed}
+                />
+              </div>
+            </div>
+          ) : (
+              <div className="animated-box in" style={{ margin: "2em 5em" }}><h1 style={{ fontWeight: "600", fontSize: "42px" }}>Please sign in.</h1></div>
+            )}
       </div>
     );
   };

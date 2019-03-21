@@ -44,7 +44,7 @@ class SignIn extends Component {
             }
           );
       });
-    }, 70);
+    }, 100);
   }
 
   handleAuthClick = () => {
