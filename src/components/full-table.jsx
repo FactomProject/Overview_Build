@@ -44,12 +44,10 @@ class Table extends Component {
 
     this.socket.on("ListOfAPIs", function (data) {
       that.setState({ APIList: data });
-
       APIList["APIList"] = data;
     });
 
     this.socket.on("APIObject", function (data) {
-      // console.log(data)
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
         newer_Obj[key][data.api] = {};
@@ -62,13 +60,8 @@ class Table extends Component {
       let ObjToUse = {};
       for (let url in newer_Obj) {
         ObjToUse[url] = {};
-        if (Object.keys(that.state.OLDData).length !== 0) {
-          // console.log(`NEW, ${url} `,newer_Obj[url]['current-minute'])
-          // console.log(`OLD, ${url} `,that.state.OLDData[url]['current-minute'])
-        }
         for (let i = 0; i <= APIList.APIList.length - 1; i++) {
-          ObjToUse[url][APIList.APIList[i].split("/")[0]] =
-            newer_Obj[url][APIList.APIList[i].split("/")[0]];
+          ObjToUse[url][APIList.APIList[i].split("/")[0]] = newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
       }
       if (that.state.first) {
@@ -89,27 +82,27 @@ class Table extends Component {
           that.getConfigApiInfo(ObjToUse, APIList);
         }
       }
-    }, 200);
+    }, 100);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      displayed: nextProps.displayed
-    });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.displayed !== prevState.displayed) {
+      return ({ displayed: nextProps.displayed }) // <- this is setState equivalent
+    }
+    return null;
   }
   componentDidMount() {
     this.emit("firstcall");
     setInterval(() => {
       this.emit("firstcall");
-    }, 10000);
+      console.log("firstcall")
+    }, 6000);
   }
 
   getConfigApiInfo(obj, APIList) {
-    // console.log(obj)
     let hugeArr = [];
     let hugeHeadList = [];
     let newObj = {};
-    let api = "";
     let url = "";
 
     for (let top in obj) {
@@ -270,54 +263,18 @@ class Table extends Component {
     if (this.state.APIList[0] !== "") {
       return (
         <div className="column">
-          <div
-            className="nav"
-          >
+          <div className="nav">
             <div className="nav-pills">
-              <div
-                className="btn-group dropright"
-                onMouseEnter={() => this.toggleDisplay(true)}
-                onMouseLeave={() => this.toggleDisplay(false)}
-              >
-                <a
-                  role="button"
-                  className="nav-link btn dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="true"
-                >
-                  APIs
-                </a>
-                <div
-                  className={`dropdown-menu`}
-                  style={{
-                    display: this.state.showMenu ? "block" : "none",
-                    position: "absolute",
-                    marginLeft: "0px"
-                  }}
-                >
+              <div className="btn-group dropright" onMouseEnter={() => this.toggleDisplay(true)} onMouseLeave={() => this.toggleDisplay(false)} >
+                <a role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">APIs </a>
+                <div className={`dropdown-menu`} style={{ display: this.state.showMenu ? "block" : "none", position: "absolute", marginLeft: "0px" }}>
                   {this.state.menus.map((item, i) => {
                     return this.state.displayedAPIs.includes(item) ? (
-                      <div
-                        className=" dropdown-item"
-                        href="#"
-                        key={`Menu_item_${i}`}
-                      >
+                      <div className=" dropdown-item" href="#" key={`Menu_item_${i}`} >
                         {item}
-                        <div
-                          className="btn-group dropright downdeep"
-                          onMouseEnter={() => this.toggleDisplay2(true, item)}
-                          onMouseLeave={() => this.toggleDisplay2(false, item)}
-                        >
-                          <a
-                            role="button"
-                            className="nav-link btn dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="true"
-                          />
-                          <div
-                            className={`dropdown-menu apikeys ${item}`}
+                        <div className="btn-group dropright downdeep" onMouseEnter={() => this.toggleDisplay2(true, item)} onMouseLeave={() => this.toggleDisplay2(false, item)} >
+                          <a role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
+                          <div className={`dropdown-menu apikeys ${item}`}
                             style={{
                               display: this.state.showMenu2[item]
                                 ? "block"
@@ -338,10 +295,7 @@ class Table extends Component {
                                   name={`Switch for ${item}`}
                                   defaultChecked
                                 />
-                                <label
-                                  className="switch-paddle"
-                                  htmlFor={item}
-                                />
+                                <label className="switch-paddle" htmlFor={item} />
                               </a>
                             </div>
                             <Menu
@@ -362,26 +316,11 @@ class Table extends Component {
                         </div>
                       </div>
                     ) : (
-                        <div
-                          className="dropdown-item"
-                          href="#"
-                          key={`Menu_item_${i}`}
-                        >
+                        <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
                           {item}
-                          <div
-                            className="btn-group dropright downdeep"
-                            onMouseEnter={() => this.toggleDisplay2(true, item)}
-                            onMouseLeave={() => this.toggleDisplay2(false, item)}
-                          >
-                            <a
-                              role="button"
-                              className="nav-link btn dropdown-toggle"
-                              data-toggle="dropdown"
-                              aria-haspopup="true"
-                              aria-expanded="true"
-                            />
-                            <div
-                              className={`dropdown-menu apikeys ${item}`}
+                          <div className="btn-group dropright downdeep" onMouseEnter={() => this.toggleDisplay2(true, item)} onMouseLeave={() => this.toggleDisplay2(false, item)} >
+                            <a role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
+                            <div className={`dropdown-menu apikeys ${item}`}
                               style={{
                                 display: this.state.showMenu2[item]
                                   ? "block"
@@ -392,7 +331,7 @@ class Table extends Component {
                               <div className="dropdown-item">
                                 <a className="switch tiny" key={`Menu_item_${i}`}>
                                   Full API
-                                <input
+                                  <input
                                     className="switch-input"
                                     onClick={() => this.handleAllClick(item)}
                                     key={`Menu_item_${i}`}
@@ -400,10 +339,7 @@ class Table extends Component {
                                     type="checkbox"
                                     name={`Switch for ${item}`}
                                   />
-                                  <label
-                                    className="switch-paddle"
-                                    htmlFor={item}
-                                  />
+                                  <label className="switch-paddle" htmlFor={item} />
                                 </a>
                               </div>
                               <Menu

@@ -13,13 +13,22 @@ class Table extends Component {
       }
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            rowList: nextProps.rowList,
-            headList: nextProps.headList,
-            NOTdisplayed: nextProps.NOTdisplayed,
-            APIList: nextProps.APIList
-        })
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({
+    //         rowList: nextProps.rowList,
+    //         headList: nextProps.headList,
+    //         NOTdisplayed: nextProps.NOTdisplayed,
+    //         APIList: nextProps.APIList
+    //     })
+    // }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.rowList !== state.rowList) { return { rowList: props.rowList }; }
+        if (props.headList !== state.headList) { return { headList: props.headList }; }
+        if (props.NOTdisplayed !== state.NOTdisplayed) { return { NOTdisplayed: props.NOTdisplayed }; }
+        if (props.APIList !== state.NOTdisplayed) { return { APIList: props.APIList }; }
+        // No state update necessary
+        return null;
     }
     
     render() {

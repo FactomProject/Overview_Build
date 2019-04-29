@@ -100,28 +100,28 @@ io.on("connection", socket => {
   // };
 
   apis = (url, endpoint, method, socketid) => {
-   axios({
-    method: "post",
-    url: `http://${url}/${endpoint}`,
-    data: {
-      jsonrpc: "2.0",
-      id: 0,
-      method: `${method}`
-    }
-   }).then(res => {
-    let Obj = {};
-    Obj[url] = {};
-    Obj[url][method] = res.data.result;
-    // console.log(res.data)
+    axios({
+      method: "post",
+      url: `http://${url}/${endpoint}`,
+      data: {
+        jsonrpc: "2.0",
+        id: 0,
+        method: `${method}`
+      }
+    }).then(res => {
+      let Obj = {};
+      Obj[url] = {};
+      Obj[url][method] = res.data.result;
+      // console.log(res.data)
 
-    io.to(socketid).emit("APIObject", { data: Obj, api: method });
-   }).catch(err => {
-    let Obj = {};
-    Obj[url] = {};
-    Obj[url][method] = {};
-    io.to(socketid).emit("APIObject", { data: Obj, api: method });
-    console.log("Error ", err)
-   })
+      io.to(socketid).emit("APIObject", { data: Obj, api: method });
+    }).catch(err => {
+      let Obj = {};
+      Obj[url] = {};
+      Obj[url][method] = {};
+      io.to(socketid).emit("APIObject", { data: Obj, api: method });
+      console.log("Error ", err)
+    })
   }
 
   loopIPs = socketid => {

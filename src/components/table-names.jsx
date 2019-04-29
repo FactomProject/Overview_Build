@@ -30,7 +30,7 @@ class TableNames extends Component {
             <th
               key={j.toString()}
               className={className}
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center", backgroundColor: "#e6e6e6" }}
             >
               <div style={{ fontSize: "18px", fontWeight: 700 }}>
                 {className}
@@ -40,7 +40,7 @@ class TableNames extends Component {
             <th
               key={j.toString()}
               className={className}
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center", backgroundColor: "#e6e6e6"  }}
             >
               <div style={{ fontSize: "18px", fontWeight: 700 }}>
                 {className.split("--")[0]}
