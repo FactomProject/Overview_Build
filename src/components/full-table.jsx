@@ -266,52 +266,6 @@ class Table extends Component {
     }
   }
 
-  loadFileAsText = () => {
-    var fileToLoad = document.getElementById("fileToLoad").files[0];
-
-    var fileReader = new FileReader();
-    let that = this;
-    fileReader.onload = function (fileLoadedEvent) {
-      var textFromFileLoaded = fileLoadedEvent.target.result;
-      let split = textFromFileLoaded.split("\n");
-
-      var regex = /\[(.*?)\]/;
-      let IPLIST = regex
-        .exec(split[0])[1]
-        .replace(/'/g, "")
-        .split(",");
-      let APILIST = regex
-        .exec(split[2])[1]
-        .replace(/'/g, "")
-        .split(",");
-
-      console.log(textFromFileLoaded);
-      console.log("IPLIST ", IPLIST);
-      console.log("APILIST ", APILIST);
-
-      for (let i = 0; i < IPLIST.length; i++) {
-        if (IPLIST[i].indexOf(":") === -1) {
-          IPLIST[i] = `${IPLIST[i]}:8088`;
-        }
-      }
-
-      that.setState({ APIList: APILIST });
-      that.socket.emit("firstcall", {
-        ListOfURLs: IPLIST,
-        ListOfAPIs: APILIST
-      });
-
-      setInterval(() => {
-        that.socket.emit("firstcall", {
-          ListOfURLs: IPLIST,
-          ListOfAPIs: APILIST
-        });
-      }, 25000);
-    };
-
-    fileReader.readAsText(fileToLoad, "UTF-8");
-  };
-
   render() {
     if (this.state.APIList[0] !== "") {
       return (
@@ -475,7 +429,7 @@ class Table extends Component {
               </div>
             </div>
           </div>
-          <div className="table-scroll" style={{ marginLeft: "5em", width: "94vw" }}>
+          <div className="table-scroll" style={{ marginLeft: "2em", width: "98vw" }}>
             <table>
               <thead>
                 <TableNamesHolder
