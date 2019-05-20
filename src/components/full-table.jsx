@@ -168,6 +168,7 @@ class Table extends Component {
         if (!that.state.NOTdisplayed.includes(that.state.headList[i])) {
           that.state.NOTdisplayed.push(that.state.headList[i]);
         }
+        console.log("HERE")
         $(`.${that.state.headList[i]}`).hide();
       }
     }

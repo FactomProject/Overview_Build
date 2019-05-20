@@ -38,35 +38,21 @@ class Menu extends Component {
         if (state.headList.length > 1 && props.headList.length === 1) {
             null
         } else {
-            console.log("state.headList", state.headList);
-            console.log("props.headList", props.headList);
             return { headList: props.headList }; 
         }
     }
 
     if (!_.isEqual(props.NOTdisplayed, state.NOTdisplayed)) {
-      console.log("state.NOTdisplayed", state.NOTdisplayed);
-      console.log("props.NOTdisplayed", props.NOTdisplayed);
       return { NOTdisplayed: props.NOTdisplayed }; 
     }
 
     if (!_.isEqual(props.displayed, state.displayed)) {
-      console.log("state.displayed", state.displayed);
-      console.log("props.displayed", props.displayed);
       return { displayed: props.displayed }; 
     }
 
     if (!_.isEqual(props.displayedAPIs, state.displayedAPIs)) {
-      console.log("state.displayedAPIs", state.displayedAPIs);
-      console.log("props.displayedAPIs", props.displayedAPIs);
       return { displayedAPIs: props.displayedAPIs }; 
     }
-
-    // if (!_.isEqual(props.fullObj, state.fullObj)) {
-    //   console.log("state.fullObj", state.fullObj);
-    //   console.log("props.fullObj", props.fullObj);
-    //   return { fullObj: props.fullObj }; 
-    // }
 
     if (!_.isEqual(props.NOTdisplayedAPIs, state.NOTdisplayedAPIs)) {
       console.log("state.NOTdisplayedAPIs", state.NOTdisplayedAPIs);
@@ -87,15 +73,6 @@ class Menu extends Component {
   toggleDisplay2(display, menu) {
     this.state.showMenu2[menu] = display;
   }
-
-  // getMenus() {
-  //   for (let key in this.state.propbablyshouldUseThis) {
-  //     if (!this.state.menus.includes(key)) {
-  //       this.state.menus.push(key);
-  //       this.state.showMenu2[key] = false;
-  //     }
-  //   }
-  // }
 
   handleClick(data) {
     if (this.state.displayed.includes(data)) {
