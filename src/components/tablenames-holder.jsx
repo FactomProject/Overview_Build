@@ -18,8 +18,6 @@ class Table extends Component {
             if (state.headList.length > 1 && props.headList.length === 1) {
                 null
             } else {
-                console.log("state.headList", state.headList);
-                console.log("props.headList", props.headList);
                 return { headList: props.headList }; 
             }
         }

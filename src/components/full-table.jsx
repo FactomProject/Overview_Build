@@ -50,8 +50,13 @@ class Table extends Component {
     this.socket.on("APIObject", function (data) {
       for (let key in data.data) {
         that.state.apiObjectforMenu[data.api] = data.data[key][data.api];
-        newer_Obj[key][data.api] = {};
-        newer_Obj[key][data.api] = data.data[key][data.api];
+
+        if (newer_Obj.hasOwnProperty(data.api)) {
+          newer_Obj[key][data.api] = data.data[key][data.api];
+        } else {
+          newer_Obj[key][data.api] = {};
+          newer_Obj[key][data.api] = data.data[key][data.api];
+        }
       }
       // console.log(newer_Obj)
     });
@@ -95,7 +100,6 @@ class Table extends Component {
     this.emit("firstcall");
     setInterval(() => {
       this.emit("firstcall");
-      console.log("firstcall")
     }, 6000);
   }
 
@@ -149,6 +153,7 @@ class Table extends Component {
         hugeValueHolder.push(`${obj[key]}--${api}`);
       }
     }
+
     return { "headListHolder": headListHolder, "hugeValueHolder": hugeValueHolder };
   }
 
@@ -168,7 +173,6 @@ class Table extends Component {
         if (!that.state.NOTdisplayed.includes(that.state.headList[i])) {
           that.state.NOTdisplayed.push(that.state.headList[i]);
         }
-        console.log("HERE")
         $(`.${that.state.headList[i]}`).hide();
       }
     }
@@ -189,7 +193,9 @@ class Table extends Component {
   }
 
   handleClick(item) {
+    console.log("called handleClick: ", item)
     this.state.fullObj[item].map((data, i) => {
+      console.log("data: ", data )
       if (this.state.displayed.includes(data)) {
         let indexofdata = this.state.displayed.indexOf(data);
         if (indexofdata > -1) {
@@ -219,40 +225,47 @@ class Table extends Component {
     }
 
     if (this.state.displayedAPIs.includes(item)) {
-      arrayHolder.map((data, i) => {
-        let inputs = document.getElementById(item + data);
+      // Goes through the list of the tables titles and toggles menu and table off of those items
+      this.state.headList.map(data => {
+        let dataApi = data.split('--')[1]
+        if (data !== "IP" && dataApi === item) {
+          let inputs = document.getElementById(data);
+          inputs.checked = false;
 
-        inputs.checked = false;
-        if (this.state.displayed.includes(data)) {
-          let indexofdata = this.state.displayed.indexOf(data);
-          if (indexofdata > -1) {
-            this.state.displayed.splice(indexofdata, 1);
+          if (this.state.displayed.includes(data)) {
+            let indexofdata = this.state.displayed.indexOf(data);
+            if (indexofdata > -1) {
+              this.state.displayed.splice(indexofdata, 1);
+            }
+  
+            $(`.${data}`).hide("slow");
+            this.state.NOTdisplayed.push(data);
           }
-
-          $(`.${data}`).hide("slow");
-
-          this.state.NOTdisplayed.push(data);
         }
-      });
+      })
+
       let indexofdataAPI = this.state.displayedAPIs.indexOf(item);
       this.state.displayedAPIs.splice(indexofdataAPI, 1);
       this.state.NOTdisplayedAPIs.push(item);
     } else {
-      arrayHolder.map((data, i) => {
-        console.log("arrayHolder data: ", item, data)
-        let inputs = document.getElementById(item + data);
-        inputs.checked = true;
-        if (this.state.NOTdisplayed.includes(data)) {
-          let indexofdata = this.state.NOTdisplayed.indexOf(data);
-          if (indexofdata > -1) {
-            this.state.NOTdisplayed.splice(indexofdata, 1);
+      // Goes through the list of the tables titles and toggles menu and table off of those items
+      this.state.headList.map(data => {
+        let dataApi = data.split('--')[1]
+        if (data !== "IP" && dataApi === item) {
+          let inputs = document.getElementById(data);
+          inputs.checked = true;
+
+          if (this.state.NOTdisplayed.includes(data)) {
+            let indexofdata = this.state.displayed.indexOf(data);
+            if (indexofdata > -1) {
+              this.state.NOTdisplayed.splice(indexofdata, 1);
+            }
+  
+            $(`.${data}`).show("slow");
+            this.state.displayed.push(data);
           }
-
-          $(`.${data}`).show("slow");
-
-          this.state.displayed.push(data);
         }
-      });
+      })
 
       let indexofdataAPInot = this.state.NOTdisplayedAPIs.indexOf(item);
       this.state.NOTdisplayedAPIs.splice(indexofdataAPInot, 1);

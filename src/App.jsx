@@ -25,7 +25,9 @@ class App extends React.Component {
         "currentminutestarttime--current-minute",
         "currenttime--current-minute",
         "directoryblockinseconds--current-minute",
-        "stalldetected--current-minute"
+        "stalldetected--current-minute",
+        "faulttimeout--current-minute",
+        "roundtimeout--current-minute"
       ],
     };
   }

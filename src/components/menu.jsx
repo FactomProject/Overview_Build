@@ -55,8 +55,6 @@ class Menu extends Component {
     }
 
     if (!_.isEqual(props.NOTdisplayedAPIs, state.NOTdisplayedAPIs)) {
-      console.log("state.NOTdisplayedAPIs", state.NOTdisplayedAPIs);
-      console.log("props.NOTdisplayedAPIs", props.NOTdisplayedAPIs);
       return { NOTdisplayedAPIs: props.NOTdisplayedAPIs }; 
     }
 
@@ -110,11 +108,12 @@ class Menu extends Component {
                       className="switch-input"
                       onClick={() => this.handleClick(item)}
                       key={`Menu_item_${i}`}
-                      id={this.props.item + item}
+                      // id={this.props.item + item}
+                      id={item}
                       type="checkbox"
                       name={`Switch for ${item}`}
                     />
-                    <label className="switch-paddle ish" htmlFor={this.props.item + item} />
+                    <label className="switch-paddle ish" htmlFor={item} />
                   </a>
                 </div>
               ) : null
@@ -128,14 +127,15 @@ class Menu extends Component {
                   className="switch-input"
                   onClick={() => this.handleClick(item)}
                   key={`Menu_item_${i}`}
-                  id={this.props.item + item}
+                  // id={this.props.item + item}
+                  id={item}
                   type="checkbox"
                   name={`Switch for ${item}`}
                   defaultChecked
                 />
                 <label
                   className="switch-paddle ish"
-                  htmlFor={this.props.item + item}
+                  htmlFor={item}
                 />
               </a>
             </div>

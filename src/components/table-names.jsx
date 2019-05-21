@@ -23,7 +23,6 @@ class TableNames extends Component {
   }
 
   render() {
-    console.log("headList: ", this.state.headList)
     return this.state.APIList.map((item, i) => {
 
       return this.state.headList.map(
