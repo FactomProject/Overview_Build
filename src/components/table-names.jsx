@@ -23,15 +23,16 @@ class TableNames extends Component {
   }
 
   render() {
-    return this.state.APIList.map((item, i) => {
+    const theme = localStorage.getItem("theme");
 
+    return this.state.APIList.map((item, i) => {
       return this.state.headList.map(
         (className, j) =>
           className === "IP" && i === 0 ? (
             <th
               key={j.toString()}
               className={className}
-              style={{ textAlign: "center", backgroundColor: "#e6e6e6" }}
+              style={{ textAlign: "center" }}
             >
               <div style={{ fontSize: "18px", fontWeight: 700 }}>
                 {className}
@@ -41,12 +42,12 @@ class TableNames extends Component {
             <th
               key={j.toString()}
               className={className}
-              style={{ textAlign: "center", backgroundColor: "#e6e6e6"  }}
+              style={{ textAlign: "center"  }}
             >
               <div style={{ fontSize: "18px", fontWeight: 700 }}>
                 {className.split("--")[0]}
               </div>
-              <div style={{ fontSize: "12px", color: "#696969" }}>
+              <div style={{ fontSize: "12px", color: theme === 'dark' ? "#8a8a8a" : "#696969" }}>
                 {className.split("--")[1]}
               </div>
             </th>

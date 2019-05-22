@@ -32,14 +32,24 @@ class Table extends Component {
     }
     
     render() {
+        const theme = localStorage.getItem("theme");
+
         if (this.state.rowList === [] ) {
             return null;
         } else {
             return (
                 this.state.rowList.map((item, i) => (
-                    <tr key={i} className="1">
-                        <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList}/>
-                    </tr>
+                    i % 2 === 0 ? (
+                        console.log("even"),
+                        <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#363636' : '' }}>
+                            <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
+                        </tr>
+                    ) : (
+                        console.log("odd"),
+                        <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#2f2f2f' : ''}}>
+                            <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
+                        </tr>
+                    )
                 ))
             )
         }

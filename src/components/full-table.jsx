@@ -5,6 +5,7 @@ import BodyRowHolder from "./bodyrow-holder";
 import Menu from "./menu";
 import io from "socket.io-client";
 import $ from "jquery";
+import Theme  from "./useTheme";
 
 class Table extends Component {
   constructor(props) {
@@ -273,6 +274,40 @@ class Table extends Component {
     }
   }
 
+  Table = () => {
+    // const { theme } = Theme();
+    // console.log("full Table theme: ", theme)
+    // #28495f
+    const theme = localStorage.getItem("theme");
+    console.log("FullTable localTheme: ", theme)
+    return (
+      <table >
+        <thead style={{
+          backgroundColor: theme === 'dark' ? '#28495f' : '#ececec',
+          color: theme === 'dark' ? '#e6e6e6' : '#303030',
+          border: theme === 'dark' ? "1px solid #28495f" : '',
+        }}>
+          <TableNamesHolder
+            headList={this.state.headList}
+            NOTdisplayed={this.state.NOTdisplayed}
+            APIList={this.state.APIList}
+            count={this.state.count}
+          />
+        </thead>
+
+        <tbody style={{ border: "0px" }}>
+          <BodyRowHolder
+            rowList={this.state.rowList}
+            headList={this.state.headList}
+            NOTdisplayed={this.state.NOTdisplayed}
+            handleClick={this.props.handleClick}
+            APIList={this.state.APIList}
+          />
+        </tbody>
+      </table>
+    )
+  }
+
   render() {
     if (this.state.APIList[0] !== "") {
       return (
@@ -379,8 +414,9 @@ class Table extends Component {
               </div>
             </div>
           </div>
-          <div className="table-scroll" style={{ marginLeft: "2em", width: "98vw" }}>
-            <table>
+          <div className="table-scroll" id="style-7" style={{ marginLeft: "2em", width: "98vw" }}>
+            <this.Table />
+            {/* <table>
               <thead>
                 <TableNamesHolder
                   headList={this.state.headList}
@@ -399,7 +435,7 @@ class Table extends Component {
                   APIList={this.state.APIList}
                 />
               </tbody>
-            </table>
+            </table> */}
           </div>
         </div>
       );

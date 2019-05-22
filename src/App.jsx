@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Table from "./components/full-table";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Theme  from "./components/useTheme";
 
 class App extends React.Component {
   constructor(props) {
@@ -29,31 +30,27 @@ class App extends React.Component {
         "faulttimeout--current-minute",
         "roundtimeout--current-minute"
       ],
-      colorMode: "light"
     };
   }
 
-  ToggleColorMode = () => {
-    console.log("called")
-    this.setState({
-      colorMode: this.state.colorMode === "light" ? "dark" : "light"
-    })
-  }
-
   Main = () => {
-    let { colorMode, displayed, colVals } = this.state;
-    console.log(colorMode)
+    let { displayed, colVals } = this.state;
+    const { theme, toggleTheme } = Theme();
+
     return (
-      <div className={`App ${colorMode}`}>
-        <div>
+      <div style={{
+          background: theme === 'dark' ? '#202020' : '#fff',
+          color: theme === 'dark' ? '#939598' : '#939598',
+          height: "100vh",
+        }} >
+        <button type="button" onClick={toggleTheme} style={{ margin: "1em 1em -1em"}}>
+          Switch theme
+        </button>
+
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <h1 className="App-title">Information Display</h1>
-            <div className="mode-toggle" onClick={() => this.ToggleColorMode()}>
-            <div className="toggle">
-                <div id={colorMode === "dark" ? "dark-mode" : "light-mode"} type="checkbox"></div>
-            </div>
-        </div>
+            
           </header>
           <div className="row">
             <Table
@@ -62,20 +59,13 @@ class App extends React.Component {
             />
           </div>
         </div>
-      </div>
     );
   };
 
   render() {
-    return (
-      <div>
-        <Router>
-          <div>
-            <hr />
-            <Route exact={true} path="/" component={this.Main} />
-          </div>
-        </Router>
-      </div>
+    return(
+        <this.Main />
+      
     );
   }
 }
