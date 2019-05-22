@@ -26,8 +26,7 @@ class TableNames extends Component {
     const theme = localStorage.getItem("theme");
 
     return this.state.APIList.map((item, i) => {
-      return this.state.headList.map(
-        (className, j) =>
+      return this.state.headList.map((className, j) =>
           className === "IP" && i === 0 ? (
             <th
               key={j.toString()}

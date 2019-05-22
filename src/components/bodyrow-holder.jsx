@@ -13,15 +13,6 @@ class Table extends Component {
       }
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     this.setState({
-    //         rowList: nextProps.rowList,
-    //         headList: nextProps.headList,
-    //         NOTdisplayed: nextProps.NOTdisplayed,
-    //         APIList: nextProps.APIList
-    //     })
-    // }
-
     static getDerivedStateFromProps(props, state) {
         if (props.rowList !== state.rowList) { return { rowList: props.rowList }; }
         if (props.headList !== state.headList) { return { headList: props.headList }; }
@@ -40,12 +31,10 @@ class Table extends Component {
             return (
                 this.state.rowList.map((item, i) => (
                     i % 2 === 0 ? (
-                        console.log("even"),
                         <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#363636' : '' }}>
                             <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
                         </tr>
                     ) : (
-                        console.log("odd"),
                         <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#2f2f2f' : ''}}>
                             <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
                         </tr>
