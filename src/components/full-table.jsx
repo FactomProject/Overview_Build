@@ -61,34 +61,35 @@ class Table extends Component {
       }
       // console.log(newer_Obj)
     });
-
-    setInterval(function () {
-      let ObjToUse = {};
-      for (let url in newer_Obj) {
-        ObjToUse[url] = {};
-        for (let i = 0; i <= APIList.APIList.length - 1; i++) {
-          ObjToUse[url][APIList.APIList[i].split("/")[0]] = newer_Obj[url][APIList.APIList[i].split("/")[0]];
+    setTimeout(() => {
+      setInterval(function () {
+        let ObjToUse = {};
+        for (let url in newer_Obj) {
+          ObjToUse[url] = {};
+          for (let i = 0; i <= APIList.APIList.length - 1; i++) {
+            ObjToUse[url][APIList.APIList[i].split("/")[0]] = newer_Obj[url][APIList.APIList[i].split("/")[0]];
+          }
         }
-      }
-      if (that.state.first) {
-        that.setState({
-          first: false
-        });
-        setTimeout(() => {
+        if (that.state.first) {
           that.setState({
-            OLDData: newer_Obj
+            first: false
           });
-          that.getConfigApiInfo(ObjToUse, APIList);
-        }, 1000);
-      } else {
-        if (Object.keys(ObjToUse).length !== 0) {
-          that.setState({
-            OLDData: newer_Obj
-          });
-          that.getConfigApiInfo(ObjToUse, APIList);
+          setTimeout(() => {
+            that.setState({
+              OLDData: newer_Obj
+            });
+            that.getConfigApiInfo(ObjToUse, APIList);
+          }, 1000);
+        } else {
+          if (Object.keys(ObjToUse).length !== 0) {
+            that.setState({
+              OLDData: newer_Obj
+            });
+            that.getConfigApiInfo(ObjToUse, APIList);
+          }
         }
-      }
-    }, 100);
+      }, 100);
+    }, 1000)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -268,35 +269,50 @@ class Table extends Component {
   // For rendering the table with a theme 
   Table = () => {
     const theme = localStorage.getItem("theme");
-    return (
-      <table >
-        <thead style={{
-          backgroundColor: theme === 'dark' ? '#28495f' : '#ececec',
-          color: theme === 'dark' ? '#e6e6e6' : '#303030',
-          border: theme === 'dark' ? "1px solid #28495f" : '',
-        }}>
-          <TableNamesHolder
-            headList={this.state.headList}
-            NOTdisplayed={this.state.NOTdisplayed}
-            APIList={this.state.APIList}
-            count={this.state.count}
-          />
-        </thead>
-        <tbody style={{ border: "0px" }}>
-          <BodyRowHolder
-            rowList={this.state.rowList}
-            headList={this.state.headList}
-            NOTdisplayed={this.state.NOTdisplayed}
-            handleSingleItemClick={this.props.handleSingleItemClick}
-            APIList={this.state.APIList}
-          />
-        </tbody>
-      </table>
-    )
+    const {headList, NOTdisplayed, APIList, rowList} = this.state;
+
+    if (headList.length === 0  || APIList.length === 0 || rowList.length === 0) {
+      return (
+        <div style={{fontSize: "100px", color: "red"}}>Loading...</div>
+      )
+    } else {
+      return (
+        <table >
+          <thead style={{
+            backgroundColor: theme === 'dark' ? '#28495f' : '#ececec',
+            color: theme === 'dark' ? '#e6e6e6' : '#303030',
+            border: theme === 'dark' ? "1px solid #28495f" : '',
+          }}>
+            <TableNamesHolder
+              headList={this.state.headList}
+              NOTdisplayed={this.state.NOTdisplayed}
+              APIList={this.state.APIList}
+              count={this.state.count}
+            />
+          </thead>
+          <tbody style={{ border: "0px" }}>
+            <BodyRowHolder
+              rowList={this.state.rowList}
+              headList={this.state.headList}
+              NOTdisplayed={this.state.NOTdisplayed}
+              handleSingleItemClick={this.props.handleSingleItemClick}
+              APIList={this.state.APIList}
+            />
+          </tbody>
+        </table>
+      )
+    }
   }
 
   render() {
-    if (this.state.APIList[0] !== "") {
+    const { rowList, headList } = this.state;
+    if (rowList.length === 0 || headList.length === 0) {
+      return (
+        <div className="column">
+          <div style={{fontSize: "100px", color: "red"}}>Loading...</div>
+        </div>
+      )
+    } else if (this.state.APIList.length !== "") {
       return (
         <div className="column">
           <div className="nav">

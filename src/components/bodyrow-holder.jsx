@@ -24,7 +24,7 @@ class Table extends Component {
     
     render() {
         const theme = localStorage.getItem("theme");
-
+        console.log("rowlist.length: ", this.state.rowList.length)
         if (this.state.rowList === [] ) {
             return null;
         } else {

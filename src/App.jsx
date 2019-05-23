@@ -30,6 +30,7 @@ class App extends React.Component {
         'roundtimeout--current-minute'
       ]
     };
+    this.Main = this.Main.bind(this);
   }
 
   Main() {
@@ -37,8 +38,7 @@ class App extends React.Component {
     const { theme, toggleTheme } = Theme();
 
     return (
-      <div
-        style={{
+      <div style={{
           background: theme === 'dark' ? '#202020' : '#fff',
           color: theme === 'dark' ? '#939598' : '#939598',
           height: '100vh'
