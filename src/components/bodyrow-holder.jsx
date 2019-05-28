@@ -23,13 +23,14 @@ class Table extends Component {
     }
     
     render() {
+        const { rowList } = this.state;
         const theme = localStorage.getItem("theme");
-        console.log("rowlist.length: ", this.state.rowList.length)
-        if (this.state.rowList === [] ) {
+        if (rowList === [] ) {
             return null;
         } else {
             return (
-                this.state.rowList.map((item, i) => (
+                rowList.map((item, i) => (
+                    // console.log("rowList item: ", item),
                     i % 2 === 0 ? (
                         <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#363636' : '' }}>
                             <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />

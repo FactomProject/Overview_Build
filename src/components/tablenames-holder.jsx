@@ -36,7 +36,6 @@ class Table extends Component {
     if (headList === undefined || headList.length < 2 || APIList.length < 0) {
       return null;
     } else {
-      console.log("call Table names")
       return (
         <tr className="bar">
           <TableNames headList={headList} NOTdisplayed={NOTdisplayed} APIList={APIList} />
