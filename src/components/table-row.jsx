@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../App.css';
 import _ from "underscore";
 
 class TableRow extends Component {
@@ -13,64 +12,44 @@ class TableRow extends Component {
         changed: false,
         count: 0
       }
-      
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            changed: false
-        })
-        if (this.state.rowList.length === nextProps.rowList.length) {
-            this.setState({
-                rowList: nextProps.rowList,
-                headList: nextProps.headList
-            })
-        }
-        if (this.state.rowList.length === nextProps.rowList.length) {
-            if (!_.isEqual(nextProps.rowList, this.state.rowList) && nextProps.rowList.length >= 1) {
-                this.setState({
-                    headList: nextProps.headList,
-                    rowList: nextProps.rowList,
-                    NOTdisplayed: nextProps.NOTdisplayed,
-                    APIList: nextProps.APIList,
+    static getDerivedStateFromProps(props, state) {
+        if (state.rowList.length === props.rowList.length) {
+            if (!_.isEqual(props.rowList, state.rowList) && props.rowList.length >= 1) {
+                return {
+                    headList: props.headList,
+                    rowList: props.rowList,
+                    NOTdisplayed: props.NOTdisplayed,
+                    APIList: props.APIList,
                     changed: true
-                })
+                }
             }
-        } else if(this.state.count === 0 || this.state.count === 1 || this.state.count === 3 || this.state.count === 4) {
-            this.setState({
-                headList: nextProps.headList,
-                rowList: nextProps.rowList,
-                NOTdisplayed: nextProps.NOTdisplayed,
-                APIList: nextProps.APIList,
+        } else if(state.count === 0 || state.count === 1 || state.count === 3 || state.count === 4) {
+            return {
+                headList: props.headList,
+                rowList: props.rowList,
+                NOTdisplayed: props.NOTdisplayed,
+                APIList: props.APIList,
                 changed: true
-            })
-        } else {
-            this.setState({
-                headList: nextProps.headList,
-                NOTdisplayed: nextProps.NOTdisplayed,
-                APIList: nextProps.APIList,
-                changed: true
-            })
+            }
         }
-        this.setState({
-            count: this.state.count+1
-        })
+        return { count: state.count + 1, changed: false };
     }
 
     render() {
         return this.state.APIList.map((api, i) => {
             return this.state.rowList.map((item,j) => (
                 item.split('--')[1] === "URL" && i === 0? (
-                    <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center'}}>{item.split('--')[0].split(':')[0]}</th>
+                    <th key={ j.toString() } className={ this.state.headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 ) : (
-                item.split('--')[1] === api.split('/')[0] ? (
-                    <th key={j.toString()} className={this.state.headList[j]} style={{textAlign: 'center', animation: this.state.changed ? 'highlight 1s' : null}}>{item.split('--')[0]}</th>
-                ) : (null)
+                    item.split('--')[1] === api.split('/')[0] ? (
+                        <th key={ j.toString() } className={ this.state.headList[j] } style={{ textAlign: 'center', animation: this.state.changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                    ) : (null)
                 )
             ))
         })
-    }
-        
+    }   
 }
 
 
