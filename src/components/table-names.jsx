@@ -11,21 +11,12 @@ class TableNames extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.headList, this.state.headList) && nextProps.headList.length >= 1 && nextProps.APIList.length !== 0) {
-      this.setState({
-        headList: nextProps.headList,
-        APIList: nextProps.APIList
-      });
+  static getDerivedStateFromProps(props, state) {
+    if (!_.isEqual(props.headList, state.headList) && props.headList.length >= 1 && props.APIList.length !== 0) {
+      return { headList: props.headList, APIList: props.APIList };
     }
-  }
-
-  ifIP(className, j) {
-    return (  
-      <th key={j.toString()} className={className} style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '18px', fontWeight: 700 }}>{className}</div>
-      </th>
-    )
+    // No state update necessary
+    return null;
   }
 
   render() {
@@ -35,12 +26,14 @@ class TableNames extends Component {
     return APIList.map((item, i) => {
       return headList.map((className, j) =>
         className === 'IP' && i === 0 ? (
-          this.ifIP(className, j)
+          <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className }</div>
+          </th>
         ) : className.split('--')[1] === item.split('/')[0] ? (
-          <th key={j.toString()} className={className} style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>{className.split('--')[0]}</div>
+          <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
             <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
-              {className.split('--')[1]}
+              { className.split('--')[1] }
             </div>
           </th>
         ) : null
