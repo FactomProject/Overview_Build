@@ -58,7 +58,6 @@ class TableRow extends Component {
     }
 
     render() {
-        // console.log("TABLE ROW rowList: ", this.state.rowList)
         return this.state.APIList.map((api, i) => {
             return this.state.rowList.map((item,j) => (
                 item.split('--')[1] === "URL" && i === 0? (

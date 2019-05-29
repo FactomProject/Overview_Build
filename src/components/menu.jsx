@@ -13,33 +13,14 @@ class Menu extends Component {
       displayedAPIs: [],
       headList: [],
       showMenu: false,
-      showMenu2: {},
-      fullObj: {},
-      menus: [],
-      propbablyshouldUseThis: {},
       NOTdisplayedAPIs: [],
-      UserToggledNotDisplay: [],
-      UserToggledDisplay: []
-      
+      receivedHeadList: false,
     };
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({
-  //     NOTdisplayed: nextProps.NOTdisplayed,
-  //     headList: nextProps.headList,
-  //     showMenu: nextProps.showMenu,
-  //     fullObj: nextProps.fullObj,
-  //     propbablyshouldUseThis: nextProps.propbablyshouldUseThis
-  //   });
-  // }
+  
   static getDerivedStateFromProps(props, state) {
-    if (!_.isEqual(props.headList, state.headList)) {
-        if (state.headList.length > 1 && props.headList.length === 1) {
-            null
-        } else {
-            return { headList: props.headList }; 
-        }
+    if (!state.receivedHeadList) {
+      return { headList: props.headList, receivedHeadList: true}
     }
 
     if (!_.isEqual(props.NOTdisplayed, state.NOTdisplayed)) {
@@ -68,75 +49,72 @@ class Menu extends Component {
       showMenu: display
     });
   }
-  toggleDisplay2(display, menu) {
-    this.state.showMenu2[menu] = display;
-  }
 
   handleClick(data) {
-    if (this.state.displayed.includes(data)) {
-      let indexofdata = this.state.displayed.indexOf(data);
+    console.log("handleClick: ", data)
+    const { displayed, NOTdisplayed } = this.state;
+    if (displayed.includes(data)) {
+      let indexofdata = displayed.indexOf(data);
       if (indexofdata > -1) {
-        this.state.displayed.splice(indexofdata, 1);
+        displayed.splice(indexofdata, 1);
       }
-
+      
       $(`.${data}`).hide("slow");
 
-      this.state.NOTdisplayed.push(data);
-    } else if (this.state.NOTdisplayed.includes(data)) {
-      let indexofdata = this.state.NOTdisplayed.indexOf(data);
+      NOTdisplayed.push(data);
+    } else if (NOTdisplayed.includes(data)) {
+      let indexofdata = NOTdisplayed.indexOf(data);
       if (indexofdata > -1) {
-        this.state.NOTdisplayed.splice(indexofdata, 1);
+        NOTdisplayed.splice(indexofdata, 1);
       }
 
       $(`.${data}`).show("slow");
 
-      this.state.displayed.push(data);
+      displayed.push(data);
     }
   }
 
   render() {
-    if (this.state.NOTdisplayedAPIs === undefined) {
+    const { NOTdisplayedAPIs, headList, displayedAPIs } = this.state;
+    const { item } = this.props;
+    
+    if (NOTdisplayedAPIs === undefined) {
       return null;
     } else {
-      return !this.state.displayedAPIs.includes(this.props.item)
-        ? this.state.headList.map((item, i) => (
-              item.split("--")[1] === this.props.item ? (
-                <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
-                  {item.split("--")[0]}
-                  <a className="switch tiny" key={`Menu_item_${i}`}>
-                    <input
-                      className="switch-input"
-                      onClick={() => this.handleClick(item)}
-                      key={`Menu_item_${i}`}
-                      // id={this.props.item + item}
-                      id={item}
-                      type="checkbox"
-                      name={`Switch for ${item}`}
-                    />
-                    <label className="switch-paddle ish" htmlFor={item} />
-                  </a>
-                </div>
-              ) : null
+      return !displayedAPIs.includes(item)
+        ? headList.map((key, i) => (
+            key.split("--")[1] === item ? (
+              <div className="dropdown-item" href="#" key={`Menu_key_${i}`}>
+                {key.split("--")[0]}
+                <a className="switch tiny" key={`Menu_key_${i}`}>
+                  <input
+                    className="switch-input"
+                    onClick={() => this.handleClick(key)}
+                    key={`Menu_key_${i}`}
+                    id={key}
+                    type="checkbox"
+                    name={`Switch for ${key}`}
+                  />
+                  <label className="switch-paddle ish" htmlFor={key} />
+                </a>
+              </div>
+            ) : null
           ))
-        : this.state.headList.map((item, i) => (
-          item.split("--")[1] === this.props.item ? (
-            <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
-              {item.split("--")[0]}
-              <a className="switch tiny" key={`Menu_item_${i}`}>
+        : headList.map((key, i) => (
+          key.split("--")[1] === item ? (
+            <div className="dropdown-item" href="#" key={`Menu_key_${i}`}>
+              {key.split("--")[0]}
+              <a className="switch tiny" key={`Menu_key_${i}`}>
                 <input
                   className="switch-input"
-                  onClick={() => this.handleClick(item)}
-                  key={`Menu_item_${i}`}
-                  // id={this.props.item + item}
-                  id={item}
+                  onClick={() => this.handleClick(key)}
+                  key={`Menu_key_${i}`}
+                  id={key}
                   type="checkbox"
-                  name={`Switch for ${item}`}
+                  name={`Switch for ${key}`}
                   defaultChecked
                 />
-                <label
-                  className="switch-paddle ish"
-                  htmlFor={item}
-                />
+                <label className="switch-paddle ish" htmlFor={key} />
               </a>
             </div>
           ) : null

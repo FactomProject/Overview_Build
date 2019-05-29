@@ -5,7 +5,6 @@ import BodyRowHolder from "./bodyrow-holder";
 import Menu from "./menu";
 import io from "socket.io-client";
 import $ from "jquery";
-import Theme  from "./useTheme";
 
 class Table extends Component {
   constructor(props) {
@@ -59,7 +58,6 @@ class Table extends Component {
           newer_Obj[key][data.api] = data.data[key][data.api];
         }
       }
-      // console.log(newer_Obj)
     });
     setTimeout(() => {
       setInterval(function () {
@@ -168,18 +166,6 @@ class Table extends Component {
     this.state.showMenu2[menu] = display;
   }
 
-  componentDidUpdate() {
-    let that = this;
-    for (let i = 0; i <= that.state.headList.length - 1; i++) {
-      if (!that.state.displayed.includes(that.state.headList[i])) {
-        if (!that.state.NOTdisplayed.includes(that.state.headList[i])) {
-          that.state.NOTdisplayed.push(that.state.headList[i]);
-        }
-        $(`.${that.state.headList[i]}`).hide();
-      }
-    }
-  }
-
   getMenus() {
     for (let key in this.state.fullObj) {
       if (!this.state.menus.includes(key)) {
@@ -194,45 +180,23 @@ class Table extends Component {
     }
   }
 
-  handleSingleItemClick(item) {
-    this.state.fullObj[item].map((data, i) => {
-      if (this.state.displayed.includes(data)) {
-        let indexofdata = this.state.displayed.indexOf(data);
-        if (indexofdata > -1) {
-          this.state.displayed.splice(indexofdata, 1);
-        }
-
-        $(`.${data}`).hide("slow");
-        this.state.NOTdisplayed.push(data);
-      } else if (this.state.NOTdisplayed.includes(data)) {
-        let indexofdata = this.state.NOTdisplayed.indexOf(data);
-        if (indexofdata > -1) {
-          this.state.NOTdisplayed.splice(indexofdata, 1);
-        }
-
-        $(`.${data}`).show("slow");
-        this.state.displayed.push(data);
-      }
-    });
-  }
-
   handleFullAPIClick(item) {
-    if (this.state.displayedAPIs.includes(item)) {
+    let { displayedAPIs, headList, displayed, NOTdisplayed } = this.state;
+    if (displayedAPIs.includes(item)) {
       // Goes through the list of the tables titles and toggles menu and table off of those items
-      this.state.headList.map(data => {
+      headList.map(data => {
         let dataApi = data.split('--')[1]
         if (data !== "IP" && dataApi === item) {
           let inputs = document.getElementById(data);
           inputs.checked = false;
 
-          if (this.state.displayed.includes(data)) {
-            let indexofdata = this.state.displayed.indexOf(data);
+          if (displayed.includes(data)) {
+            let indexofdata = displayed.indexOf(data);
             if (indexofdata > -1) {
-              this.state.displayed.splice(indexofdata, 1);
+              displayed.splice(indexofdata, 1);
             }
-  
             $(`.${data}`).hide("slow");
-            this.state.NOTdisplayed.push(data);
+            NOTdisplayed.push(data);
           }
         }
       })
@@ -247,11 +211,14 @@ class Table extends Component {
         if (data !== "IP" && dataApi === item) {
           let inputs = document.getElementById(data);
           inputs.checked = true;
-
           if (this.state.NOTdisplayed.includes(data)) {
-            let indexofdata = this.state.displayed.indexOf(data);
+            let indexofdata = this.state.NOTdisplayed.indexOf(data);
             if (indexofdata > -1) {
-              this.state.NOTdisplayed.splice(indexofdata, 1);
+              let holder = this.state.NOTdisplayed;
+              holder.splice(indexofdata, 1);
+              this.setState({
+                NOTdisplayed: holder
+              })
             }
   
             $(`.${data}`).show("slow");
@@ -295,7 +262,6 @@ class Table extends Component {
               rowList={this.state.rowList}
               headList={this.state.headList}
               NOTdisplayed={this.state.NOTdisplayed}
-              handleSingleItemClick={this.props.handleSingleItemClick}
               APIList={this.state.APIList}
             />
           </tbody>
