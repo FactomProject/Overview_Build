@@ -17,27 +17,26 @@ class Table extends Component {
         if (props.rowList !== state.rowList) { return { rowList: props.rowList }; }
         if (props.headList !== state.headList) { return { headList: props.headList }; }
         if (props.NOTdisplayed !== state.NOTdisplayed) { return { NOTdisplayed: props.NOTdisplayed }; }
-        if (props.APIList !== state.NOTdisplayed) { return { APIList: props.APIList }; }
+        if (props.APIList !== state.APIList) { return { APIList: props.APIList }; }
         // No state update necessary
         return null;
     }
     
     render() {
-        const { rowList } = this.state;
+        const { rowList, headList, NOTdisplayed, APIList } = this.state;
         const theme = localStorage.getItem("theme");
         if (rowList === [] ) {
             return null;
         } else {
             return (
                 rowList.map((item, i) => (
-                    // console.log("rowList item: ", item),
                     i % 2 === 0 ? (
                         <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#363636' : '' }}>
-                            <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
+                            <TableRow key={i} headList={headList} NOTdisplayed={NOTdisplayed} rowList={item} APIList={APIList} />
                         </tr>
                     ) : (
                         <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#2f2f2f' : ''}}>
-                            <TableRow key={i} headList={this.state.headList} NOTdisplayed={this.state.NOTdisplayed} rowList={item} APIList={this.state.APIList} />
+                            <TableRow key={i} headList={headList} NOTdisplayed={NOTdisplayed} rowList={item} APIList={APIList} />
                         </tr>
                     )
                 ))
