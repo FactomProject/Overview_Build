@@ -147,10 +147,10 @@ class Table extends Component {
     for (let key in obj) {
       if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
         headListHolder.push(`${key}--${api}`);
-        hugeValueHolder.push(`${JSON.stringify(obj[key])}--${api}`)
+        hugeValueHolder.push(`${JSON.stringify(obj[key])}--${key}--${api}`)
       } else {
         headListHolder.push(`${key}--${api}`);
-        hugeValueHolder.push(`${obj[key]}--${api}`);
+        hugeValueHolder.push(`${obj[key]}--${key}--${api}`);
       }
     }
 
@@ -253,7 +253,7 @@ class Table extends Component {
             <TableNamesHolder
               headList={this.state.headList}
               NOTdisplayed={this.state.NOTdisplayed}
-              APIList={this.state.APIList}
+              APIList={APIList}
               count={this.state.count}
             />
           </thead>

@@ -12,7 +12,9 @@ class TableNames extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (!_.isEqual(props.headList, state.headList) && props.headList.length >= 1 && props.APIList.length !== 0) {
+    if (state.headList.length === 0) {
+      return { headList: props.headList, APIList: props.APIList }
+    } else if (!_.isEqual(props.headList, state.headList) && props.headList.length >= 1 && props.APIList.length !== 0) {
       return { headList: props.headList, APIList: props.APIList };
     }
     // No state update necessary

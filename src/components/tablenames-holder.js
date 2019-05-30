@@ -16,7 +16,9 @@ class Table extends Component {
   static getDerivedStateFromProps(props, state) {
     if (!_.isEqual(props.headList, state.headList)) {
       if (state.headList.length < 1 && props.headList.length !== 1) {
-        return { headList: props.headList };
+        return { headList: props.headList, APIList: props.APIList };
+      } else if (props.headList.length > state.headList.length) {
+        return { headList: props.headList, APIList: props.APIList };
       }
     }
 
