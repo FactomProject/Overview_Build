@@ -51,7 +51,6 @@ class Menu extends Component {
   }
 
   handleClick(data) {
-    console.log("handleClick: ", data)
     const { displayed, NOTdisplayed } = this.state;
     if (displayed.includes(data)) {
       let indexofdata = displayed.indexOf(data);
