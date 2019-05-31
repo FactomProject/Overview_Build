@@ -15,7 +15,6 @@ class TableRow extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-
         if (state.headList.length === 0 || props.headList.length > state.headList.length) {
             return { headList: props.headList }
         }
@@ -23,41 +22,25 @@ class TableRow extends Component {
         if (props.rowList.length < state.headList.length) {
             let newRowList = [];
             if (props.rowList.length > 1) {
-                console.log("props.rowList.length: ", props.rowList.length)
-                console.log("state.headList.length: ", state.headList.length)
-                for (let i = 0; i < state.headList.length; i++) {
-                    if (i === 0) {
-                        newRowList.push(props.rowList[i])
-                    }
-                    
-                    else if (props.rowList[i] !== undefined && `${state.headList[i].split('--')[0]}--${state.headList[i].split('--')[1]}` === `${props.rowList[i].split('--')[1]}--${props.rowList[i].split('--')[2]}`) {
-                        // `${state.rowList[i].split('--')[1]}--${state.rowList[i].split('--')[1]}` === `${props.headList[i].split('--')[0]}--${props.rowList[i].split('--')[1]}`
-                        // console.log("props.rowList[i].split('--'): ", `${props.rowList[i].split('--')[1]}--${props.rowList[i].split('--')[2]}`)
-                        // console.log("state.headList[i].split('--'): ", `${state.headList[i].split('--')[0]}--${state.headList[i].split('--')[1]}`)
-                        newRowList.push(props.rowList[i])
-                        
+                for (let h = 0; h < state.headList.length; h++) {
+                    if (h === 0) {
+                        newRowList.push(props.rowList[h]);
                     } else {
-                        let splitHolder = state.headList[i].split('--');
-                        newRowList.push(`" "--${splitHolder[0]}--${splitHolder[1]}`)
-                        // props.rowList.splice(i,1)
-                        // i--;
+                        let headListSplit = state.headList[h].split('--');
+                        for (let r = 1; r < props.rowList.length; r++) {
+                            let rowListSplit = props.rowList[r].split('--');
+                            if (`${rowListSplit[1]}--${rowListSplit[2]}` === `${headListSplit[0]}--${headListSplit[1]}`) {
+                                newRowList.push(props.rowList[r])
+                            }
+                        }
+                        if (newRowList[h] === undefined || !newRowList[h].includes(`${headListSplit[0]}--${headListSplit[1]}`)){
+                            newRowList.push(`" "--${headListSplit[0]}--${headListSplit[1]}`)
+                        }
                     }
-                    // else if (props.rowList[i] !== undefined && `${state.rowList[i].split('--')[1]}--${state.rowList[i].split('--')[1]}` === `${props.headList[i].split('--')[1]}--${props.rowList[i].split('--')[2]}`) {
-                    //     newRowList.push(props.rowList[i])
-                    // } else if (props.rowList[i] !== undefined ) {
-                    //     let splitHolder = state.headList[i].split('--');
-                    //     newRowList.push(`" "--${splitHolder[0]}--${splitHolder[1]}`)
-                    // } else {
-                    //     let splitHolder = state.headList[i].split('--');
-                    //     newRowList.push(`" "--${splitHolder[0]}--${splitHolder[1]}`)
-                    // }
                 }
-                console.log("newRowList: ", newRowList)
             }
-            return { rowList: newRowList, PIList: props.APIList }
-
-        } else 
-        if (!_.isEqual(props.rowList, state.rowList)) {
+            return { rowList: newRowList, APIList: props.APIList }
+        } else if (!_.isEqual(props.rowList, state.rowList) && props.rowListlength !== 0) {
             return { rowList: props.rowList, APIList: props.APIList, }
         } else if (state.rowList.length === props.rowList.length) {
             if (!_.isEqual(props.rowList, state.rowList) && props.rowList.length >= 1) {
