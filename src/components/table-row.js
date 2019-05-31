@@ -7,7 +7,6 @@ class TableRow extends Component {
       this.state = {
         headList: [],
         rowList: [],
-        NOTdisplayed: [],
         APIList: [],
         changed: false,
         count: 0
@@ -42,40 +41,22 @@ class TableRow extends Component {
             if (newRowList.length > 1) {
                 return { rowList: newRowList, APIList: props.APIList }
             }
-            
         } else if (!_.isEqual(props.rowList, state.rowList)) {
             return { rowList: props.rowList, APIList: props.APIList, }
-        } else if (state.rowList.length === props.rowList.length) {
-            if (!_.isEqual(props.rowList, state.rowList) && props.rowList.length >= 1) {
-                
-                return {
-                    headList: props.headList,
-                    rowList: props.rowList,
-                    NOTdisplayed: props.NOTdisplayed,
-                    APIList: props.APIList,
-                    changed: true
-                }
-            }
-        } else if(state.count === 0 || state.count === 1 || state.count === 3 || state.count === 4) {
-            return {
-                headList: props.headList,
-                rowList: props.rowList,
-                NOTdisplayed: props.NOTdisplayed,
-                APIList: props.APIList,
-                changed: true
-            }
-        }
+        } 
         return { count: state.count + 1, changed: false };
     }
 
     render() {
-        return this.state.APIList.map((api, i) => {
-            return this.state.rowList.map((item,j) => (
+        const { APIList, rowList, headList, changed } = this.state;
+
+        return APIList.map((api, i) => {
+            return rowList.map((item,j) => (
                 item.split('--')[1] === "URL" && i === 0? (
-                    <th key={ j.toString() } className={ this.state.headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
+                    <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 ) : (
                     item.split('--')[2] === api.split('/')[0] ? (
-                        <th key={ j.toString() } className={ this.state.headList[j] } style={{ textAlign: 'center', animation: this.state.changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
                     ) : (null)
                 )
             ))
