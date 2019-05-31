@@ -34,16 +34,20 @@ class TableRow extends Component {
                             }
                         }
                         if (newRowList[h] === undefined || !newRowList[h].includes(`${headListSplit[0]}--${headListSplit[1]}`)){
-                            newRowList.push(`" "--${headListSplit[0]}--${headListSplit[1]}`)
+                            newRowList.push(`""--${headListSplit[0]}--${headListSplit[1]}`)
                         }
                     }
                 }
             }
-            return { rowList: newRowList, APIList: props.APIList }
-        } else if (!_.isEqual(props.rowList, state.rowList) && props.rowListlength !== 0) {
+            if (newRowList.length > 1) {
+                return { rowList: newRowList, APIList: props.APIList }
+            }
+            
+        } else if (!_.isEqual(props.rowList, state.rowList)) {
             return { rowList: props.rowList, APIList: props.APIList, }
         } else if (state.rowList.length === props.rowList.length) {
             if (!_.isEqual(props.rowList, state.rowList) && props.rowList.length >= 1) {
+                
                 return {
                     headList: props.headList,
                     rowList: props.rowList,
@@ -65,7 +69,6 @@ class TableRow extends Component {
     }
 
     render() {
-        // console.log("rowlist.length: ", this.state.rowList)
         return this.state.APIList.map((api, i) => {
             return this.state.rowList.map((item,j) => (
                 item.split('--')[1] === "URL" && i === 0? (
