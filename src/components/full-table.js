@@ -59,34 +59,33 @@ class Table extends Component {
         }
       }
     });
-    setTimeout(() => {
-      setInterval(function () {
-        let ObjToUse = {};
-        for (let url in newer_Obj) {
-          ObjToUse[url] = {};
-          for (let i = 0; i <= APIList.APIList.length - 1; i++) {
-            ObjToUse[url][APIList.APIList[i].split("/")[0]] = newer_Obj[url][APIList.APIList[i].split("/")[0]];
-          }
+    
+    setInterval(function () {
+      let ObjToUse = {};
+      for (let url in newer_Obj) {
+        ObjToUse[url] = {};
+        for (let i = 0; i <= APIList.APIList.length - 1; i++) {
+          ObjToUse[url][APIList.APIList[i].split("/")[0]] = newer_Obj[url][APIList.APIList[i].split("/")[0]];
         }
-        if (that.state.first) {
+      }
+      if (that.state.first) {
+        that.setState({
+          first: false
+        });
+        setTimeout(() => {
           that.setState({
-            first: false
+            OLDData: newer_Obj
           });
-          setTimeout(() => {
-            that.setState({
-              OLDData: newer_Obj
-            });
-            that.getConfigApiInfo(ObjToUse, APIList);
-          }, 1000);
-        } else {
-          if (Object.keys(ObjToUse).length !== 0) {
-            that.setState({
-              OLDData: newer_Obj
-            });
-            that.getConfigApiInfo(ObjToUse, APIList);
-          }
+          that.getConfigApiInfo(ObjToUse, APIList);
+        }, 1000);
+      } else {
+        if (Object.keys(ObjToUse).length !== 0) {
+          that.setState({
+            OLDData: newer_Obj
+          });
+          that.getConfigApiInfo(ObjToUse, APIList);
         }
-      }, 100);
+      }
     }, 1000)
   }
 
@@ -163,28 +162,44 @@ class Table extends Component {
     });
   }
   toggleAPIMenuDisplay(display, menu) {
-    this.state.showMenu2[menu] = display;
+    let holder = {}
+    holder[menu] = display;
+    this.setState({
+      showMenu2: holder
+    });
   }
 
   getMenus() {
     for (let key in this.state.fullObj) {
       if (!this.state.menus.includes(key)) {
         this.state.menus.push(key);
-        this.state.showMenu2[key] = false;
+        let holder = {};
+        holder[key] = false;
+        this.setState({
+          showMenu2: holder
+        });
         if (this.state.displayedAPIs.includes(key)) {
-          this.state.APIToggle[key] = true;
+          let APIToggleHolder = {}
+          APIToggleHolder[key] = true;
+          this.setState({
+            APIToggle: APIToggleHolder
+          });
         } else {
-          this.state.APIToggle[key] = false;
+          let APIToggleHolder = {};
+          APIToggleHolder[key] = false;
+          this.setState({
+            APIToggle: APIToggleHolder
+          });
         }
       }
     }
   }
 
   handleFullAPIClick(item) {
-    let { displayedAPIs, headList, displayed, NOTdisplayed } = this.state;
+    let { displayedAPIs, headList, displayed, NOTdisplayed, NOTdisplayedAPIs } = this.state;
     if (displayedAPIs.includes(item)) {
       // Goes through the list of the tables titles and toggles menu and table off of those items
-      headList.map(data => {
+      headList.forEach(function (data) {
         let dataApi = data.split('--')[1]
         if (data !== "IP" && dataApi === item) {
           let inputs = document.getElementById(data);
@@ -201,47 +216,46 @@ class Table extends Component {
         }
       })
 
-      let indexofdataAPI = this.state.displayedAPIs.indexOf(item);
-      this.state.displayedAPIs.splice(indexofdataAPI, 1);
-      this.state.NOTdisplayedAPIs.push(item);
+      let indexofdataAPI = displayedAPIs.indexOf(item);
+      displayedAPIs.splice(indexofdataAPI, 1);
+      NOTdisplayedAPIs.push(item);
     } else {
       // Goes through the list of the tables titles and toggles menu and table off of those items
-      this.state.headList.map(data => {
+      let that = this;
+      headList.forEach(function (data) {
         let dataApi = data.split('--')[1]
         if (data !== "IP" && dataApi === item) {
           let inputs = document.getElementById(data);
           inputs.checked = true;
-          if (this.state.NOTdisplayed.includes(data)) {
-            let indexofdata = this.state.NOTdisplayed.indexOf(data);
+          if (NOTdisplayed.includes(data)) {
+            let indexofdata = NOTdisplayed.indexOf(data);
             if (indexofdata > -1) {
-              let holder = this.state.NOTdisplayed;
+              let holder = NOTdisplayed;
               holder.splice(indexofdata, 1);
-              this.setState({
+              that.setState({
                 NOTdisplayed: holder
               })
             }
   
             $(`.${data}`).show("slow");
-            this.state.displayed.push(data);
+            displayed.push(data);
           }
         }
       })
 
-      let indexofdataAPInot = this.state.NOTdisplayedAPIs.indexOf(item);
-      this.state.NOTdisplayedAPIs.splice(indexofdataAPInot, 1);
-      this.state.displayedAPIs.push(item);
+      let indexofdataAPInot = NOTdisplayedAPIs.indexOf(item);
+      NOTdisplayedAPIs.splice(indexofdataAPInot, 1);
+      displayedAPIs.push(item);
     }
   }
 
   // For rendering the table with a theme 
   Table = () => {
     const theme = localStorage.getItem("theme");
-    const {headList, NOTdisplayed, APIList, rowList} = this.state;
+    const {headList, APIList, rowList} = this.state;
 
     if (headList.length === 0  || APIList.length === 0 || rowList.length === 0) {
-      return (
-        <div style={{fontSize: "100px", color: "red"}}>Loading...</div>
-      )
+      return ( null )     
     } else {
       return (
         <table >
@@ -273,11 +287,7 @@ class Table extends Component {
   render() {
     const { rowList, headList } = this.state;
     if (rowList.length === 0 || headList.length === 0) {
-      return (
-        <div className="column">
-          <div style={{fontSize: "100px", color: "red"}}>Loading...</div>
-        </div>
-      )
+      return ( null )
     } else if (this.state.APIList.length !== "") {
       return (
         <div className="column">
@@ -291,7 +301,7 @@ class Table extends Component {
                       <div className=" dropdown-item" href="#" key={`Menu_item_${i}`} >
                         {item}
                         <div className="btn-group dropright downdeep" onMouseEnter={() => this.toggleAPIMenuDisplay(true, item)} onMouseLeave={() => this.toggleAPIMenuDisplay(false, item)} >
-                          <a role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
+                          <div role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" name="menudisplay"></div>
                           <div className={`dropdown-menu apikeys ${item}`}
                             style={{
                               display: this.state.showMenu2[item]
@@ -337,7 +347,7 @@ class Table extends Component {
                         <div className="dropdown-item" href="#" key={`Menu_item_${i}`}>
                           {item}
                           <div className="btn-group dropright downdeep" onMouseEnter={() => this.toggleAPIMenuDisplay(true, item)} onMouseLeave={() => this.toggleAPIMenuDisplay(false, item)} >
-                            <a role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" />
+                            <div role="button" className="nav-link btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></div>
                             <div className={`dropdown-menu apikeys ${item}`}
                               style={{
                                 display: this.state.showMenu2[item]

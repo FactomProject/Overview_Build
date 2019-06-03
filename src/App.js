@@ -44,9 +44,15 @@ class App extends React.Component {
           height: '100vh'
         }}
       >
-        <button type="button" onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
-          Switch theme
-        </button>
+        {theme === 'dark' ? (
+          <button type="button" onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
+            <i className="fas fa-moon" style={{color: "white", fontSize: "1.5rem"}}></i>
+          </button>
+        ) : (
+          <button type="button" onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
+            <i class="fas fa-sun" style={{color: "#28495f", fontSize: "1.5rem"}}></i>
+          </button>
+        )}
 
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
