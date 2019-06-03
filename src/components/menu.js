@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import "../App.css";
-import $ from "jquery";
-import _ from "underscore";
+import React, { Component } from 'react';
+import '../App.css';
+import $ from 'jquery';
+import _ from 'underscore';
 
 
 class Menu extends Component {
@@ -58,7 +58,7 @@ class Menu extends Component {
         displayed.splice(indexofdata, 1);
       }
       
-      $(`.${data}`).hide("slow");
+      $(`.${data}`).hide('slow');
 
       NOTdisplayed.push(data);
     } else if (NOTdisplayed.includes(data)) {
@@ -67,7 +67,7 @@ class Menu extends Component {
         NOTdisplayed.splice(indexofdata, 1);
       }
 
-      $(`.${data}`).show("slow");
+      $(`.${data}`).show('slow');
 
       displayed.push(data);
     }
@@ -82,38 +82,38 @@ class Menu extends Component {
     } else {
       return !displayedAPIs.includes(item)
         ? headList.map((key, i) => (
-            key.split("--")[1] === item ? (
-              <div className="dropdown-item" href="#" key={`Menu_key_${i}`}>
-                {key.split("--")[0]}
-                <a className="switch tiny" key={`Menu_key_${i}`}>
+            key.split('--')[1] === item ? (
+              <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
+                {key.split('--')[0]}
+                <a className='switch tiny' key={ `Menu_key_${i}` }>
                   <input
-                    className="switch-input"
-                    onClick={() => this.handleClick(key)}
-                    key={`Menu_key_${i}`}
-                    id={key}
-                    type="checkbox"
-                    name={`Switch for ${key}`}
+                    className='switch-input'
+                    onClick={ () => this.handleClick(key) }
+                    key={ `Menu_key_${i}` }
+                    id={ key }
+                    type='checkbox'
+                    name={ `Switch for ${key}` }
                   />
-                  <label className="switch-paddle ish" htmlFor={key} />
+                  <label className='switch-paddle ish' htmlFor={ key } />
                 </a>
               </div>
             ) : null
           ))
         : headList.map((key, i) => (
-          key.split("--")[1] === item ? (
-            <div className="dropdown-item" href="#" key={`Menu_key_${i}`}>
-              {key.split("--")[0]}
-              <a className="switch tiny" key={`Menu_key_${i}`}>
+          key.split('--')[1] === item ? (
+            <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
+              { key.split('--')[0] }
+              <a className='switch tiny' key={ `Menu_key_${i}` }>
                 <input
-                  className="switch-input"
-                  onClick={() => this.handleClick(key)}
-                  key={`Menu_key_${i}`}
-                  id={key}
-                  type="checkbox"
-                  name={`Switch for ${key}`}
+                  className='switch-input'
+                  onClick={ () => this.handleClick(key) }
+                  key={ `Menu_key_${i}` }
+                  id={ key }
+                  type='checkbox'
+                  name={ `Switch for ${key}` }
                   defaultChecked
                 />
-                <label className="switch-paddle ish" htmlFor={key} />
+                <label className='switch-paddle ish' htmlFor={ key } />
               </a>
             </div>
           ) : null

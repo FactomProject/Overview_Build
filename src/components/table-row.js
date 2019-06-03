@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 
 class TableRow extends Component {
     constructor(props) {
@@ -52,7 +52,7 @@ class TableRow extends Component {
 
         return APIList.map((api, i) => {
             return rowList.map((item,j) => (
-                item.split('--')[1] === "URL" && i === 0? (
+                item.split('--')[1] === 'URL' && i === 0? (
                     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 ) : (
                     item.split('--')[2] === api.split('/')[0] ? (

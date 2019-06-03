@@ -39,8 +39,8 @@ class Table extends Component {
       return null;
     } else {
       return (
-        <tr className="bar">
-          <TableNames headList={headList} NOTdisplayed={NOTdisplayed} APIList={APIList} />
+        <tr className='bar'>
+          <TableNames headList={ headList } NOTdisplayed={ NOTdisplayed } APIList={ APIList } />
         </tr>
       );
     }

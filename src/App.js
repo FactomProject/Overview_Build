@@ -45,20 +45,20 @@ class App extends React.Component {
         }}
       >
         {theme === 'dark' ? (
-          <button type="button" onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
-            <i className="fas fa-moon" style={{color: "white", fontSize: "1.5rem"}}></i>
+          <button type='button' onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
+            <i className='fas fa-moon' style={{color: 'white', fontSize: '1.5rem'}}></i>
           </button>
         ) : (
-          <button type="button" onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
-            <i class="fas fa-sun" style={{color: "#28495f", fontSize: "1.5rem"}}></i>
+          <button type='button' onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
+            <i class='fas fa-sun' style={{color: '#28495f', fontSize: '1.5rem'}}></i>
           </button>
         )}
 
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Information Display</h1>
+        <header className='App-header'>
+          <img src={logo} className='App-logo' alt='logo' />
+          <h1 className='App-title'>Information Display</h1>
         </header>
-        <div className="row">
+        <div className='row'>
           <Table rowList={colVals} displayed={displayed} />
         </div>
       </div>

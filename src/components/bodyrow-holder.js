@@ -24,19 +24,19 @@ class Table extends Component {
     
     render() {
         const { rowList, headList, NOTdisplayed, APIList } = this.state;
-        const theme = localStorage.getItem("theme");
+        const theme = localStorage.getItem('theme');
         if (rowList === [] ) {
             return null;
         } else {
             return (
                 rowList.map((item, i) => (
                     i % 2 === 0 ? (
-                        <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#363636' : '' }}>
-                            <TableRow key={i} headList={headList} NOTdisplayed={NOTdisplayed} rowList={item} APIList={APIList} />
+                        <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#363636' : '' }}>
+                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } />
                         </tr>
                     ) : (
-                        <tr key={i} className="1" style={{backgroundColor: theme === 'dark' ? '#2f2f2f' : ''}}>
-                            <TableRow key={i} headList={headList} NOTdisplayed={NOTdisplayed} rowList={item} APIList={APIList} />
+                        <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#2f2f2f' : '' }}>
+                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } />
                         </tr>
                     )
                 ))
