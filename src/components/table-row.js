@@ -9,13 +9,15 @@ class TableRow extends Component {
         rowList: [],
         APIList: [],
         changed: false,
-        count: 0
+        count: 0,
+        NOTdisplayedAPIs: [],
+        displayed: []
       }
     }
 
     static getDerivedStateFromProps(props, state) {
         if (state.headList.length === 0 || props.headList.length > state.headList.length) {
-            return { headList: props.headList }
+            return { headList: props.headList,NOTdisplayedAPIs: props.NOTdisplayedAPIs }
         }
 
         if (props.rowList.length < state.headList.length) {
@@ -39,26 +41,46 @@ class TableRow extends Component {
                 }
             }
             if (newRowList.length > 1) {
-                return { rowList: newRowList, APIList: props.APIList }
+                return { rowList: newRowList, APIList: props.APIList, NOTdisplayedAPIs: props.NOTdisplayedAPIs }
             }
         } else if (!_.isEqual(props.rowList, state.rowList)) {
-            return { rowList: props.rowList, APIList: props.APIList, }
+            return { rowList: props.rowList, APIList: props.APIList, NOTdisplayedAPIs: props.NOTdisplayedAPIs}
         } 
+        if (props.displayed !== state.displayed) { return { displayed: props.displayed }}
+
         return { count: state.count + 1, changed: false };
     }
 
     render() {
-        const { APIList, rowList, headList, changed } = this.state;
-
+        const { APIList, rowList, headList, NOTdisplayedAPIs, changed, displayed } = this.state;
+        console.log(displayed)
         return APIList.map((api, i) => {
             return rowList.map((item,j) => (
-                item.split('--')[1] === 'URL' && i === 0? (
-                    <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
+                j !== 0 && NOTdisplayedAPIs !== undefined ? (
+
+                    // console.log("NOTdisplayedAPIs.includes(item.split('--')[2]) ", NOTdisplayedAPIs.includes(item.split('--')[2])),
+                    // console.log("displayed.includes(item) ", displayed.includes(item)),
+                    NOTdisplayedAPIs.includes(item.split('--')[2]) ? (
+                        displayed.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
+                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>) 
+                            : (
+                            console.log("displayed.includes(item): ", displayed.includes(item)),
+                                console.log("item: ", item),
+                                null
+                            )
+                        ) : (
+                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        )
                 ) : (
-                    item.split('--')[2] === api.split('/')[0] ? (
-                        <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
-                    ) : (null)
+                    <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 )
+                // item.split('--')[1] === 'URL' && i === 0? (
+                //     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
+                // ) : (
+                //     item.split('--')[2] === api.split('/')[0] ? (
+                //         <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                //     ) : (null)
+                // )
             ))
         })
     }   

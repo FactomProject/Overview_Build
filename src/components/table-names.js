@@ -7,15 +7,19 @@ class TableNames extends Component {
     super(props);
     this.state = {
       headList: [],
-      APIList: []
+      APIList: [],
+      NOTdisplayedAPIs: []
     };
   }
 
   static getDerivedStateFromProps(props, state) {
     if (state.headList.length === 0) {
-      return { headList: props.headList, APIList: props.APIList }
+      return { headList: props.headList, APIList: props.APIList, NOTdisplayedAPIs: props.NOTdisplayedAPIs  }
     } else if (!_.isEqual(props.headList, state.headList) && props.headList.length >= 1 && props.APIList.length !== 0) {
-      return { headList: props.headList, APIList: props.APIList };
+      return { headList: props.headList, APIList: props.APIList, NOTdisplayedAPIs: props.NOTdisplayedAPIs };
+    }
+    if (props.NOTdisplayedAPIs !== state.NOTdisplayedAPIs) {
+      return { NOTdisplayedAPIs: props.NOTdisplayedAPIs }
     }
     // No state update necessary
     return null;
@@ -23,22 +27,37 @@ class TableNames extends Component {
 
   render() {
     const theme = localStorage.getItem('theme');
-    const { APIList, headList } = this.state;
+    const { APIList, headList, NOTdisplayedAPIs } = this.state;
 
     return APIList.map((item, i) => {
       return headList.map((className, j) =>
-        className === 'IP' && i === 0 ? (
+        // console.log("className: ", className),
+        j !== 0 && NOTdisplayedAPIs !== undefined ? (
+          NOTdisplayedAPIs.includes(className.split('--')[1]) ? (null) : (
+            <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
+              <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
+                { className.split('--')[1] }
+              </div>
+            </th>
+          )
+        ) : (
           <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className }</div>
           </th>
-        ) : className.split('--')[1] === item.split('/')[0] ? (
-          <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
-            <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
-              { className.split('--')[1] }
-            </div>
-          </th>
-        ) : null
+        )
+        // className === 'IP' && i === 0 ? (
+        //   <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+        //     <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className }</div>
+        //   </th>
+        // ) : className.split('--')[1] === item.split('/')[0] ? (
+          // <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+          //   <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
+          //   <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
+          //     { className.split('--')[1] }
+          //   </div>
+          // </th>
+        // ) : null
       );
     });
   }

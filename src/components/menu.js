@@ -50,29 +50,6 @@ class Menu extends Component {
     });
   }
 
-  handleClick(data) {
-    const { displayed, NOTdisplayed } = this.state;
-    if (displayed.includes(data)) {
-      let indexofdata = displayed.indexOf(data);
-      if (indexofdata > -1) {
-        displayed.splice(indexofdata, 1);
-      }
-      
-      $(`.${data}`).hide('slow');
-
-      NOTdisplayed.push(data);
-    } else if (NOTdisplayed.includes(data)) {
-      let indexofdata = NOTdisplayed.indexOf(data);
-      if (indexofdata > -1) {
-        NOTdisplayed.splice(indexofdata, 1);
-      }
-
-      $(`.${data}`).show('slow');
-
-      displayed.push(data);
-    }
-  }
-
   render() {
     const { NOTdisplayedAPIs, headList, displayedAPIs } = this.state;
     const { item } = this.props;
@@ -88,7 +65,7 @@ class Menu extends Component {
                 <a className='switch tiny' key={ `Menu_key_${i}` }>
                   <input
                     className='switch-input'
-                    onClick={ () => this.handleClick(key) }
+                    onClick={ () => this.props.handleClick(key) }
                     key={ `Menu_key_${i}` }
                     id={ key }
                     type='checkbox'
@@ -106,7 +83,7 @@ class Menu extends Component {
               <a className='switch tiny' key={ `Menu_key_${i}` }>
                 <input
                   className='switch-input'
-                  onClick={ () => this.handleClick(key) }
+                  onClick={ () => this.props.handleClick(key) }
                   key={ `Menu_key_${i}` }
                   id={ key }
                   type='checkbox'

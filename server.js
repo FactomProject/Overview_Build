@@ -35,6 +35,12 @@ const apisList = regex
   .replace(/'/g, '')
   .split(',');
 
+const DisplayedAPIs = regex.exec(process.env.DISPLAYEDAPIS)[1].replace(/'/g, '').split(',');
+console.log("DisplayedAPIs: ", DisplayedAPIs)
+
+const NOTDisplayedAPIs = regex.exec(process.env.NOTDISPLAYEDAPIS)[1].replace(/'/g, '').split(',');
+console.log("NOTDisplayedAPIs: ", NOTDisplayedAPIs)
+
 const connections = [];
 
 const io = socket(server);
@@ -82,10 +88,13 @@ const loopIPs = socketid => {
 
 io.on('connection', currentSocket => {
   connections.push(currentSocket);
-
+  io.to(currentSocket.id).emit('DisplayedAPIs', DisplayedAPIs);
+  io.to(currentSocket.id).emit('NOTDisplayedAPIs', NOTDisplayedAPIs);
+  
   currentSocket.on('firstcall', () => {
     io.to(currentSocket.id).emit('ListOfURLs', ipList);
     io.to(currentSocket.id).emit('ListOfAPIs', apisList);
+    
     loopIPs(currentSocket.id);
   });
 

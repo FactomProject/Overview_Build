@@ -9,7 +9,8 @@ class Table extends Component {
         rowList: [],
         headList: [],
         NOTdisplayed: [],
-        APIList: []
+        APIList: [],
+        displayed: []
       }
     }
 
@@ -18,12 +19,16 @@ class Table extends Component {
         if (props.headList !== state.headList) { return { headList: props.headList }; }
         if (props.NOTdisplayed !== state.NOTdisplayed) { return { NOTdisplayed: props.NOTdisplayed }; }
         if (props.APIList !== state.APIList) { return { APIList: props.APIList }; }
+        if (props.NOTdisplayedAPIs !== state.NOTdisplayedAPIs) { return { NOTdisplayedAPIs: props.NOTdisplayedAPIs }; }
+        if (props.displayed !== state.displayed) { return { displayed: props.displayed }; }
+
         // No state update necessary
         return null;
     }
     
     render() {
-        const { rowList, headList, NOTdisplayed, APIList } = this.state;
+        const { rowList, headList, NOTdisplayed, APIList, NOTdisplayedAPIs, displayed } = this.state;
+
         const theme = localStorage.getItem('theme');
         if (rowList === [] ) {
             return null;
@@ -32,11 +37,11 @@ class Table extends Component {
                 rowList.map((item, i) => (
                     i % 2 === 0 ? (
                         <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#363636' : '' }}>
-                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } />
+                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ displayed } />
                         </tr>
                     ) : (
                         <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#2f2f2f' : '' }}>
-                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } />
+                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ displayed } />
                         </tr>
                     )
                 ))

@@ -12,8 +12,8 @@ class Table extends Component {
     this.state = {
       headList: [],
       displayed: this.props.displayed,
-      displayedAPIs: ['heights', 'network-info', 'current-minute'],
-      NOTdisplayedAPIs: ['configuration', 'properties'],
+      displayedAPIs: [],
+      NOTdisplayedAPIs: [],
       NOTdisplayed: [],
       rowList: [],
       showMenu: false,
@@ -43,6 +43,14 @@ class Table extends Component {
     this.socket.on('ListOfAPIs', function (data) {
       that.setState({ APIList: data });
       APIList['APIList'] = data;
+    });
+
+    this.socket.on('DisplayedAPIs', function (data) {
+      that.setState({ displayedAPIs: data });
+    });
+
+    this.socket.on('NOTDisplayedAPIs', function (data) {
+      that.setState({ NOTdisplayedAPIs: data });
     });
 
     this.socket.on('APIObject', function (data) {
@@ -127,6 +135,17 @@ class Table extends Component {
         fullObj: newObj
       });
       this.getMenus();
+      let NOTdisplayedHolder = [];
+      for (let i = 0; i < this.state.headList.length; i++) {
+        for (let j = 0; j < this.state.NOTdisplayedAPIs.length; j++) {
+          if (this.state.headList[i].includes(this.state.NOTdisplayedAPIs[j])) {
+            NOTdisplayedHolder.push(this.state.headList[i])
+          }
+        }
+      }
+      this.setState({
+        NOTdisplayed: NOTdisplayedHolder
+      })
     }
   }
 
@@ -185,6 +204,40 @@ class Table extends Component {
     }
   }
 
+  handleClick(data) {
+    const { displayed, NOTdisplayed } = this.state;
+    console.log("displayed: ", displayed)
+    console.log("NOTdisplayed: ", NOTdisplayed)
+    if (displayed.includes(data)) {
+      let indexofdata = displayed.indexOf(data);
+      if (indexofdata > -1) {
+        displayed.splice(indexofdata, 1);
+      }
+      
+      $(`.${data}`).hide('slow');
+      let NOTdisplayedHolder = []
+      NOTdisplayedHolder.push(data);
+      let combineHolder = NOTdisplayedHolder.concat(NOTdisplayed)
+      console.log("combineHolder: ", combineHolder)
+      this.setState({
+        NOTdisplayed: combineHolder
+      });
+
+    } else if (NOTdisplayed.includes(data)) {
+      console.log("yeah NOTdisplayed has it: ", data)
+      let indexofdata = NOTdisplayed.indexOf(data);
+      console.log("indexofdata: ", indexofdata)
+      if (indexofdata > -1) {
+        NOTdisplayed.splice(indexofdata, 1);
+      }
+      let inputs = document.getElementById(data);
+      console.log("inputs: ", inputs)
+      $(`.${data}`).show();
+
+      displayed.push(data);
+    }
+  }
+
   handleFullAPIClick(item) {
     let { displayedAPIs, headList, displayed, NOTdisplayed, NOTdisplayedAPIs } = this.state;
     if (displayedAPIs.includes(item)) {
@@ -211,10 +264,12 @@ class Table extends Component {
       NOTdisplayedAPIs.push(item);
     } else {
       // Goes through the list of the tables titles and toggles menu and table off of those items
+      console.log(`displayedAPIs does not include ${item}: `, displayedAPIs)
       let that = this;
       headList.forEach(function (data) {
         let dataApi = data.split('--')[1]
         if (data !== 'IP' && dataApi === item) {
+          console.log("data: ", data)
           let inputs = document.getElementById(data);
           inputs.checked = true;
           if (NOTdisplayed.includes(data)) {
@@ -229,6 +284,7 @@ class Table extends Component {
   
             $(`.${data}`).show('slow');
             displayed.push(data);
+            console.log("after displayed: ", displayed)
           }
         }
       })
@@ -242,7 +298,7 @@ class Table extends Component {
   // For rendering the table with a theme 
   Table = () => {
     const theme = localStorage.getItem('theme');
-    const {headList, APIList, rowList, NOTdisplayed, count} = this.state;
+    const {headList, APIList, rowList, NOTdisplayed, count, NOTdisplayedAPIs, displayed} = this.state;
 
     if (headList.length === 0  || APIList.length === 0 || rowList.length === 0) {
       return ( null )     
@@ -259,6 +315,7 @@ class Table extends Component {
               NOTdisplayed={NOTdisplayed}
               APIList={APIList}
               count={count}
+              NOTdisplayedAPIs={NOTdisplayedAPIs}
             />
           </thead>
           <tbody style={{ border: '0px' }}>
@@ -267,6 +324,8 @@ class Table extends Component {
               headList={headList}
               NOTdisplayed={NOTdisplayed}
               APIList={APIList}
+              NOTdisplayedAPIs={NOTdisplayedAPIs}
+              displayed={displayed}
             />
           </tbody>
         </table>
@@ -326,6 +385,7 @@ class Table extends Component {
                               fullObj={fullObj[item]}
                               NOTdisplayedAPIs={NOTdisplayedAPIs}
                               displayedAPIs={displayedAPIs}
+                              handleClick={this.handleClick.bind(this)}
                             />
                           </div>
                         </div>
@@ -367,6 +427,7 @@ class Table extends Component {
                                 fullObj={fullObj[item]}
                                 NOTdisplayedAPIs={NOTdisplayedAPIs}
                                 displayedAPIs={displayedAPIs}
+                                handleClick={this.handleClick.bind(this)}
                               />
                             </div>
                           </div>
