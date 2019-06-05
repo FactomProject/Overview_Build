@@ -50,7 +50,7 @@ class App extends React.Component {
           </button>
         ) : (
           <button type='button' onClick={toggleTheme} style={{ margin: '1em 1em -1em' }}>
-            <i class='fas fa-sun' style={{color: '#28495f', fontSize: '1.5rem'}}></i>
+            <i className='fas fa-sun' style={{color: '#28495f', fontSize: '1.5rem'}}></i>
           </button>
         )}
 
