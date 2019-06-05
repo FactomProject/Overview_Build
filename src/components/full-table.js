@@ -357,7 +357,8 @@ class Table extends Component {
                                 ? 'block'
                                 : 'none',
                               position: 'absolute',
-                              marginLeft: '0px'
+                              marginLeft: '0px',
+                              left: "95%"
                             }}
                           >
                             <div className='dropdown-item'>
@@ -400,7 +401,8 @@ class Table extends Component {
                                 display: showMenu2[item]
                                   ? 'block'
                                   : 'none',
-                                position: 'absolute'
+                                position: 'absolute',
+                                left: "95%"
                               }}
                             >
                               <div className='dropdown-item'>

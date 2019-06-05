@@ -57,15 +57,10 @@ class TableRow extends Component {
         return APIList.map((api, i) => {
             return rowList.map((item,j) => (
                 j !== 0 && NOTdisplayedAPIs !== undefined ? (
-
-                    // console.log("NOTdisplayedAPIs.includes(item.split('--')[2]) ", NOTdisplayedAPIs.includes(item.split('--')[2])),
-                    // console.log("displayed.includes(item) ", displayed.includes(item)),
                     NOTdisplayedAPIs.includes(item.split('--')[2]) ? (
                         displayed.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
                             <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>) 
                             : (
-                            console.log("displayed.includes(item): ", displayed.includes(item)),
-                                console.log("item: ", item),
                                 null
                             )
                         ) : (
@@ -74,13 +69,6 @@ class TableRow extends Component {
                 ) : (
                     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 )
-                // item.split('--')[1] === 'URL' && i === 0? (
-                //     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
-                // ) : (
-                //     item.split('--')[2] === api.split('/')[0] ? (
-                //         <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
-                //     ) : (null)
-                // )
             ))
         })
     }   
