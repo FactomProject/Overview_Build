@@ -316,6 +316,7 @@ class Table extends Component {
               APIList={APIList}
               count={count}
               NOTdisplayedAPIs={NOTdisplayedAPIs}
+              displayed={displayed}
             />
           </thead>
           <tbody style={{ border: '0px' }}>

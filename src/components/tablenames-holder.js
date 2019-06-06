@@ -10,7 +10,8 @@ class Table extends Component {
       headList: [],
       NOTdisplayed: [],
       APIList: [],
-      NOTdisplayedAPIs: []
+      NOTdisplayedAPIs: [],
+      displayed: []
     };
   }
 
@@ -32,19 +33,22 @@ class Table extends Component {
     if (props.APIList !== state.APIList) {
       return { APIList: props.APIList };
     }
+    if (props.displayed !== state.displayed) {
+      return { displayed: props.displayed }
+    }
     // No state update necessary
     return null;
   }
 
   render() {
-    const { headList, NOTdisplayed, APIList, NOTdisplayedAPIs } = this.state;
+    const { headList, NOTdisplayed, APIList, NOTdisplayedAPIs, displayed } = this.state;
 
     if (headList === undefined || headList.length < 2 || APIList.length < 0) {
       return null;
     } else {
       return (
         <tr className='bar'>
-          <TableNames headList={ headList } NOTdisplayed={ NOTdisplayed } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs }/>
+          <TableNames headList={ headList } NOTdisplayed={ NOTdisplayed } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ displayed }/>
         </tr>
       );
     }

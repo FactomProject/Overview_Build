@@ -53,19 +53,18 @@ class TableRow extends Component {
 
     render() {
         const { APIList, rowList, headList, NOTdisplayedAPIs, changed, displayed } = this.state;
-        console.log(displayed)
         return APIList.map((api, i) => {
             return rowList.map((item,j) => (
                 j !== 0 && NOTdisplayedAPIs !== undefined ? (
                     NOTdisplayedAPIs.includes(item.split('--')[2]) ? (
                         displayed.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
                             <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>) 
-                            : (
-                                null
-                            )
-                        ) : (
-                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        : (
+                            null
                         )
+                    ) : (
+                        <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                    )
                 ) : (
                     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 )
