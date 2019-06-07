@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../App.css';
-import $ from 'jquery';
 import _ from 'underscore';
 
 
@@ -53,11 +52,14 @@ class Menu extends Component {
   render() {
     const { NOTdisplayedAPIs, headList, displayedAPIs } = this.state;
     const { item } = this.props;
+
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
     
     if (NOTdisplayedAPIs === undefined) {
       return null;
     } else {
-      return !displayedAPIs.includes(item)
+      return !chooseDisplayAPIsVar.includes(item)
         ? headList.map((key, i) => (
             key.split('--')[1] === item ? (
               <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>

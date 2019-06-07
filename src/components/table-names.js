@@ -29,37 +29,38 @@ class TableNames extends Component {
 
   render() {
     const theme = localStorage.getItem('theme');
-    const { APIList, headList, NOTdisplayedAPIs, displayed } = this.state;
-
-    return APIList.map((item, i) => {
-      return headList.map((className, j) =>
-        j !== 0 && NOTdisplayedAPIs !== undefined ? (
-          NOTdisplayedAPIs.includes(className.split('--')[1]) ? (
-            displayed.includes(`${className.split('--')[0]}--${className.split('--')[1]}`) ? (
-              <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
-                <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
-                  { className.split('--')[1] }
-                </div>
-              </th>
-            ) : (
-              null
-            )
-          ) : (
+    const  { APIList, headList, NOTdisplayedAPIs, displayed } = this.state;
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
+        let chooseDisplayVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed : displayed;
+        let chooseNOTdisplayedAPIVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs : NOTdisplayedAPIs;
+    
+    return headList.map((className, j) =>
+      j !== 0 && chooseNOTdisplayedAPIVar !== undefined ? (
+        chooseNOTdisplayedAPIVar.includes(className.split('--')[1]) ? (
+          chooseDisplayVar.includes(`${className.split('--')[0]}--${className.split('--')[1]}`) ? (
             <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
               <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
                 { className.split('--')[1] }
               </div>
             </th>
+          ) : (
+            null
           )
         ) : (
           <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className }</div>
+            <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className.split('--')[0] }</div>
+            <div style={{ fontSize: '12px', color: theme === 'dark' ? '#8a8a8a' : '#696969' }}>
+              { className.split('--')[1] }
+            </div>
           </th>
         )
-      );
-    });
+      ) : (
+        <th key={ j.toString() } className={ className } style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '18px', fontWeight: 700 }}>{ className }</div>
+        </th>
+      )
+    );
   }
 }
 

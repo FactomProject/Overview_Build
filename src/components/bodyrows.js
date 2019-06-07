@@ -53,11 +53,15 @@ class TableRow extends Component {
 
     render() {
         const { APIList, rowList, headList, NOTdisplayedAPIs, changed, displayed } = this.state;
-        return APIList.map((api, i) => {
+        let displaysLocal = JSON.parse(localStorage.getItem('displays'))
+        let chooseDisplayVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed : displayed;
+        let chooseNOTdisplayedAPIVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs : NOTdisplayedAPIs;
+        
+        if (APIList.length > 0) {
             return rowList.map((item,j) => (
-                j !== 0 && NOTdisplayedAPIs !== undefined ? (
-                    NOTdisplayedAPIs.includes(item.split('--')[2]) ? (
-                        displayed.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
+                j !== 0 && chooseNOTdisplayedAPIVar !== undefined ? (
+                    chooseNOTdisplayedAPIVar.includes(item.split('--')[2]) ? (
+                        chooseDisplayVar.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
                             <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>) 
                         : (
                             null
@@ -69,7 +73,9 @@ class TableRow extends Component {
                     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 )
             ))
-        })
+        } else {
+            return null;
+        }
     }   
 }
 

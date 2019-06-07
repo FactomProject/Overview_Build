@@ -11,7 +11,7 @@ class Table extends Component {
     super(props);
     this.state = {
       headList: [],
-      displayed: this.props.displayed,
+      displayed: [],
       displayedAPIs: [],
       NOTdisplayedAPIs: [],
       NOTdisplayed: [],
@@ -28,7 +28,8 @@ class Table extends Component {
 
     this.socket = io('localhost:5001');
 
-    this.componentDidMount = this.componentDidMount.bind(this.socket);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
     let that = this;
     let newer_Obj = {};
@@ -46,11 +47,21 @@ class Table extends Component {
     });
 
     this.socket.on('DisplayedAPIs', function (data) {
-      that.setState({ displayedAPIs: data });
+      const displayedHolder = localStorage.getItem('displayedAPIs');
+      if (displayedHolder !== undefined && Array.isArray(displayedHolder)) {
+        that.setState({ displayedAPIs: displayedHolder })
+      } else {
+        that.setState({ displayedAPIs: data });
+      }
     });
 
     this.socket.on('NOTDisplayedAPIs', function (data) {
-      that.setState({ NOTdisplayedAPIs: data });
+      let NOTdisplayedHolder = localStorage.getItem('NOTdisplayedAPIs');
+      if (NOTdisplayedHolder !== undefined && Array.isArray(NOTdisplayedHolder)) {
+        that.setState({ NOTdisplayedAPIs: NOTdisplayedHolder })
+      } else {
+        that.setState({ NOTdisplayedAPIs: data });
+      }
     });
 
     this.socket.on('APIObject', function (data) {
@@ -88,21 +99,41 @@ class Table extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.displayed !== prevState.displayed) {
-      return ({ displayed: nextProps.displayed }) // <- this is setState equivalent
-    }
+    
     return null;
   }
-  componentDidMount() {
-    this.emit('firstcall');
-    setInterval(() => {
-      this.emit('firstcall');
-    }, 6000);
+
+  componentDidUpdate(prevProps, prevState) {
+    const { NOTdisplayedAPIs, displayedAPIs, displayed, NOTdisplayed } = this.state;
+    // console.log("it will save", NOTdisplayedAPIs)
+    if (NOTdisplayedAPIs.length > 0) {
+      localStorage.setItem('NOTdisplayedAPIs', NOTdisplayedAPIs)
+    }
+    if (displayedAPIs.length > 0) {
+      localStorage.setItem('displayedAPIs', displayedAPIs)
+    }
+    if (displayed.length > 0) {
+      localStorage.setItem('displayed', this.state.displayed)
+    }
+    if (NOTdisplayed !== undefined && NOTdisplayed.length > 0) { 
+      localStorage.setItem('NOTdisplayed', this.state.NOTdisplayed)
+    }
   }
+
+  componentDidMount() {
+    this.socket.emit('firstcall');
+    setInterval(() => {
+      this.socket.emit('firstcall');
+    }, 6000);
+    // localStorage.clear()
+  }
+
 
   getConfigApiInfo(obj, APIList) {
     let hugeArr = [];
     let hugeHeadList = [];
+    let displayed = [];
+    let NOTdisplayed = [];
     let newObj = {};
     let url = '';
 
@@ -110,6 +141,7 @@ class Table extends Component {
       url = top;
       if (!hugeHeadList.includes(`IP`)) {
         hugeHeadList.push(`IP`);
+        displayed.push(`IP`);
       }
       let smallArr = [];
       smallArr.push(`${url}--URL`);
@@ -121,6 +153,11 @@ class Table extends Component {
           if (!hugeHeadList.includes(apiHolderArrays.headListHolder[i])) {
             hugeHeadList.push(apiHolderArrays.headListHolder[i])
           }
+          if (this.state.NOTdisplayedAPIs.includes(apiHolderArrays.headListHolder[i].split('--')[1])) {
+            NOTdisplayed.push(apiHolderArrays.headListHolder[i])
+          } else {
+            displayed.push(apiHolderArrays.headListHolder[i])
+          }
         }
         smallArr = smallArr.concat(apiHolderArrays.hugeValueHolder);
         newObj[oneDeep] = apiHolderArrays.headListHolder;
@@ -128,6 +165,16 @@ class Table extends Component {
       hugeArr.push(smallArr);
     }
 
+    if (this.state.displayed !== undefined && this.state.displayed.length === 0) {
+      this.setState({
+        displayed: displayed,
+      });
+    }
+    if (this.state.NOTdisplayed !== undefined && this.state.NOTdisplayed.length === 0) {
+      this.setState({
+        NOTdisplayed: NOTdisplayed,
+      });
+    }
     if (hugeHeadList.length > 0) {
       this.setState({
         rowList: hugeArr,
@@ -206,100 +253,200 @@ class Table extends Component {
 
   handleClick(data) {
     const { displayed, NOTdisplayed } = this.state;
-    console.log("displayed: ", displayed)
-    console.log("NOTdisplayed: ", NOTdisplayed)
     if (displayed.includes(data)) {
       let indexofdata = displayed.indexOf(data);
       if (indexofdata > -1) {
-        displayed.splice(indexofdata, 1);
+        let displayedHolder= displayed.slice(0);
+        displayedHolder.splice(indexofdata, 1);
+        this.setState({
+          display: displayedHolder
+        })
       }
       
       $(`.${data}`).hide('slow');
       let NOTdisplayedHolder = []
       NOTdisplayedHolder.push(data);
       let combineHolder = NOTdisplayedHolder.concat(NOTdisplayed)
-      console.log("combineHolder: ", combineHolder)
       this.setState({
         NOTdisplayed: combineHolder
       });
 
     } else if (NOTdisplayed.includes(data)) {
-      console.log("yeah NOTdisplayed has it: ", data)
+      console.log(`${data} in NOTdisplayed`)
       let indexofdata = NOTdisplayed.indexOf(data);
-      console.log("indexofdata: ", indexofdata)
       if (indexofdata > -1) {
-        NOTdisplayed.splice(indexofdata, 1);
+        let NOTdisplayedHolder = NOTdisplayed.slice(0);
+        NOTdisplayedHolder.splice(indexofdata, 1);
+        this.setState({
+          NOTdisplayed: NOTdisplayedHolder
+        })
       }
-      let inputs = document.getElementById(data);
-      console.log("inputs: ", inputs)
-      $(`.${data}`).show();
 
-      displayed.push(data);
+      $(`.${data}`).show('slow');
+
+      if (!displayed.includes(data)) {
+        let displayedHolder = [];
+        displayedHolder.push(data);
+        let combineHolder = displayedHolder.concat(displayed);
+        this.setState({
+          displayed: combineHolder
+        })
+      }
+
     }
   }
 
-  handleFullAPIClick(item) {
-    let { displayedAPIs, headList, displayed, NOTdisplayed, NOTdisplayedAPIs } = this.state;
-    if (displayedAPIs.includes(item)) {
-      // Goes through the list of the tables titles and toggles menu and table off of those items
-      headList.forEach(function (data) {
-        let dataApi = data.split('--')[1]
-        if (data !== 'IP' && dataApi === item) {
-          let inputs = document.getElementById(data);
+  handleFullAPIClick(APIName) {
+    let { headList, displayed, NOTdisplayed, displayedAPIs, NOTdisplayedAPIs } = this.state;
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
+    let chooseNOTdisplayedAPIsVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs : NOTdisplayedAPIs;
+    let choosedisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed : displayed;
+    let chooseNOTdisplayedVar = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed : NOTdisplayed;
+
+
+
+    console.log("chooseDisplayAPIsVar: ", chooseDisplayAPIsVar, APIName)
+    if (chooseDisplayAPIsVar.includes(APIName)) {
+      let NOTdisplayedCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed.slice(0) : NOTdisplayed.slice(0);
+      let displayedCLONE = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed.slice(0) : displayed.slice(0);
+      let NOTdisplayedAPIsCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs.slice(0) : NOTdisplayedAPIs.slice(0);
+      let displayedAPIsCLONE = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs.slice(0) : displayedAPIs.slice(0);
+      headList.forEach((name, i) => {
+        if (i !== 0 && choosedisplayedVar.includes(name) && !chooseNOTdisplayedVar.includes(name) && name.split('--')[1] === APIName) {
+          console.log("name: ", name)
+          let inputs = document.getElementById(name);
           inputs.checked = false;
 
-          if (displayed.includes(data)) {
-            let indexofdata = displayed.indexOf(data);
-            if (indexofdata > -1) {
-              displayed.splice(indexofdata, 1);
-            }
-            $(`.${data}`).hide('slow');
-            NOTdisplayed.push(data);
-          }
+          let removeFromDisplayed = displayedCLONE.indexOf(name);
+          displayedCLONE.splice(removeFromDisplayed, 1);
+          NOTdisplayedCLONE.push(name);
         }
       })
+      let indexToRemoveAPI = displayedAPIsCLONE.indexOf(APIName);
+      displayedAPIsCLONE.splice(indexToRemoveAPI, 1);
+      NOTdisplayedAPIsCLONE.push(APIName);
 
-      let indexofdataAPI = displayedAPIs.indexOf(item);
-      displayedAPIs.splice(indexofdataAPI, 1);
-      NOTdisplayedAPIs.push(item);
-    } else {
-      // Goes through the list of the tables titles and toggles menu and table off of those items
-      console.log(`displayedAPIs does not include ${item}: `, displayedAPIs)
-      let that = this;
-      headList.forEach(function (data) {
-        let dataApi = data.split('--')[1]
-        if (data !== 'IP' && dataApi === item) {
-          console.log("data: ", data)
-          let inputs = document.getElementById(data);
+      this.setState({
+        displayed: displayedCLONE,
+        NOTdisplayed: NOTdisplayedCLONE,
+        displayedAPIs: displayedAPIsCLONE,
+        NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
+      })
+
+      let displays = {}
+      displays.displayed = displayedCLONE;
+      displays.NOTdisplayed = NOTdisplayedCLONE;
+      displays.displayedAPIs = displayedAPIsCLONE;
+      displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
+      localStorage.setItem('displays', JSON.stringify(displays))
+
+    } else if (chooseNOTdisplayedAPIsVar.includes(APIName)) {
+      let NOTdisplayedCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed.slice(0) : NOTdisplayed.slice(0);
+      let displayedCLONE = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed.slice(0) : displayed.slice(0);
+      let NOTdisplayedAPIsCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs.slice(0) : NOTdisplayedAPIs.slice(0);
+      let displayedAPIsCLONE = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs.slice(0) : displayedAPIs.slice(0);
+      headList.forEach((name, i) => {
+        if (i !== 0 && chooseNOTdisplayedVar.includes(name) && !choosedisplayedVar.includes(name) && name.split('--')[1] === APIName) {
+          let inputs = document.getElementById(name);
           inputs.checked = true;
-          if (NOTdisplayed.includes(data)) {
-            let indexofdata = NOTdisplayed.indexOf(data);
-            if (indexofdata > -1) {
-              let holder = NOTdisplayed;
-              holder.splice(indexofdata, 1);
-              that.setState({
-                NOTdisplayed: holder
-              })
-            }
-  
-            $(`.${data}`).show('slow');
-            displayed.push(data);
-            console.log("after displayed: ", displayed)
-          }
+
+          let removeFromNOTdisplayed  = NOTdisplayedCLONE.indexOf(name);
+          NOTdisplayedCLONE.splice(removeFromNOTdisplayed, 1);
+          displayedCLONE.push(name)
         }
       })
+      let indexToRemoveAPI = NOTdisplayedAPIsCLONE.indexOf(APIName);
+      NOTdisplayedAPIsCLONE.splice(indexToRemoveAPI, 1);
+      displayedAPIsCLONE.push(APIName);
 
-      let indexofdataAPInot = NOTdisplayedAPIs.indexOf(item);
-      NOTdisplayedAPIs.splice(indexofdataAPInot, 1);
-      displayedAPIs.push(item);
+      this.setState({
+        displayed: displayedCLONE,
+        NOTdisplayed: NOTdisplayedCLONE,
+        displayedAPIs: displayedAPIsCLONE,
+        NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
+      })
+      let displays = {}
+      displays.displayed = displayedCLONE;
+      displays.NOTdisplayed = NOTdisplayedCLONE;
+      displays.displayedAPIs = displayedAPIsCLONE;
+      displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
+
+      localStorage.setItem('displays', JSON.stringify(displays))
     }
+
+  //   if (displayedAPIs.includes(item)) {
+  //     // Goes through the list of the tables titles and toggles menu and table off of those items
+  //     headList.forEach(function (data) {
+  //       let dataApi = data.split('--')[1]
+  //       if (data !== 'IP' && dataApi === item) {
+  //         let inputs = document.getElementById(data);
+  //         inputs.checked = false;
+
+  //         if (displayed.includes(data)) {
+  //           let indexofdata = displayed.indexOf(data);
+  //           if (indexofdata > -1) {
+  //             let displayedHOLDER = displayed.slice(0);
+  //             displayedHOLDER.splice(indexofdata, 1);
+  //             this2.setState({ displayed: displayedHOLDER })
+  //           }
+  //           $(`.${data}`).hide('slow');
+  //           let NOTdisplayedHOLDER = NOTdisplayed.slice(0);
+  //           NOTdisplayedHOLDER.push(data);
+  //           this2.setState({ NOTdisplayed: NOTdisplayedAPIsHOLDER })
+  //         }
+  //       }
+  //     })
+
+  //     let indexofdataAPI = displayedAPIs.indexOf(item);
+  //     let displayedAPIsHOLDER = displayedAPIs.slice(0);
+  //     displayedAPIsHOLDER.splice(indexofdataAPI, 1);
+  //     this2.setState({ displayedAPIs: displayedAPIsHOLDER })
+      
+  //     let NOTdisplayedAPIsHOLDER = NOTdisplayedAPIs.slice(0);
+  //     NOTdisplayedAPIsHOLDER.push(item);
+  //     this2.setState({ NOTdisplayedAPIs: NOTdisplayedAPIsHOLDER })
+  //   } else {
+  //     // Goes through the list of the tables titles and toggles menu and table off of those items
+  //     headList.forEach(function (data) {
+  //       let dataApi = data.split('--')[1]
+  //       if (data !== 'IP' && dataApi === item) {
+  //         let inputs = document.getElementById(data);
+  //         inputs.checked = true;
+  //         if (NOTdisplayed.includes(data)) {
+  //           let indexofdata = NOTdisplayed.indexOf(data);
+  //           if (indexofdata > -1) {
+  //             let holder = NOTdisplayed.slice(0);
+  //             holder.splice(indexofdata, 1);
+  //             this2.setState({
+  //               NOTdisplayed: holder
+  //             })
+  //           }
+  
+  //           $(`.${data}`).show('slow');
+  //           let displayedHolder = displayed.slice(0)
+  //           displayedHolder.push(data);
+  //           this2.setState({ displayed: displayedHolder })
+  //         }
+  //       }
+  //     })
+
+  //     let indexofdataAPInot = NOTdisplayedAPIs.indexOf(item);
+  //     let NOTdisplayedAPIsHOLDER = NOTdisplayedAPIs.slice(0);
+  //     NOTdisplayedAPIsHOLDER.splice(indexofdataAPInot, 1);
+  //     this2.setState({ NOTdisplayedAPIs: NOTdisplayedAPIsHOLDER })
+      
+  //     let displayedAPIsHOLDER = displayedAPIs.slice(0);
+  //     displayedAPIsHOLDER.push(item);
+  //     this2.setState({ displayedAPIs: displayedAPIsHOLDER })
+  //   }
   }
 
   // For rendering the table with a theme 
   Table = () => {
     const theme = localStorage.getItem('theme');
     const {headList, APIList, rowList, NOTdisplayed, count, NOTdisplayedAPIs, displayed} = this.state;
-
+    
     if (headList.length === 0  || APIList.length === 0 || rowList.length === 0) {
       return ( null )     
     } else {
@@ -336,6 +483,9 @@ class Table extends Component {
 
   render() {
     const { rowList, headList, showMenu, menus, displayedAPIs, APIList, showMenu2, NOTdisplayed, displayed, fullObj, NOTdisplayedAPIs } = this.state;
+    // displayedAPIs
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
     if (rowList.length === 0 || headList.length === 0) {
       return ( null )
     } else if (APIList.length !== '') {
@@ -347,7 +497,7 @@ class Table extends Component {
                 <a role='button' className='nav-link btn dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>APIs </a>
                 <div className={`dropdown-menu`} style={{ display: showMenu ? 'block' : 'none', position: 'absolute', marginLeft: '0px' }}>
                   {menus.map((item, i) => {
-                    return displayedAPIs.includes(item) ? (
+                    return chooseDisplayAPIsVar.includes(item) ? (
                       <div className=' dropdown-item' href='#' key={`Menu_item_${i}`} >
                         {item}
                         <div className='btn-group dropright downdeep' onMouseEnter={() => this.toggleAPIMenuDisplay(true, item)} onMouseLeave={() => this.toggleAPIMenuDisplay(false, item)} >
