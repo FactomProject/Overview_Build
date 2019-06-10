@@ -50,11 +50,12 @@ class Menu extends Component {
   }
 
   render() {
-    const { NOTdisplayedAPIs, headList, displayedAPIs } = this.state;
+    const { NOTdisplayedAPIs, headList, displayedAPIs, displayed } = this.state;
     const { item } = this.props;
 
     let displaysLocal = JSON.parse(localStorage.getItem('displays'))
-    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null && displaysLocal.displayedAPIs !== undefined) ? displaysLocal.displayedAPIs : displayedAPIs;
+    let chooseDisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null && displaysLocal.displayed !== undefined) ? displaysLocal.displayed : displayed;
     
     if (NOTdisplayedAPIs === undefined) {
       return null;
@@ -62,8 +63,61 @@ class Menu extends Component {
       return !chooseDisplayAPIsVar.includes(item)
         ? headList.map((key, i) => (
             key.split('--')[1] === item ? (
+              chooseDisplayedVar.includes(key) ? (
               <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
-                {key.split('--')[0]}
+                  {key.split('--')[0]}
+                  <a className='switch tiny' key={ `Menu_key_${i}` }>
+                    <input
+                      className='switch-input'
+                      onClick={ () => this.props.handleClick(key) }
+                      key={ `Menu_key_${i}` }
+                      id={ key }
+                      type='checkbox'
+                      name={ `Switch for ${key}` }
+                      defaultChecked
+                    />
+                    <label className='switch-paddle ish' htmlFor={ key } />
+                  </a>
+                </div>
+                ) : (
+                <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
+                  {key.split('--')[0]}
+                  <a className='switch tiny' key={ `Menu_key_${i}` }>
+                    <input
+                      className='switch-input'
+                      onClick={ () => this.props.handleClick(key) }
+                      key={ `Menu_key_${i}` }
+                      id={ key }
+                      type='checkbox'
+                      name={ `Switch for ${key}` }
+                    />
+                    <label className='switch-paddle ish' htmlFor={ key } />
+                  </a>
+                </div>
+                )
+            ) : null
+          ))
+        : headList.map((key, i) => (
+          key.split('--')[1] === item ? (
+            chooseDisplayedVar.includes(key) ? (
+              <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
+                { key.split('--')[0] }
+                <a className='switch tiny' key={ `Menu_key_${i}` }>
+                  <input
+                    className='switch-input'
+                    onClick={ () => this.props.handleClick(key) }
+                    key={ `Menu_key_${i}` }
+                    id={ key }
+                    type='checkbox'
+                    name={ `Switch for ${key}` }
+                    defaultChecked
+                  />
+                  <label className='switch-paddle ish' htmlFor={ key } />
+                </a>
+              </div>
+            ) : (
+              <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
+                { key.split('--')[0] }
                 <a className='switch tiny' key={ `Menu_key_${i}` }>
                   <input
                     className='switch-input'
@@ -76,25 +130,7 @@ class Menu extends Component {
                   <label className='switch-paddle ish' htmlFor={ key } />
                 </a>
               </div>
-            ) : null
-          ))
-        : headList.map((key, i) => (
-          key.split('--')[1] === item ? (
-            <div className='dropdown-item' href='#' key={ `Menu_key_${i}` }>
-              { key.split('--')[0] }
-              <a className='switch tiny' key={ `Menu_key_${i}` }>
-                <input
-                  className='switch-input'
-                  onClick={ () => this.props.handleClick(key) }
-                  key={ `Menu_key_${i}` }
-                  id={ key }
-                  type='checkbox'
-                  name={ `Switch for ${key}` }
-                  defaultChecked
-                />
-                <label className='switch-paddle ish' htmlFor={ key } />
-              </a>
-            </div>
+            )
           ) : null
         ));
     }

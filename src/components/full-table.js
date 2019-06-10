@@ -125,7 +125,8 @@ class Table extends Component {
     setInterval(() => {
       this.socket.emit('firstcall');
     }, 6000);
-    // localStorage.clear()
+
+    localStorage.clear()
   }
 
 
@@ -251,70 +252,117 @@ class Table extends Component {
     }
   }
 
-  handleClick(data) {
-    const { displayed, NOTdisplayed } = this.state;
-    if (displayed.includes(data)) {
-      let indexofdata = displayed.indexOf(data);
-      if (indexofdata > -1) {
-        let displayedHolder= displayed.slice(0);
-        displayedHolder.splice(indexofdata, 1);
-        this.setState({
-          display: displayedHolder
-        })
-      }
-      
-      $(`.${data}`).hide('slow');
-      let NOTdisplayedHolder = []
-      NOTdisplayedHolder.push(data);
-      let combineHolder = NOTdisplayedHolder.concat(NOTdisplayed)
+  handleClick(APIName) {
+    const { headList, displayed, NOTdisplayed, displayedAPIs, NOTdisplayedAPIs } = this.state;
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'));
+    console.log("displaysLocal: ", displaysLocal)
+
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs.slice !== null && displaysLocal.displayedAPIs !== undefined)
+      ? displaysLocal.displayedAPIs.slice(0)
+      : displayedAPIs.slice(0);
+    let chooseNOTdisplayedAPIsVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null && displaysLocal.NOTdisplayedAPIs !== undefined) 
+        ? displaysLocal.NOTdisplayedAPIs.slice(0) 
+        : NOTdisplayedAPIs.slice(0);
+    let choosedisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null && displaysLocal.displayed !== undefined) 
+      ? displaysLocal.displayed.slice(0)
+      : displayed.slice(0);
+    let chooseNOTdisplayedVar = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null && displaysLocal.NOTdisplayed !== undefined )
+      ? displaysLocal.NOTdisplayed.slice(0)
+      : NOTdisplayed.slice(0);
+
+    console.log("APIName: ", APIName)
+    if (choosedisplayedVar.includes(APIName)) {
+      let NOTdisplayedCLONE = chooseNOTdisplayedVar;
+      let displayedCLONE = choosedisplayedVar;
+      let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
+      let displayedAPIsCLONE = chooseDisplayAPIsVar;
+      headList.forEach((name, i) => {
+        if (i !== 0 && choosedisplayedVar.includes(name) && !chooseNOTdisplayedVar.includes(name) && name.split('--')[1] === APIName) {
+          let inputs = document.getElementById(name);
+          inputs.checked = false;
+
+          let removeFromDisplayed = displayedCLONE.indexOf(name);
+          displayedCLONE.splice(removeFromDisplayed, 1);
+          NOTdisplayedCLONE.push(name);
+        }
+      })
+      let indexToRemoveAPI = displayedAPIsCLONE.indexOf(APIName);
+      displayedAPIsCLONE.splice(indexToRemoveAPI, 1);
+      NOTdisplayedAPIsCLONE.push(APIName);
+
+      // this.setState({
+      //   displayed: displayedCLONE,
+      //   NOTdisplayed: NOTdisplayedCLONE,
+      //   displayedAPIs: displayedAPIsCLONE,
+      //   NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
+      // })
+
       this.setState({
-        NOTdisplayed: combineHolder
-      });
+        displayed: displayedCLONE,
+        NOTdisplayed: NOTdisplayedCLONE,
+      })
 
-    } else if (NOTdisplayed.includes(data)) {
-      console.log(`${data} in NOTdisplayed`)
-      let indexofdata = NOTdisplayed.indexOf(data);
-      if (indexofdata > -1) {
-        let NOTdisplayedHolder = NOTdisplayed.slice(0);
-        NOTdisplayedHolder.splice(indexofdata, 1);
-        this.setState({
-          NOTdisplayed: NOTdisplayedHolder
-        })
-      }
+      let displays = {}
+      displays.displayed = displayedCLONE;
+      displays.NOTdisplayed = NOTdisplayedCLONE;
+      displays.displayedAPIs = displayedAPIsCLONE;
+      displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
+      localStorage.setItem('displays', JSON.stringify(displays))
 
-      $(`.${data}`).show('slow');
+    } else if (chooseNOTdisplayedVar.includes(APIName)) {
+      console.log(`${APIName} in NOTdisplayed`)
+      let NOTdisplayedCLONE = chooseNOTdisplayedVar;
+      console.log("NOTdisplayedCLONE: ", NOTdisplayedCLONE)
+      let displayedCLONE = choosedisplayedVar;
+      console.log("displayedCLONE: ", displayedCLONE)
+      let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
+      console.log("NOTdisplayedAPIsCLONE: ", NOTdisplayedAPIsCLONE)
+      let displayedAPIsCLONE = chooseDisplayAPIsVar;
+      console.log("displayedAPIsCLONE: ", displayedAPIsCLONE)
+      headList.forEach((name, i) => {
+        if (i !== 0 && chooseNOTdisplayedVar.includes(name) && !choosedisplayedVar.includes(name) && name.split('--')[1] === APIName) {
+          let inputs = document.getElementById(name);
+          inputs.checked = true;
 
-      if (!displayed.includes(data)) {
-        let displayedHolder = [];
-        displayedHolder.push(data);
-        let combineHolder = displayedHolder.concat(displayed);
-        this.setState({
-          displayed: combineHolder
-        })
-      }
+          let removeFromNOTdisplayed  = NOTdisplayedCLONE.indexOf(name);
+          NOTdisplayedCLONE.splice(removeFromNOTdisplayed, 1);
+          displayedCLONE.push(name)
+        }
+      })
+      let indexToRemoveAPI = NOTdisplayedAPIsCLONE.indexOf(APIName);
+      NOTdisplayedAPIsCLONE.splice(indexToRemoveAPI, 1);
+      displayedAPIsCLONE.push(APIName);
 
+      this.setState({
+        displayed: displayedCLONE,
+        NOTdisplayed: NOTdisplayedCLONE,
+      })
+
+      let displays = {}
+      displays.displayed = displayedCLONE;
+      displays.NOTdisplayed = NOTdisplayedCLONE;
+      displays.displayedAPIs = displayedAPIsCLONE;
+      displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
+      localStorage.setItem('displays', JSON.stringify(displays))
     }
   }
 
   handleFullAPIClick(APIName) {
     let { headList, displayed, NOTdisplayed, displayedAPIs, NOTdisplayedAPIs } = this.state;
-    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
-    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
-    let chooseNOTdisplayedAPIsVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs : NOTdisplayedAPIs;
-    let choosedisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed : displayed;
-    let chooseNOTdisplayedVar = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed : NOTdisplayed;
+    let displaysLocal = JSON.parse(localStorage.getItem('displays'));
 
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs.slice !== null) ? displaysLocal.displayedAPIs.slice(0) : displayedAPIs.slice(0);
+    let chooseNOTdisplayedAPIsVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs.slice(0) : NOTdisplayedAPIs.slice(0);
+    let choosedisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed.slice(0) : displayed.slice(0);
+    let chooseNOTdisplayedVar = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed.slice(0) : NOTdisplayed.slice(0);
 
-
-    console.log("chooseDisplayAPIsVar: ", chooseDisplayAPIsVar, APIName)
     if (chooseDisplayAPIsVar.includes(APIName)) {
-      let NOTdisplayedCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed.slice(0) : NOTdisplayed.slice(0);
-      let displayedCLONE = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed.slice(0) : displayed.slice(0);
-      let NOTdisplayedAPIsCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs.slice(0) : NOTdisplayedAPIs.slice(0);
-      let displayedAPIsCLONE = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs.slice(0) : displayedAPIs.slice(0);
+      let NOTdisplayedCLONE = chooseNOTdisplayedVar;
+      let displayedCLONE = choosedisplayedVar;
+      let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
+      let displayedAPIsCLONE = chooseDisplayAPIsVar;
       headList.forEach((name, i) => {
         if (i !== 0 && choosedisplayedVar.includes(name) && !chooseNOTdisplayedVar.includes(name) && name.split('--')[1] === APIName) {
-          console.log("name: ", name)
           let inputs = document.getElementById(name);
           inputs.checked = false;
 
@@ -342,10 +390,10 @@ class Table extends Component {
       localStorage.setItem('displays', JSON.stringify(displays))
 
     } else if (chooseNOTdisplayedAPIsVar.includes(APIName)) {
-      let NOTdisplayedCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayed !== null) ? displaysLocal.NOTdisplayed.slice(0) : NOTdisplayed.slice(0);
-      let displayedCLONE = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed.slice(0) : displayed.slice(0);
-      let NOTdisplayedAPIsCLONE = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs.slice(0) : NOTdisplayedAPIs.slice(0);
-      let displayedAPIsCLONE = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs.slice(0) : displayedAPIs.slice(0);
+      let NOTdisplayedCLONE = chooseNOTdisplayedVar;
+      let displayedCLONE = choosedisplayedVar;
+      let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
+      let displayedAPIsCLONE = chooseDisplayAPIsVar;
       headList.forEach((name, i) => {
         if (i !== 0 && chooseNOTdisplayedVar.includes(name) && !choosedisplayedVar.includes(name) && name.split('--')[1] === APIName) {
           let inputs = document.getElementById(name);
@@ -366,80 +414,14 @@ class Table extends Component {
         displayedAPIs: displayedAPIsCLONE,
         NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
       })
+
       let displays = {}
       displays.displayed = displayedCLONE;
       displays.NOTdisplayed = NOTdisplayedCLONE;
       displays.displayedAPIs = displayedAPIsCLONE;
       displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
-
       localStorage.setItem('displays', JSON.stringify(displays))
     }
-
-  //   if (displayedAPIs.includes(item)) {
-  //     // Goes through the list of the tables titles and toggles menu and table off of those items
-  //     headList.forEach(function (data) {
-  //       let dataApi = data.split('--')[1]
-  //       if (data !== 'IP' && dataApi === item) {
-  //         let inputs = document.getElementById(data);
-  //         inputs.checked = false;
-
-  //         if (displayed.includes(data)) {
-  //           let indexofdata = displayed.indexOf(data);
-  //           if (indexofdata > -1) {
-  //             let displayedHOLDER = displayed.slice(0);
-  //             displayedHOLDER.splice(indexofdata, 1);
-  //             this2.setState({ displayed: displayedHOLDER })
-  //           }
-  //           $(`.${data}`).hide('slow');
-  //           let NOTdisplayedHOLDER = NOTdisplayed.slice(0);
-  //           NOTdisplayedHOLDER.push(data);
-  //           this2.setState({ NOTdisplayed: NOTdisplayedAPIsHOLDER })
-  //         }
-  //       }
-  //     })
-
-  //     let indexofdataAPI = displayedAPIs.indexOf(item);
-  //     let displayedAPIsHOLDER = displayedAPIs.slice(0);
-  //     displayedAPIsHOLDER.splice(indexofdataAPI, 1);
-  //     this2.setState({ displayedAPIs: displayedAPIsHOLDER })
-      
-  //     let NOTdisplayedAPIsHOLDER = NOTdisplayedAPIs.slice(0);
-  //     NOTdisplayedAPIsHOLDER.push(item);
-  //     this2.setState({ NOTdisplayedAPIs: NOTdisplayedAPIsHOLDER })
-  //   } else {
-  //     // Goes through the list of the tables titles and toggles menu and table off of those items
-  //     headList.forEach(function (data) {
-  //       let dataApi = data.split('--')[1]
-  //       if (data !== 'IP' && dataApi === item) {
-  //         let inputs = document.getElementById(data);
-  //         inputs.checked = true;
-  //         if (NOTdisplayed.includes(data)) {
-  //           let indexofdata = NOTdisplayed.indexOf(data);
-  //           if (indexofdata > -1) {
-  //             let holder = NOTdisplayed.slice(0);
-  //             holder.splice(indexofdata, 1);
-  //             this2.setState({
-  //               NOTdisplayed: holder
-  //             })
-  //           }
-  
-  //           $(`.${data}`).show('slow');
-  //           let displayedHolder = displayed.slice(0)
-  //           displayedHolder.push(data);
-  //           this2.setState({ displayed: displayedHolder })
-  //         }
-  //       }
-  //     })
-
-  //     let indexofdataAPInot = NOTdisplayedAPIs.indexOf(item);
-  //     let NOTdisplayedAPIsHOLDER = NOTdisplayedAPIs.slice(0);
-  //     NOTdisplayedAPIsHOLDER.splice(indexofdataAPInot, 1);
-  //     this2.setState({ NOTdisplayedAPIs: NOTdisplayedAPIsHOLDER })
-      
-  //     let displayedAPIsHOLDER = displayedAPIs.slice(0);
-  //     displayedAPIsHOLDER.push(item);
-  //     this2.setState({ displayedAPIs: displayedAPIsHOLDER })
-  //   }
   }
 
   // For rendering the table with a theme 
@@ -484,8 +466,8 @@ class Table extends Component {
   render() {
     const { rowList, headList, showMenu, menus, displayedAPIs, APIList, showMenu2, NOTdisplayed, displayed, fullObj, NOTdisplayedAPIs } = this.state;
     // displayedAPIs
-    let displaysLocal = JSON.parse(localStorage.getItem('displays'))
-    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null) ? displaysLocal.displayedAPIs : displayedAPIs;
+    let displaysLocal = localStorage.getItem('displays')
+    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null && displaysLocal.displayedAPIs !== undefined) ? displaysLocal.displayedAPIs : displayedAPIs;
     if (rowList.length === 0 || headList.length === 0) {
       return ( null )
     } else if (APIList.length !== '') {
