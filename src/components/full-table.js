@@ -4,7 +4,6 @@ import TableNamesHolder from './tablenames-holder';
 import BodyRowHolder from './bodyrow-holder';
 import Menu from './menu';
 import io from 'socket.io-client';
-import $ from 'jquery';
 
 class Table extends Component {
   constructor(props) {
@@ -29,7 +28,6 @@ class Table extends Component {
     this.socket = io('localhost:5001');
 
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.componentDidUpdate = this.componentDidUpdate.bind(this);
 
     let that = this;
     let newer_Obj = {};
@@ -103,32 +101,14 @@ class Table extends Component {
     return null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { NOTdisplayedAPIs, displayedAPIs, displayed, NOTdisplayed } = this.state;
-    // console.log("it will save", NOTdisplayedAPIs)
-    if (NOTdisplayedAPIs.length > 0) {
-      localStorage.setItem('NOTdisplayedAPIs', NOTdisplayedAPIs)
-    }
-    if (displayedAPIs.length > 0) {
-      localStorage.setItem('displayedAPIs', displayedAPIs)
-    }
-    if (displayed.length > 0) {
-      localStorage.setItem('displayed', this.state.displayed)
-    }
-    if (NOTdisplayed !== undefined && NOTdisplayed.length > 0) { 
-      localStorage.setItem('NOTdisplayed', this.state.NOTdisplayed)
-    }
-  }
-
   componentDidMount() {
     this.socket.emit('firstcall');
     setInterval(() => {
       this.socket.emit('firstcall');
     }, 6000);
 
-    localStorage.clear()
+    // localStorage.clear()
   }
-
 
   getConfigApiInfo(obj, APIList) {
     let hugeArr = [];
@@ -209,7 +189,6 @@ class Table extends Component {
         hugeValueHolder.push(`${obj[key]}--${key}--${api}`);
       }
     }
-
     return { 'headListHolder': headListHolder, 'hugeValueHolder': hugeValueHolder };
   }
 
@@ -252,17 +231,16 @@ class Table extends Component {
     }
   }
 
-  handleClick(APIName) {
+  handleClick(itemName) {
     const { headList, displayed, NOTdisplayed, displayedAPIs, NOTdisplayedAPIs } = this.state;
     let displaysLocal = JSON.parse(localStorage.getItem('displays'));
-    console.log("displaysLocal: ", displaysLocal)
 
     let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs.slice !== null && displaysLocal.displayedAPIs !== undefined)
       ? displaysLocal.displayedAPIs.slice(0)
       : displayedAPIs.slice(0);
     let chooseNOTdisplayedAPIsVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null && displaysLocal.NOTdisplayedAPIs !== undefined) 
-        ? displaysLocal.NOTdisplayedAPIs.slice(0) 
-        : NOTdisplayedAPIs.slice(0);
+      ? displaysLocal.NOTdisplayedAPIs.slice(0) 
+      : NOTdisplayedAPIs.slice(0);
     let choosedisplayedVar = (displaysLocal !== null && displaysLocal.displayed !== null && displaysLocal.displayed !== undefined) 
       ? displaysLocal.displayed.slice(0)
       : displayed.slice(0);
@@ -270,37 +248,43 @@ class Table extends Component {
       ? displaysLocal.NOTdisplayed.slice(0)
       : NOTdisplayed.slice(0);
 
-    console.log("APIName: ", APIName)
-    if (choosedisplayedVar.includes(APIName)) {
+    if (choosedisplayedVar.includes(itemName)) {
       let NOTdisplayedCLONE = chooseNOTdisplayedVar;
       let displayedCLONE = choosedisplayedVar;
       let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
       let displayedAPIsCLONE = chooseDisplayAPIsVar;
-      headList.forEach((name, i) => {
-        if (i !== 0 && choosedisplayedVar.includes(name) && !chooseNOTdisplayedVar.includes(name) && name.split('--')[1] === APIName) {
-          let inputs = document.getElementById(name);
-          inputs.checked = false;
 
-          let removeFromDisplayed = displayedCLONE.indexOf(name);
-          displayedCLONE.splice(removeFromDisplayed, 1);
-          NOTdisplayedCLONE.push(name);
+      let input = document.getElementById(itemName);
+      input.checked = false;
+
+      let removeFromDisplayed = displayedCLONE.indexOf(itemName);
+      displayedCLONE.splice(removeFromDisplayed, 1);
+      NOTdisplayedCLONE.push(itemName)
+
+      let apiInDisplayed = 0;
+      for (let i = 1; i < headList.length; i++) {
+        if (displayedCLONE[i] !== undefined) {
+          if (displayedCLONE[i].split('--')[1] === itemName.split('--')[1]) {
+            apiInDisplayed += 1;
+          }
         }
-      })
-      let indexToRemoveAPI = displayedAPIsCLONE.indexOf(APIName);
-      displayedAPIsCLONE.splice(indexToRemoveAPI, 1);
-      NOTdisplayedAPIsCLONE.push(APIName);
+        if (i === headList.length-1 && apiInDisplayed === 0) { apiInDisplayed = "ALL OFF" }
+      }
 
-      // this.setState({
-      //   displayed: displayedCLONE,
-      //   NOTdisplayed: NOTdisplayedCLONE,
-      //   displayedAPIs: displayedAPIsCLONE,
-      //   NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
-      // })
+      if (apiInDisplayed === "ALL OFF") {
+        let inputs = document.getElementById(itemName.split('--')[1])
+        inputs.checked = false;
+        let removeFromDisplayed = displayedAPIsCLONE.indexOf(itemName.split('--')[1]);
+        displayedAPIsCLONE.splice(removeFromDisplayed, 1);
+        NOTdisplayedAPIsCLONE.push(itemName.split('--')[1])
+      }
 
       this.setState({
         displayed: displayedCLONE,
         NOTdisplayed: NOTdisplayedCLONE,
-      })
+        displayedAPIs: displayedAPIsCLONE,
+        NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
+      });
 
       let displays = {}
       displays.displayed = displayedCLONE;
@@ -309,41 +293,54 @@ class Table extends Component {
       displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
       localStorage.setItem('displays', JSON.stringify(displays))
 
-    } else if (chooseNOTdisplayedVar.includes(APIName)) {
-      console.log(`${APIName} in NOTdisplayed`)
+    } else if (chooseNOTdisplayedVar.includes(itemName)) {
       let NOTdisplayedCLONE = chooseNOTdisplayedVar;
-      console.log("NOTdisplayedCLONE: ", NOTdisplayedCLONE)
       let displayedCLONE = choosedisplayedVar;
-      console.log("displayedCLONE: ", displayedCLONE)
       let NOTdisplayedAPIsCLONE = chooseNOTdisplayedAPIsVar;
-      console.log("NOTdisplayedAPIsCLONE: ", NOTdisplayedAPIsCLONE)
       let displayedAPIsCLONE = chooseDisplayAPIsVar;
-      console.log("displayedAPIsCLONE: ", displayedAPIsCLONE)
-      headList.forEach((name, i) => {
-        if (i !== 0 && chooseNOTdisplayedVar.includes(name) && !choosedisplayedVar.includes(name) && name.split('--')[1] === APIName) {
-          let inputs = document.getElementById(name);
-          inputs.checked = true;
 
-          let removeFromNOTdisplayed  = NOTdisplayedCLONE.indexOf(name);
-          NOTdisplayedCLONE.splice(removeFromNOTdisplayed, 1);
-          displayedCLONE.push(name)
+      let input = document.getElementById(itemName);
+      input.checked = true;
+
+      let removeFromDisplayed = NOTdisplayedCLONE.indexOf(itemName);
+      NOTdisplayedCLONE.splice(removeFromDisplayed, 1);
+      displayedCLONE.push(itemName)
+
+      let apiInHeadList = 0;
+      let apiInDisplayed = 0;
+      for (let i = 1; i < headList.length; i++) {
+        if (headList[i].split('--')[1] === itemName.split('--')[1]) {
+          apiInHeadList += 1;
         }
-      })
-      let indexToRemoveAPI = NOTdisplayedAPIsCLONE.indexOf(APIName);
-      NOTdisplayedAPIsCLONE.splice(indexToRemoveAPI, 1);
-      displayedAPIsCLONE.push(APIName);
+        if (displayedCLONE[i] !== undefined) {
+          if (displayedCLONE[i].split('--')[1] === itemName.split('--')[1]) {
+            apiInDisplayed += 1;
+          }
+        }
+        if (i === headList.length-1 && apiInDisplayed === apiInHeadList) { apiInDisplayed = "ALL ON" }
+      }
+
+      if (apiInDisplayed === "ALL ON") {
+        let inputs = document.getElementById(itemName.split('--')[1])
+        inputs.checked = true;
+        let removeFromNOTDisplayed = NOTdisplayedAPIsCLONE.indexOf(itemName.split('--')[1]);
+        NOTdisplayedAPIsCLONE.splice(removeFromNOTDisplayed, 1);
+        displayedAPIsCLONE.push(itemName.split('--')[1])
+      }
 
       this.setState({
         displayed: displayedCLONE,
         NOTdisplayed: NOTdisplayedCLONE,
-      })
+        displayedAPIs: displayedAPIsCLONE,
+        NOTdisplayedAPIs: NOTdisplayedAPIsCLONE
+      });
 
       let displays = {}
       displays.displayed = displayedCLONE;
       displays.NOTdisplayed = NOTdisplayedCLONE;
       displays.displayedAPIs = displayedAPIsCLONE;
       displays.NOTdisplayedAPIs = NOTdisplayedAPIsCLONE;
-      localStorage.setItem('displays', JSON.stringify(displays))
+      localStorage.setItem('displays', JSON.stringify(displays));
     }
   }
 
@@ -465,9 +462,11 @@ class Table extends Component {
 
   render() {
     const { rowList, headList, showMenu, menus, displayedAPIs, APIList, showMenu2, NOTdisplayed, displayed, fullObj, NOTdisplayedAPIs } = this.state;
-    // displayedAPIs
-    let displaysLocal = localStorage.getItem('displays')
-    let chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null && displaysLocal.displayedAPIs !== undefined) ? displaysLocal.displayedAPIs : displayedAPIs;
+    const displaysLocal = JSON.parse(localStorage.getItem('displays'))
+    const chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null && displaysLocal.displayedAPIs !== undefined) ? displaysLocal.displayedAPIs : displayedAPIs;
+    // console.log("displays.NOTdisplayedAPIs: ", displaysLocal.NOTdisplayedAPIs)
+    // console.log("chooseDisplayAPIsVar: ", chooseDisplayAPIsVar)
+
     if (rowList.length === 0 || headList.length === 0) {
       return ( null )
     } else if (APIList.length !== '') {

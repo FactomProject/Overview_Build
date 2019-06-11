@@ -62,12 +62,16 @@ class TableRow extends Component {
                 j !== 0 && chooseNOTdisplayedAPIVar !== undefined ? (
                     chooseNOTdisplayedAPIVar.includes(item.split('--')[2]) ? (
                         chooseDisplayVar.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
-                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>) 
-                        : (
+                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        ) : (
                             null
                         )
                     ) : (
-                        <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        chooseDisplayVar.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
+                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                        ) : (
+                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null, display: "none" }}>{ item.split('--')[0] }</th>                            
+                        )
                     )
                 ) : (
                     <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>

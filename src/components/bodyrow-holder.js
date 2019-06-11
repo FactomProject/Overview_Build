@@ -26,8 +26,7 @@ class Table extends Component {
     }
     
     render() {
-        const { rowList, headList, NOTdisplayed, APIList, NOTdisplayedAPIs, displayed } = this.state;
-        // console.log("displayed.length: ", displayed.length)
+        const { rowList, headList, NOTdisplayed, APIList, NOTdisplayedAPIs } = this.state;
 
         const theme = localStorage.getItem('theme');
         if (rowList === [] ) {
