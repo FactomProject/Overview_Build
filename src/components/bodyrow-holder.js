@@ -35,12 +35,12 @@ class Table extends Component {
             return (
                 rowList.map((item, i) => (
                     i % 2 === 0 ? (
-                        <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#363636' : '' }}>
-                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ this.props.displayed } />
+                        <tr key={ `tr-${item}-${i}` } className='1' style={{ backgroundColor: theme === 'dark' ? '#363636' : '' }}>
+                            <TableRow headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ this.props.displayed } />
                         </tr>
                     ) : (
-                        <tr key={ i } className='1' style={{ backgroundColor: theme === 'dark' ? '#2f2f2f' : '' }}>
-                            <TableRow key={ i } headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ this.props.displayed } />
+                        <tr key={ `tr-${item}-${i}` } className='1' style={{ backgroundColor: theme === 'dark' ? '#2f2f2f' : '' }}>
+                            <TableRow headList={ headList } NOTdisplayed={ NOTdisplayed } rowList={ item } APIList={ APIList } NOTdisplayedAPIs={ NOTdisplayedAPIs } displayed={ this.props.displayed } />
                         </tr>
                     )
                 ))

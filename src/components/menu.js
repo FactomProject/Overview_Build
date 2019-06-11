@@ -70,7 +70,7 @@ class Menu extends Component {
                     <input
                       className='switch-input'
                       onClick={ () => this.props.handleClick(key) }
-                      key={ `Menu_key_${i}` }
+                      key={ `Menu_key_${i}-${key}` }
                       id={ key }
                       type='checkbox'
                       name={ `Switch for ${key}` }
@@ -86,7 +86,7 @@ class Menu extends Component {
                     <input
                       className='switch-input'
                       onClick={ () => this.props.handleClick(key) }
-                      key={ `Menu_key_${i}` }
+                      key={ `Menu_key_${i}-${key}` }
                       id={ key }
                       type='checkbox'
                       name={ `Switch for ${key}` }
@@ -106,7 +106,7 @@ class Menu extends Component {
                   <input
                     className='switch-input'
                     onClick={ () => this.props.handleClick(key) }
-                    key={ `Menu_key_${i}` }
+                    key={ `Menu_key_${i}-${key}` }
                     id={ key }
                     type='checkbox'
                     name={ `Switch for ${key}` }
@@ -122,7 +122,7 @@ class Menu extends Component {
                   <input
                     className='switch-input'
                     onClick={ () => this.props.handleClick(key) }
-                    key={ `Menu_key_${i}` }
+                    key={ `Menu_key_${i}-${key}` }
                     id={ key }
                     type='checkbox'
                     name={ `Switch for ${key}` }

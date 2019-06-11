@@ -1,18 +1,4 @@
-.App-logo {
-  height: 80px;
-}
-.disline {
-  text-align: center;
-}
-
-.App-header {
-  margin-top: 2em;
-  margin-right: 5em;
-  margin-bottom: 2em;
-  margin-left: 1em;
-}
 /* resets */
-
 body {
   background-color: #ffffff;
   font-size: 16px;
@@ -43,6 +29,17 @@ h1 small {
 }
 table {
   margin-top: 5vh;
+}
+
+.App-logo {
+  height: 80px;
+}
+.disline {
+  text-align: center;
+}
+
+.App-header {
+  margin: 2em 5em;
 }
 
 .nav {

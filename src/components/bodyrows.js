@@ -57,24 +57,24 @@ class TableRow extends Component {
         let chooseDisplayVar = (displaysLocal !== null && displaysLocal.displayed !== null) ? displaysLocal.displayed : displayed;
         let chooseNOTdisplayedAPIVar = (displaysLocal !== null && displaysLocal.NOTdisplayedAPIs !== null) ? displaysLocal.NOTdisplayedAPIs : NOTdisplayedAPIs;
         
-        if (APIList.length > 0) {
+        if (APIList.length) {
             return rowList.map((item,j) => (
                 j !== 0 && chooseNOTdisplayedAPIVar !== undefined ? (
                     chooseNOTdisplayedAPIVar.includes(item.split('--')[2]) ? (
                         chooseDisplayVar.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
-                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                            <th key={ `th-${item}-j` } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
                         ) : (
                             null
                         )
                     ) : (
                         chooseDisplayVar.includes(`${item.split('--')[1]}--${item.split('--')[2]}`) ? (
-                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
+                            <th key={ `th-${item}-${j}` } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null }}>{ item.split('--')[0] }</th>
                         ) : (
-                            <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null, display: "none" }}>{ item.split('--')[0] }</th>                            
+                            <th key={ `th-${item}-${j}` } className={ headList[j] } style={{ textAlign: 'center', animation: changed ? 'highlight 1s' : null, display: "none" }}>{ item.split('--')[0] }</th>                            
                         )
                     )
                 ) : (
-                    <th key={ j.toString() } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
+                    <th key={ `th-${item}-${j}` } className={ headList[j] } style={{ textAlign: 'center' }}>{ item.split('--')[0].split(':')[0] }</th>
                 )
             ))
         } else {
