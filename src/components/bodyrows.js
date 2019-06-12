@@ -17,7 +17,7 @@ class TableRow extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (state.headList.length === 0 || props.headList.length > state.headList.length) {
-            return { headList: props.headList,NOTdisplayedAPIs: props.NOTdisplayedAPIs }
+            return { headList: props.headList,NOTdisplayedAPIs: props.NOTdisplayedAPIs, displayed: props.displayed }
         }
 
         if (props.rowList.length < state.headList.length) {
