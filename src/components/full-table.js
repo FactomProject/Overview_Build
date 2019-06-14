@@ -134,7 +134,7 @@ class Table extends Component {
           }
           if (this.state.NOTdisplayedAPIs.includes(apiHolderArrays.headListHolder[i].split('--')[1])) {
             NOTdisplayed.push(apiHolderArrays.headListHolder[i])
-          } else {
+          } else if (!displayed.includes(apiHolderArrays.headListHolder[i])) {
             displayed.push(apiHolderArrays.headListHolder[i])
           }
         }
@@ -462,8 +462,6 @@ class Table extends Component {
     const { rowList, headList, showMenu, menus, displayedAPIs, APIList, showMenu2, NOTdisplayed, displayed, fullObj, NOTdisplayedAPIs } = this.state;
     const displaysLocal = JSON.parse(localStorage.getItem('displays'))
     const chooseDisplayAPIsVar = (displaysLocal !== null && displaysLocal.displayedAPIs !== null && displaysLocal.displayedAPIs !== undefined) ? displaysLocal.displayedAPIs : displayedAPIs;
-    // console.log("displays.NOTdisplayedAPIs: ", displaysLocal.NOTdisplayedAPIs)
-    // console.log("chooseDisplayAPIsVar: ", chooseDisplayAPIsVar)
 
     if (rowList.length === 0 || headList.length === 0) {
       return ( null )
