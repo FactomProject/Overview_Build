@@ -5,22 +5,20 @@ After you clone down the repo, cd into `factom-node-monitoring-tool`
 
 Once in the repo run 
 ``` bash
-$ bash ./run.sh
+$ npm install
 ```
 
-Than should do it!
+You can modify what IPs and APIs you want to call in the `.env` file.
 
+In one terminal run:
+``` bash
+$ node server.js
+```
 
-The Lame way
-================
-1. `git clone git@github.com:FactomProject/factom-node-monitoring-tool.git`
-2. `cd factom-node-monitoring-tool`
-3. `git checkout Clay`
-4. `sudo apt-get install npm`
-4.2. `npm install`
-5. `node server.js`
-   _IN A SECOND TERMINAL TAB_
-6. `npm run start`
-   ^^^ should open a tab up for you.
+In another terminal run:
+``` bash 
+$ npm run start
+```
+^^^ that will start the client on lvh.me:3000
 
-in the `.env` file There are instructions on how to the arrays format.
+Changes made on the webpage will save via localStorage, so when you return you wont have to change what is diplayed.
