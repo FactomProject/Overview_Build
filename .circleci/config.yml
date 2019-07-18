@@ -1,0 +1,119 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.11.3
+
+    working_directory: ~/Overview
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - run: npm run test
+
+      - run: VERSION=$CIRCLE_TAG npm run build
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+  # Build the docker container
+  docker_build:
+    working_directory: ~/Overview
+
+    docker:
+      - image: google/cloud-sdk
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          version: 17.06.0-ce
+
+      # Restore individual docker images from the cache
+      - restore_cache:
+          keys:
+            - v1-docker-dependencies-{{ checksum "package.json" }}
+            - v1-docker-dependencies-
+
+      # Load the image if the cache hit
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /images/overview.tar | true
+      - run:
+          name: Build the container
+          command: |
+            docker build --build-arg "version=$CIRCLE_TAG" -t overview .
+      - run:
+          name: Push images to DockerHub
+          command: |
+           # Login to DockerHub
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            # If there is a tag, use it
+            if [ "$CIRCLE_TAG" != "" ]; then
+              docker tag overview factominc/overview:${CIRCLE_TAG}
+              docker push factominc/overview:${CIRCLE_TAG}
+            fi
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              # Tag master as latest
+              docker tag overview factominc/overview:latest
+              docker push factominc/overview:latest
+            fi
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              # Tag develop as develop anyhow
+              docker tag overview factominc/overview:develop
+              docker push factominc/overview:develop
+            fi
+            docker logout
+      - run:
+          name: Push images to GCR
+          command: |
+            echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+            docker tag overview gcr.io/factomd-dev/overview:latest
+            gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+            gcloud --quiet config set project factomd-dev
+            gcloud docker -- push gcr.io/factomd-dev/overview:latest
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build:
+          context: org-global
+          filters:
+            tags:
+              only: /.*/
+      - docker_build:
+          context: org-global
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - build
+
+
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          cron: "30 4 * * *"
+          filters:
+            branches:
+              only: develop
+    jobs:
+      - build:
+          context: org-global
+      - docker_build:
+          context: org-global
+          requires:
+            - build
