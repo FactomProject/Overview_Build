@@ -73,7 +73,7 @@ const apis = (url, endpoint, method, socketid) => {
         data: Obj,
         api: method
       });
-      console.log('Error ', err);
+      console.log('Error ', url);
     });
 };
 
